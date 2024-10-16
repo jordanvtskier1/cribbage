@@ -17,16 +17,6 @@ class Card:
         self.setSprite(source)
         self.setPosition(position)
 
-    def setSprite(self, source):
-        self.sprite = arcade.Sprite(source, 0.05)
-
-    def setPosition(self, position):
-        self.sprite.center_x = position[0]
-        self.sprite.center_y = position[1]
-
-    def draw(self):
-        self.sprite.draw()
-
 #============================================================#
 # Setters
 
@@ -36,6 +26,13 @@ class Card:
     def setRank(self, rank):
         self.rank = rank
 
+    def setSprite(self, source):
+        self.sprite = arcade.Sprite(source, 0.05)
+
+    def setPosition(self, position):
+        self.sprite.center_x = position[0]
+        self.sprite.center_y = position[1]
+
 #============================================================#
 # Getters
 
@@ -44,6 +41,18 @@ class Card:
     
     def getRank(self):
         return self.rank
+    
+    def getSprite(self):
+        return self.sprite
+
+    def getPosition(self):
+        return [self.sprite.center_x, self.sprite.center_y]
+    
+#============================================================#
+# Drawing
+
+    def draw(self):
+        self.sprite.draw()
     
 #============================================================#
 # To String
