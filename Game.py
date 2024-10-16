@@ -34,3 +34,11 @@ class Game:
             for value in CARD_VALUES: 
                 self.deck.append((value, suit))
         return random.shuffle(self.deck)
+    
+    def deal(self, DEAL): 
+        for index in range(0, (DEAL*2), 2):
+            self.player1_hand.append(self.deck[index])
+            self.player2_hand.append(self.deck[index + 1])
+        return self.player1_hand, self.player2_hand
+
+        
