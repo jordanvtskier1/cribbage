@@ -9,10 +9,20 @@ class Card:
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank, source=""):
+    def __init__(self, suit, rank, source="./Sprites/PlayingCards.png", position=[500, 500]):
         self.setSuit(suit)
         self.setRank(rank)
-        self.sprite = arcade.Sprite(source, 0.25)
+        # Not required by constructor so that back end can make all cards
+        # Then front end can use setters to add sprites and locations
+        self.setSprite(source)
+        self.setPosition(position)
+
+    def setSprite(self, source):
+        self.sprite = arcade.Sprite(source, 0.05)
+
+    def setPosition(self, position):
+        self.sprite.center_x = position[0]
+        self.sprite.center_y = position[1]
 
     def draw(self):
         self.sprite.draw()

@@ -2,6 +2,8 @@
 # CS 3050: Software Engineering
 #
 
+from Card import Card
+
 
 class Game:
 
@@ -10,6 +12,7 @@ class Game:
         # List of Card Objects
         self.deck = []
         self.crib = []
+        self.cards_in_play = []
         self.player1_hand = []
         self.player2_hand = []
         # Integers of player scores

@@ -1,7 +1,7 @@
 import arcade
 
 # Constants
-SCALING = 0.1
+SCALING = .1
 SOURCE = "./Sprites/PlayingCards.png"
 
 class CardSprite:
