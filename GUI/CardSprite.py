@@ -1,8 +1,8 @@
 import arcade
 
 # Constants
-SCALING = 1
-SOURCE = "./Sprites/Cards/WormSuits/K_Worm.png"
+SCALING = 0.1
+SOURCE = "./Sprites/PlayingCards.png"
 
 class CardSprite:
 
@@ -11,7 +11,7 @@ class CardSprite:
     and also paint it
     """
     def __init__(self, position):
-        self.sprite = arcade.Sprite( SOURCE, SCALING)
+        self.sprite = arcade.Sprite(SOURCE, SCALING)
         self.sprite.center_x = position[0]
         self.sprite.center_y = position[1]
         pass

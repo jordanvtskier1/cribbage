@@ -2,14 +2,20 @@
 # CS 3050: Software Engineering
 #
 
+import arcade
+
 class Card:
 
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank):
+    def __init__(self, suit, rank, source=""):
         self.setSuit(suit)
         self.setRank(rank)
+        self.sprite = arcade.Sprite(source, 0.25)
+
+    def draw(self):
+        self.sprite.draw()
 
 #============================================================#
 # Setters
