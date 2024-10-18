@@ -18,25 +18,41 @@ CENTER_CARD_LOCATION = [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2]
 
 class Window(arcade.Window):
     def __init__(self):
+
+        # Initialize Window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        arcade.set_background_color(arcade.color.GUPPIE_GREEN)
         
         # Create game state object
         self.game_state = Game()
 
-        # FOR TESTING
+        # <====================== FOR TESTING FUNCTIONS =========================>
         self.game_state.create_deck(self.game_state.SUITS, self.game_state.CARD_VALUES)
         self.game_state.deal_hands(self.game_state.DEAL)
         # game_state.start_game() Call some method to start game at beggining state
-        arcade.set_background_color(arcade.color.GUPPIE_GREEN)
         #self.player_hand = PlayerHandDrawer()
+        # <======================================================================>
+
+
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """The on_mouse_press inherits from arcade.Window I believe. When the mouse is pressed
+        it will call a back end method based both upon what it pressed and the current step within the game/turn
+        
+        """
+        # NOTE: Is currently setup only for the part of a turn where a player plays a 
+        # card from their hand into the center.
+
+        # Create a temporary sprite list that matches a player's hand
         card_sprites = arcade.SpriteList()
         for card in self.game_state.player1_hand:
              card_sprites.append(card.sprite)
+        # Retrieve all cards pressed at the given location
         cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
+        # As long as a card was pressed
         if len(cards_pressed) > 0:
+            # Adjust the game state so that the card pressed is moved to the center of play
             self.game_state.card_played(card_sprites.index(cards_pressed[-1]))
 
     def draw_deck(self):
