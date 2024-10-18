@@ -24,9 +24,8 @@ class Window(arcade.Window):
         self.game_state = Game()
 
         # FOR TESTING
-        self.game_state.deck.append(Card("Worm", "King"))
-        self.game_state.cards_in_play.append(Card("Worm", "King"))
-        self.game_state.cards_in_play.append(Card("Worm", "King"))
+        self.game_state.create_deck(self.game_state.SUITS, self.game_state.CARD_VALUES)
+        self.game_state.deal_hands(self.game_state.DEAL)
         # game_state.start_game() Call some method to start game at beggining state
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
         #self.player_hand = PlayerHandDrawer()
@@ -60,16 +59,34 @@ class Window(arcade.Window):
             spacer += 50
             card.draw()
 
-    def draw_your_hand():
+    def draw_your_hand(self):
+        # Spacer to space out the 8 cards that go in the middle during play
+        spacer = 0
+
+        # For each card in the cards in play list of game state
+        for card in self.game_state.player1_hand:
+            card.setSprite("./Sprites/playingCards.png")
+            # Adjust by the spacer so cards are not on top of eachother
+            card.setPosition([YOUR_HAND_LOCATION[0] + spacer,YOUR_HAND_LOCATION[1]])
+            spacer += 50
+            card.draw()
+
+    def draw_opps_hand(self):
+        # Spacer to space out the 8 cards that go in the middle during play
+        spacer = 0
+
+        # For each card in the cards in play list of game state
+        for card in self.game_state.player2_hand:
+            card.setSprite("./Sprites/playingCards.png")
+            # Adjust by the spacer so cards are not on top of eachother
+            card.setPosition([OPP_HAND_LOCATION[0] + spacer, OPP_HAND_LOCATION[1]])
+            spacer += 50
+            card.draw()
+
+    def draw_cribbage(self):
         pass
 
-    def draw_opps_hand():
-        pass
-
-    def draw_cribbage():
-        pass
-
-    def draw_score():
+    def draw_score(self):
         pass
             
     def setup(self):
@@ -81,6 +98,8 @@ class Window(arcade.Window):
 
         self.draw_deck()
         self.draw_center_cards()
+        self.draw_your_hand()
+        self.draw_opps_hand()
         # Test
         #self.player_hand.addSprite(300, 300)
         """
