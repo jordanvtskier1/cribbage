@@ -43,5 +43,9 @@ class Game:
             self.player1_hand.append(self.deck[index])
             self.player2_hand.append(self.deck[index + 1])
         return self.player1_hand, self.player2_hand
+    
+    def card_played(self, hand_index):
+        self.cards_in_play.append(self.player1_hand[hand_index])
+        self.player1_hand.pop(hand_index)
 
         

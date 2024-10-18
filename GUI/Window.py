@@ -30,6 +30,15 @@ class Window(arcade.Window):
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
         #self.player_hand = PlayerHandDrawer()
 
+    def on_mouse_press(self, x, y, button, modifiers):
+        card_sprites = arcade.SpriteList()
+        for card in self.game_state.player1_hand:
+             card_sprites.append(card.sprite)
+        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+
+        if len(cards_pressed) > 0:
+            self.game_state.card_played(card_sprites.index(cards_pressed[-1]))
+
     def draw_deck(self):
         # Go through each card in the game state deck
         for card in self.game_state.deck:
