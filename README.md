@@ -8,7 +8,6 @@ Use a venv maybe?
 To run the game you should install:
 
 
-
 ``` pip install arcade ```
 
 *If you are having trouble installing arcade here are some notes:<br/>
@@ -17,6 +16,10 @@ Use py -3.11 -m pip install arcade if installing arcade is failing.<br/>
 Make sure when you run main.py that you are running it in python 3.11*
 
 ``` pip install numpy ```
+
+To run the game:
+
+On your IDE select main.py and run this python script.
 
 ## Program Architecture
 
