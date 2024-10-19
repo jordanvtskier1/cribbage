@@ -11,11 +11,14 @@ To run the game you should install:
 
 ``` pip install arcade ```
 
+*If you are having trouble installing arcade here are some notes:
+Please make sure python 3.11 is installed on your device.
+Use py -3.11 -m pip install arcade if installing arcade is failing.
+Make sure when you run main.py that you are running it in python 3.11*
+
 ``` pip install numpy ```
 
 ## Program Architecture
-
---Let me know how this looks - Carson J. King
 
 Back End: All methods that alter the game state. Broken up into each part of a player's respective turn.
 
