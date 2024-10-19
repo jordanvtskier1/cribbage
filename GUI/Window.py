@@ -17,6 +17,7 @@ YOUR_HAND_LOCATION = [(SCREEN_WIDTH // 3), 50]
 OPP_HAND_LOCATION = [(SCREEN_WIDTH // 3),SCREEN_HEIGHT - 50]
 CENTER_CARD_LOCATION = [(SCREEN_WIDTH // 3) + 50, SCREEN_HEIGHT / 2]
 BOARD_LOCATION = [SCREEN_WIDTH - (SCREEN_WIDTH // 8), SCREEN_HEIGHT / 2]
+SCORE_LOCATION = [SCREEN_WIDTH - (SCREEN_WIDTH // 8), SCREEN_HEIGHT // 18]
 
 class Window(arcade.Window):
     def __init__(self):
@@ -203,8 +204,31 @@ class Window(arcade.Window):
 
 
     def draw_score(self):
-        pass
-
+        """
+        The draw_score method draws the score of each player in the game. It does this by using a rectangle to create
+        a background and text to draw out each players information.
+        """
+        # Draw background white rectangle
+        arcade.draw_rectangle_filled(SCORE_LOCATION[0], SCORE_LOCATION[1], 200, 60, arcade.color.WHITE)
+        # Draw lines to make boxes in rectangle
+        arcade.draw_line(SCORE_LOCATION[0] - 100, SCORE_LOCATION[1], SCORE_LOCATION[0] + 100, SCORE_LOCATION[1], arcade.color.BLACK, 3)
+        arcade.draw_line(SCORE_LOCATION[0] - 50, SCORE_LOCATION[1] + 30, SCORE_LOCATION[0] - 50, SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
+        arcade.draw_line(SCORE_LOCATION[0] + 50, SCORE_LOCATION[1] + 30, SCORE_LOCATION[0] + 50, SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
+        # Draw border of rectangle
+        arcade.draw_line(SCORE_LOCATION[0] - 101, SCORE_LOCATION[1] + 30, SCORE_LOCATION[0] + 101, SCORE_LOCATION[1] + 30, arcade.color.BLACK, 3)
+        arcade.draw_line(SCORE_LOCATION[0] - 101, SCORE_LOCATION[1] - 30, SCORE_LOCATION[0] + 101, SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
+        arcade.draw_line(SCORE_LOCATION[0] + 100, SCORE_LOCATION[1] - 31, SCORE_LOCATION[0] + 100, SCORE_LOCATION[1] + 31, arcade.color.BLACK, 3)
+        arcade.draw_line(SCORE_LOCATION[0] - 100, SCORE_LOCATION[1] - 31, SCORE_LOCATION[0] - 100, SCORE_LOCATION[1] + 31, arcade.color.BLACK, 3)
+        # Draw squares to signify player and their color
+        arcade.draw_rectangle_filled(SCORE_LOCATION[0] - 75, SCORE_LOCATION[1] + 15, 10, 10, arcade.color.RED)
+        arcade.draw_rectangle_filled(SCORE_LOCATION[0] - 75, SCORE_LOCATION[1] - 15, 10, 10, arcade.color.BLUE)
+        # Draw player names
+        arcade.draw_text("Player 1", SCORE_LOCATION[0] - 38, SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
+        arcade.draw_text("Player 2", SCORE_LOCATION[0] - 38, SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
+        # Draw player points
+        arcade.draw_text(self.game_state.player1_score, SCORE_LOCATION[0] + 57, SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
+        arcade.draw_text(self.game_state.player2_score, SCORE_LOCATION[0] + 57, SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
+            
 
     def setup(self):
         pass
@@ -221,6 +245,7 @@ class Window(arcade.Window):
         self.draw_opps_hand()
         self.draw_cribbage()
         self.draw_scoreboard()
+        self.draw_score()
 
         # Test
         #self.player_hand.addSprite(300, 300)

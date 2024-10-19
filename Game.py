@@ -24,8 +24,8 @@ class Game:
         self.player1_hand = []
         self.player2_hand = []
         # Integers of player scores
-        self.player1_score = 0
-        self.player2_score = 0
+        self.player1_score = 123
+        self.player2_score = 456
         # Booleans for determining the State of Game
         self.crib_hidden = True
         self.player1_dealer = True
