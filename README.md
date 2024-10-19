@@ -11,9 +11,9 @@ To run the game you should install:
 
 ``` pip install arcade ```
 
-*If you are having trouble installing arcade here are some notes:<\br>
-Please make sure python 3.11 is installed on your device.<\br>
-Use py -3.11 -m pip install arcade if installing arcade is failing.<\br>
+*If you are having trouble installing arcade here are some notes:<br/>
+Please make sure python 3.11 is installed on your device.<br/>
+Use py -3.11 -m pip install arcade if installing arcade is failing.<br/>
 Make sure when you run main.py that you are running it in python 3.11*
 
 ``` pip install numpy ```
