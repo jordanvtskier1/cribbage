@@ -38,6 +38,7 @@ class Game:
                 self.deck.append(Card(suit, value))
         return random.shuffle(self.deck)
     
+    
     def deal_hands(self, DEAL): 
         for index in range(0, (DEAL*2), 2):
             self.player1_hand.append(self.deck[index])
@@ -47,5 +48,25 @@ class Game:
     def card_played(self, hand_index):
         self.cards_in_play.append(self.player1_hand[hand_index])
         self.player1_hand.pop(hand_index)
+
+    def send_to_crib(self, hand_index):
+        
+        if len(hand_index) != 2:
+            raise Exception("Must send 2 cards to the crib")
+        self.crib.append(self.player1_hand[hand_index])
+        self.player1_hand.pop(hand_index)
+
+
+    # My idea for how multiplayer will work
+    # This function will get called whenever it is the opponent's turn
+    def get_player2_moves(self):
+        pass
+        # wait for firebase to change
+        # retrieve firebase data
+        # set player2, crib, deck 
+        
+
+
+    
 
         
