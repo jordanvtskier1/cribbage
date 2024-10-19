@@ -13,9 +13,9 @@ SCREEN_TITLE = "Super Cool Cribbage"
 DECK_LOCATION = [50, SCREEN_HEIGHT / 2]
 CRIB_LOCATION1 = [50, (SCREEN_HEIGHT - SCREEN_HEIGHT / 4) + 50]
 CRIB_LOCATION2 = [50, (SCREEN_HEIGHT / 4) - 50]
-YOUR_HAND_LOCATION = [(SCREEN_WIDTH // 3), 50]
-OPP_HAND_LOCATION = [(SCREEN_WIDTH // 3),SCREEN_HEIGHT - 50]
-CENTER_CARD_LOCATION = [(SCREEN_WIDTH // 3) + 50, SCREEN_HEIGHT / 2]
+YOUR_HAND_LOCATION = [(SCREEN_WIDTH // 3), 60]
+OPP_HAND_LOCATION = [(SCREEN_WIDTH // 3), SCREEN_HEIGHT - 68]
+CENTER_CARD_LOCATION = [(SCREEN_WIDTH // 4) + 50, SCREEN_HEIGHT / 2]
 BOARD_LOCATION = [SCREEN_WIDTH - (SCREEN_WIDTH // 8), SCREEN_HEIGHT / 2]
 SCORE_LOCATION = [SCREEN_WIDTH - (SCREEN_WIDTH // 8), SCREEN_HEIGHT // 18]
 
@@ -67,6 +67,7 @@ class Window(arcade.Window):
         game_state and drawing each card to the middle left of the screen.
         """
         # Draw a rectangle under the deck to help signify it's location
+        arcade.draw_text("Deck", DECK_LOCATION[0] - 30, DECK_LOCATION[1] + 75, arcade.color.BLACK, 20)
         arcade.draw_rectangle_filled(DECK_LOCATION[0], DECK_LOCATION[1], 75, 125, arcade.color.BROWN)
         
         # Go through each card in the deck
@@ -168,7 +169,7 @@ class Window(arcade.Window):
         if (self.game_state.player1_turn == True and self.game_state.is_player1 == True) or (self.game_state.player1_turn == False and self.game_state.is_player1 == False):
             # Draw an additonal rectangle background and text label for crib
             arcade.draw_rectangle_filled(CRIB_LOCATION2[0] + 30, CRIB_LOCATION2[1], 150, 125, arcade.color.GRAY)
-            arcade.draw_text("Crib", CRIB_LOCATION2[0] - 25, CRIB_LOCATION2[1] + 75, arcade.color.BLACK, 20)
+            arcade.draw_text("Crib", CRIB_LOCATION2[0], CRIB_LOCATION2[1] + 75, arcade.color.BLACK, 20)
             
             # Draw each card in the crib
             # NOTE: Currently face up need to implement face down
