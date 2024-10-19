@@ -47,16 +47,17 @@ class Window(arcade.Window):
         # card from their hand into the center. Currently no other actions coded.
 
         # Create a temporary sprite list that matches a player's hand
-        card_sprites = arcade.SpriteList()
-        for card in self.game_state.player1_hand:
-             card_sprites.append(card.sprite)
-        # Retrieve all cards pressed at the given location
-        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+        if (self.game_state.player1_turn == True and self.game_state.is_player1 == True) or (self.game_state.player1_turn == False and self.game_state.is_player1 == False):
+            card_sprites = arcade.SpriteList()
+            for card in self.game_state.player1_hand:
+                card_sprites.append(card.sprite)
+            # Retrieve all cards pressed at the given location
+            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-        # As long as a card was pressed
-        if len(cards_pressed) > 0:
-            # Adjust the game state so that the card pressed is moved to the center of play
-            self.game_state.card_played(card_sprites.index(cards_pressed[-1]))
+            # As long as a card was pressed
+            if len(cards_pressed) > 0:
+                # Adjust the game state so that the card pressed is moved to the center of play
+                self.game_state.card_played(card_sprites.index(cards_pressed[-1]))
 
 
     def draw_deck(self):

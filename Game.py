@@ -31,6 +31,7 @@ class Game:
         self.player1_dealer = True
         self.player1_turn = True
         self.is_player1 = True
+        
 
     def create_deck(self, SUITS, CARD_VALUES): 
         for suit in SUITS: 
