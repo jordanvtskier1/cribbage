@@ -8,6 +8,7 @@ from Card import Card
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Super Cool Cribbage"
+TEST_SPRITE = "./Sprites/Cards/WormSuits/K_Worm.png"
 # Positions to begin drawing certain parts of the game
 # Kind of wonky rn subject to change/adjustment
 DECK_LOCATION = [50, SCREEN_HEIGHT / 2]
@@ -98,7 +99,7 @@ class Window(arcade.Window):
         # For each card in play
         for card in self.game_state.cards_in_play:
             # Set the card sprite/card img
-            card.setSprite("./Sprites/playingCards.png")
+            card.setSprite(TEST_SPRITE)
             # Adjust by the spacer so cards are not on top of eachother
             # Make every other card slightly higher just like in cribbage online example
             # Draw in Center card location
@@ -128,7 +129,7 @@ class Window(arcade.Window):
 
         # For each card in hand
         for card in your_hand:
-            card.setSprite("./Sprites/playingCards.png")
+            card.setSprite(TEST_SPRITE)
             # Adjust by the spacer so cards are not on top of eachother
             card.setPosition([YOUR_HAND_LOCATION[0] + card_spacer, YOUR_HAND_LOCATION[1]])
             card_spacer += 50
@@ -152,7 +153,7 @@ class Window(arcade.Window):
 
         # For each card in hand
         for card in opps_hand:
-            card.setSprite("./Sprites/playingCards.png")
+            card.setSprite(TEST_SPRITE)
             # Adjust by the spacer so cards are not on top of eachother
             card.setPosition([OPP_HAND_LOCATION[0] + card_spacer, OPP_HAND_LOCATION[1]])
             card_spacer += 50
@@ -174,7 +175,7 @@ class Window(arcade.Window):
             # Draw each card in the crib
             # NOTE: Currently face up need to implement face down
             for card in self.game_state.crib:
-                card.setSprite("./Sprites/playingCards.png")
+                card.setSprite(TEST_SPRITE)
                 card.setPosition([CRIB_LOCATION2[0], CRIB_LOCATION2[1]])
                 card.draw()
 
@@ -185,7 +186,7 @@ class Window(arcade.Window):
             arcade.draw_text("Crib", CRIB_LOCATION1[0] - 25, CRIB_LOCATION1[1] + 75, arcade.color.BLACK, 20)
             # Draw each card in the crib
             for card in self.game_state.crib:
-                card.setSprite("./Sprites/playingCards.png")
+                card.setSprite(TEST_SPRITE)
                 card.setPosition([CRIB_LOCATION1[0], CRIB_LOCATION1[1]])
                 card.draw()
         

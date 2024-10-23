@@ -27,7 +27,7 @@ class Card:
         self.rank = rank
 
     def setSprite(self, source):
-        self.sprite = arcade.Sprite(source, 0.05)
+        self.sprite = arcade.Sprite(source, 0.5)
 
     def setPosition(self, position):
         self.sprite.center_x = position[0]

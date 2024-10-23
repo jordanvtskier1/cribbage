@@ -8,7 +8,7 @@ from Card import Card
 
 class Game:
     MAX_PEGGING = 121
-    DEAL = 6 
+    DEAL = 6
     HAND = 4
     POINTS = 15
     MAX_TOTAL = 31
