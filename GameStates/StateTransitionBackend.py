@@ -9,6 +9,14 @@ class StateTransitionBackend:
         pass
 
     @staticmethod
+    def start_menu_to_deal_cards(self, game_state: GameState):
+        game_info = game_state.gameInfo
+
+        
+
+
+
+    @staticmethod
     def deal_to_add_to_crib(self, game_state: GameState ):
 
         game_info = game_state.gameInfo
