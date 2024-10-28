@@ -4,9 +4,13 @@
 
 import arcade
 from GameStates import GameInfo
-#from GameStates import StateTransitionBackend
+# from GameStates import StateTransitionBackend
 from GameStates.AddToCribView import AddToCribView
 
+
+# CutDeckView inherits from AddToCribView so that it can use all its methods
+# NOTE: As I am writing this Jason presented in class that long lines of inheritence are not 
+# good. So I will alter this soon.
 class CutDeckView(AddToCribView):
     
     def __init__(self, game_info: GameInfo):

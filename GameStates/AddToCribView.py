@@ -2,16 +2,23 @@
 # CS 3050: Software Engineering
 # Final Project: Cribbage Game
 
+# Import required files and modules
 import arcade
 from GameStates import GameInfo
-#from GameStates import StateTransitionBackend
+# NOTE: Transition is currently commented out to prevent errors until it is implemented
+# from GameStates import StateTransitionBackend
 from GameStates.PickCardView import PickCardView
 
-
+# AddToCribView inherits from PickCardView so that it can use all its methods
+# NOTE: As I am writing this Jason presented in class that long lines of inheritence are not 
+# good. So I will alter this soon.
 class AddToCribView(PickCardView):
     
     def __init__(self, game_info: GameInfo):
+        # Call parent constructor
         super().__init__(game_info)
+
+        # Create variable to keep track of cards selected
         self.cards_clicked = []
 
 
@@ -46,8 +53,6 @@ class AddToCribView(PickCardView):
             else:
                 self.cards_clicked.remove(card)
                 print("Card Unpicked: ", card.getSuit(), card.getRank())
-
-        print(x, y)
         if 35 <= y <= 85 and 175 <= x <= 325:
             if len(self.cards_clicked) >= 2:
                 print("Cards Added To Crib: ")

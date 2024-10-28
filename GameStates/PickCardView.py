@@ -2,20 +2,30 @@
 # CS 3050: Software Engineering
 # Final Project: Cribbage Game
 
+
+# Import required files and modules
 import arcade
 from GameStates import GameInfo
-#from GameStates.StateTransitionBackend import StateTransitionBackend
+# NOTE: Transition is currently commented out to prevent errors until it is implemented
+# from GameStates.StateTransitionBackend import StateTransitionBackend
 
-
+# PickCardView inherits from arcade.View so that it can use the built in py arcade methods
+# NOTE: As I am writing this Jason presented in class that long lines of inheritence are not 
+# good. So I will alter this soon.
 class PickCardView(arcade.View):
 
     def __init__(self, game_info: GameInfo):
+        # Call parent constructor
         super().__init__()
+
+        # Create game_info and transition objects
         self.game_info = game_info
-        #self.transition = self.StateTransitionBackend()
+        # self.transition = self.StateTransitionBackend()
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
 
-        # Set Locations to draw components of the game
+        # Constants to represent locations on the screen for drawing compoenents of the game.
+        # These are set as class variables so that the views that come after this view can inherit them
+        # To reduce duplicated code, so all children of PickCardView have these variables
         self.SCREEN_WIDTH = 1000
         self.SCREEN_HEIGHT = 650  
         self.DECK_LOCATION = [50, self.SCREEN_HEIGHT / 2]
@@ -26,12 +36,15 @@ class PickCardView(arcade.View):
         self.CENTER_CARD_LOCATION = [(self.SCREEN_WIDTH // 4) + 50, self.SCREEN_HEIGHT / 2]
         self.BOARD_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT / 2]
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
+
+        # NOTE: Currently for testing until card sprites are finished
         self.TEST_SPRITE = "./Sprites/PlayingCards.png"
 
 
-
-
     def on_draw(self):
+        """
+        The on_draw method draws the components of the game
+        """
         self.clear()
         self.draw_scoreboard()
         self.draw_score()
@@ -39,29 +52,44 @@ class PickCardView(arcade.View):
 
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """
+        The on_mouse_press method takes in mouse clicks and performs an action based on those clicks
+        """
+
+        # Create a sprite list to hold card sprites
         card_sprites = arcade.SpriteList()
+
+        # Add the sprites from each card in the deck to the sprite list
         for card in self.game_info.deck:
             card_sprites.append(card.sprite)
-        # Retrieve all cards pressed at the given location
+
+        # Retrieve all sprites pressed at the given location
         cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-        # As long as a card was pressed
+        # As long as a sprite was pressed at the location
         if len(cards_pressed) > 0:
-            # Adjust the game state so that the card pressed is moved to the center of play
+            # Retrieve the top card of the cards at the given location
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
-            #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
-            #self.window.show_view(crib_view)
+
+            # NOTE: Here is where the call to transition would take place.
+            # crib_view = self.transition.pick_card_to_crib(self.game_info, card)
+            # self.window.show_view(crib_view)
+
+            # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
     
+
     def draw_scoreboard(self):
         """
         The draw_scoreboard method draws the cribbage board for the game. It does this by using a sprite for the
-        board in the SPRITES folder and placing it on the right middle of the scren.
+        board in the SPRITES folder and placing it on the right middle of the screen.
         """
         # Add text label to scoreboard
         arcade.draw_text("Scoreboard", self.BOARD_LOCATION[0] - 90, self.BOARD_LOCATION[1] + 260, arcade.color.BLACK, 25)
-        # Image I found online for 3 person/NOTE: Change to two person later
+        # NOTE: I am using a sprite image found online which may not be what we want, but it works for testing
         score_board = arcade.Sprite("./Sprites/cribbage-board.png", 0.5)
+        
+        # Set the sprites location to the BOARD_LOCATION
         score_board.center_x = self.BOARD_LOCATION[0]
         score_board.center_y = self.BOARD_LOCATION[1]
         score_board.draw()
@@ -87,20 +115,24 @@ class PickCardView(arcade.View):
         arcade.draw_rectangle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 10, 10, arcade.color.RED)
         arcade.draw_rectangle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 10, 10, arcade.color.BLUE)
         # Draw player names
-        arcade.draw_text("Player 1", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
-        arcade.draw_text("Player 2", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
+        arcade.draw_text("You", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
+        arcade.draw_text("Computer", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
         # Draw player points
         arcade.draw_text(self.game_info.our_score, self.SCORE_LOCATION[0] + 57, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
         arcade.draw_text(self.game_info.other_score, self.SCORE_LOCATION[0] + 57, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
 
 
     def draw_spread_deck(self):
-
+        """
+        The draw_spread_deck method draws out the cards in the deck in a spread out fashion
+        """
+        # Offset to space cards, so that they overlap eachother like a fanned out deck
         card_offset = 0
 
+        # For each card in the deck
         for card in self.game_info.deck:
+            # Draw it to match a fanned out deck on the screen
             card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_offset, self.CENTER_CARD_LOCATION[1]])
             card.draw()
             card_offset += 10
-
 
