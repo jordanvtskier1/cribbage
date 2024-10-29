@@ -7,12 +7,11 @@ import arcade
 from GameStates import GameInfo
 # NOTE: Transition is currently commented out to prevent errors until it is implemented
 # from GameStates import StateTransitionBackend
-from GameStates.PickCardView import PickCardView
+from GameStates.GameView import GameView
 
-# AddToCribView inherits from PickCardView so that it can use all its methods
-# NOTE: As I am writing this Jason presented in class that long lines of inheritence are not 
-# good. So I will alter this soon.
-class AddToCribView(PickCardView):
+# AddToCribView inherits from GameView so that it can use all its methods
+# NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
+class AddToCribView(GameView):
     
     def __init__(self, game_info: GameInfo):
         # Call parent constructor
@@ -63,28 +62,6 @@ class AddToCribView(PickCardView):
             else: 
                 print("Not enough Cards picked")
 
-    def draw_deck(self):
-        """
-        The draw_deck method draws each card in the deck. It does this by retrieving the deck variable in
-        game_state and drawing each card to the middle left of the screen.
-        """
-        # Draw a rectangle under the deck to help signify it's location
-        arcade.draw_text("Deck", self.DECK_LOCATION[0] - 30, self.DECK_LOCATION[1] + 75, arcade.color.BLACK, 20)
-        arcade.draw_rectangle_filled(self.DECK_LOCATION[0], self.DECK_LOCATION[1], 75, 125, arcade.color.BROWN)
-        
-        # Go through each card in the deck
-        for card in self.game_info.deck:
-            # Set Sprites for all cards based on their suit and rank
-            # NOTE: Currently just using base image
-            card.setSprite("./Sprites/playingCards.png")
-            # NOTE: We can use the f strings to get specific card images
-            # card.setSource(f"./Sprites/Cards/{card.suit}Suits/{card.rank}_{card.suit}.png")
-            
-            # Set the position of the cards in the deck to the location the deck should be at in the window
-            card.setPosition(self.DECK_LOCATION)
-            
-            # Then draw each card
-            card.draw()
 
     def draw_our_hand(self):
         """
