@@ -12,7 +12,7 @@ class StateTransitionBackend:
     @staticmethod
     def start_menu_to_deal_cards(game_state: GameState):
         game_info = game_state.gameInfo
-        game_info.deck = Backend.deal_cards()
+        game_info = Backend.deal_cards(game_info)
 
 
 

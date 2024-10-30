@@ -14,7 +14,17 @@ class Backend:
         for suit in SUITS: 
             for value in CARD_VALUES: 
                 game_info.deck.append(Card(suit, value))
-        return random.shuffle(game_info.deck)
+        game_info.deck = random.shuffle(game_info.deck)
+        return game_info
+    
+    def add_to_crib(game_info: GameInfo, card1: Card, card2: Card):
+        game_info.crib.append(card1)
+        game_info.crib.append(card2)
+        game_info.our_hand.remove(card1)
+        game_info.our_hand.remove(card2)
+        return game_info
+
+
 
 
 
