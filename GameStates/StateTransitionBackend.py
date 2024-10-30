@@ -1,6 +1,7 @@
 from GameStates.GameInfo import GameInfo
 from GameStates.GameState import GameState
 from GameStates.AddToCribState import AddToCribState
+from Backend.Backend import Backend
 
 
 
@@ -9,15 +10,19 @@ class StateTransitionBackend:
         pass
 
     @staticmethod
-    def start_menu_to_deal_cards(self, game_state: GameState):
+    def start_menu_to_deal_cards(game_state: GameState):
         game_info = game_state.gameInfo
+        game_info.deck = Backend.deal_cards()
 
-        
+
+
+
+
 
 
 
     @staticmethod
-    def deal_to_add_to_crib(self, game_state: GameState ):
+    def deal_to_add_to_crib(game_state: GameState):
 
         game_info = game_state.gameInfo
         # Back end logic of shuffling
