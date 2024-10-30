@@ -23,6 +23,32 @@ class Backend:
         game_info.our_hand.remove(card1)
         game_info.our_hand.remove(card2)
         return game_info
+    
+    def calculate_hand_score(game_info: GameInfo):
+        pairs = []
+        for card in game_info.our_hand:
+            if game_info.our_hand.count(card) == 2: 
+                if card not in pairs: 
+                    pairs.append(card)
+        
+        pairs = []
+        for card in game_info.our_hand:
+            if game_info.our_hand.count(card) == 2: 
+                if card not in pairs: 
+                    pairs.append(card)
+        
+        
+        return game_info
+
+    def take_turn(game_info: GameInfo, card): 
+        game_info.cards_in_play.append(card)
+        game_info.sum(game_info.cards_in_play)
+        game_info.our_hand.remove(card) 
+        return game_info
+
+        
+    
+
 
 
 
