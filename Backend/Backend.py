@@ -26,7 +26,7 @@ class Backend:
         game_info.our_hand.remove(card2)
         return game_info
     
-
+    @staticmethod
     def calculate_hand_score(game_info: GameInfo):
 
         complete_hand = game_info.our_hand.append(game_info.top_card[0])
@@ -91,8 +91,8 @@ class Backend:
        
         return game_info
 
-
-    def take_turn(game_info: GameInfo, card): 
+    @staticmethod
+    def take_turn(game_info: GameInfo, card):
         game_info.cards_in_play.append(card)
         game_info.sum(game_info.cards_in_play)
         game_info.our_hand.remove(card) 

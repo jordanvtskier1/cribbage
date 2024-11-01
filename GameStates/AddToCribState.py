@@ -1,6 +1,6 @@
 import arcade
 from GameStates.GameState import GameState
-from GameInfo import GameInfo
+from GameStates.GameInfo import GameInfo
 
 
 class AddToCribState(GameState):
