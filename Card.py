@@ -42,6 +42,26 @@ class Card:
     def getRank(self):
         return self.rank
     
+    def getValue(self):
+        if self.rank == "Ace":
+            return 1
+        elif self.rank in ["Jack", "Queen", "King"]:
+            return 10
+        else:
+            return self.rank
+        
+    def getRankAsInt(self):
+        if self.rank == "Ace":
+            return 1
+        elif self.rank == "Jack":
+            return 11
+        elif self.rank == "Queen":
+            return 12
+        elif self.rank == "King":
+            return 13
+        else:
+            return self.rank
+    
     def getSprite(self):
         return self.sprite
 

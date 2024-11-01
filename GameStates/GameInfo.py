@@ -14,11 +14,12 @@ class GameInfo:
         self.crib = []
         self.has_crib = False
         self.cards_in_play = []
+        self.top_card = []
         self.our_hand = []
         self.other_hand = []
         # Integers of player scores
-        self.our_score = 123
-        self.other_score = 456
+        self.our_score = 0
+        self.other_score = 0
         # Booleans for determining the State of Game
         self.crib_hidden = True
         self.is_dealer = False
