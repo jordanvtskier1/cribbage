@@ -8,8 +8,7 @@ Final Project: Cribbage Game
 # Import required files and modules
 import arcade
 from GameStates import GameInfo
-# NOTE: Transition is currently commented out to prevent errors until it is implemented
-# from GameStates.StateTransitionBackend import StateTransitionBackend
+from GameStates.StateTransitionBackend import StateTransitionBackend
 
 # GameView inherits from arcade.View so that it can use the built in py arcade methods
 # NOTE: Now each of our views inehrits from this one view. Benefits: Less duplicated code and
@@ -29,7 +28,7 @@ class GameView(arcade.View):
 
         # Create game_info and transition objects
         self.game_info = game_info
-        # self.transition = self.StateTransitionBackend()
+        self.transition = StateTransitionBackend(self.window)
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
 
         # Constants to represent locations on the screen for drawing compoenents of the game.
@@ -47,7 +46,7 @@ class GameView(arcade.View):
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
 
         # NOTE: Currently for testing until card sprites are finished
-        self.TEST_SPRITE = "./Sprites/PlayingCards.png"
+        self.TEST_SPRITE = "./Sprites/Cards/WormSuits/K_Worm.png"
 
 
     def on_draw(self):
@@ -201,7 +200,7 @@ class GameView(arcade.View):
         for card in self.game_info.deck:
             # Set Sprites for all cards based on their suit and rank
             # NOTE: Currently just using base image
-            card.setSprite("./Sprites/playingCards.png")
+            card.setSprite(self.TEST_SPRITE)
             # NOTE: We can use the f strings to get specific card images
             # card.setSource(f"./Sprites/Cards/{card.suit}Suits/{card.rank}_{card.suit}.png")
 

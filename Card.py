@@ -9,7 +9,7 @@ class Card:
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank, source="./Sprites/PlayingCards.png", position=[500, 500]):
+    def __init__(self, suit, rank, source="./Sprites/Cards/WormSuits/K_Worm.png", position=[500, 500]):
         self.setSuit(suit)
         self.setRank(rank)
         # Not required by constructor so that back end can make all cards
@@ -27,7 +27,7 @@ class Card:
         self.rank = rank
 
     def setSprite(self, source):
-        self.sprite = arcade.Sprite(source, 0.05)
+        self.sprite = arcade.Sprite(source, 0.5)
 
     def setPosition(self, position):
         self.sprite.center_x = position[0]

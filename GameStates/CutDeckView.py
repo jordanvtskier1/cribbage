@@ -4,7 +4,7 @@
 
 import arcade
 from GameStates import GameInfo
-# from GameStates import StateTransitionBackend
+from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 
 
@@ -40,8 +40,7 @@ class CutDeckView(GameView):
                 # Adjust the game state so that the card pressed is moved to the center of play
                 card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
                 # Backend transition call
-                #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
-                #self.window.show_view(crib_view)
+                # HERE
                 print("Card Picked: ", card.getSuit(), card.getRank())
 
     def draw_our_hand(self):

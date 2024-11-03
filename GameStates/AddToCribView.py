@@ -5,8 +5,7 @@
 # Import required files and modules
 import arcade
 from GameStates import GameInfo
-# NOTE: Transition is currently commented out to prevent errors until it is implemented
-# from GameStates import StateTransitionBackend
+from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 from GameStates.CutDeckView import CutDeckView
 
@@ -62,8 +61,7 @@ class AddToCribView(GameView):
                     for card in self.cards_clicked:
                         print(" ", card.getSuit(), card.getRank())
                     # Back end transition call
-                    #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
-                    #self.window.show_view(crib_view)
+                    self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked)
                 else: 
                     print("Not enough Cards picked")
 

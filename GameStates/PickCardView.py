@@ -11,8 +11,7 @@ import random
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GameStates.AddToCribView import AddToCribView
-# NOTE: Transition is currently commented out to prevent errors until it is implemented
-# from GameStates.StateTransitionBackend import StateTransitionBackend
+from GameStates.StateTransitionBackend import StateTransitionBackend
 
 # PickCardView inherits from GameView so that it can use the GameView methods
 # NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
@@ -51,8 +50,7 @@ class PickCardView(GameView):
             if wait_for_second_draw:
                 time.sleep(0.5)
                 # Back end transition call TESTING
-                # add_crib_view = AddToCribView(self.game_info)
-                # self.window.show_view(add_crib_view)
+                self.transition.pick_card_to_add_crib(self.game_info, self.cards_clicked[0])
             else:
                 wait_for_second_draw = True
 
