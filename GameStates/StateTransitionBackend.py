@@ -1,5 +1,3 @@
-from GameStates.PickCardView import PickCardView
-
 
 
 class StateTransitionBackend:
@@ -24,9 +22,32 @@ class StateTransitionBackend:
     #
     #     return new_state
 
-    def menu_to_cut_deck(self, game_info):
+    def menu_to_pick_card(self, game_info):
+        from GameStates.PickCardView import PickCardView
         # Backend logic goes here if any
 
         #
         pick_card_view = PickCardView(game_info)
         self.window.show_view(pick_card_view)
+
+    def pick_card_to_add_crib(self, game_info, card):  
+        from GameStates.AddToCribView import AddToCribView
+        # Backend logic goes here if any
+
+        #
+        add_to_crib_view = AddToCribView(game_info)
+        self.window.show_view(add_to_crib_view)
+
+    def add_crib_to_cut_deck(self, game_info, cards):
+        from GameStates.CutDeckView import CutDeckView
+        # Backend logic goes here if any
+
+        #
+        cut_deck_view = CutDeckView(game_info)
+        self.window.show_view(cut_deck_view)
+
+    def cut_deck_to_play(self, game_info):
+        # Backend logic goes here if any
+
+        #
+        pass

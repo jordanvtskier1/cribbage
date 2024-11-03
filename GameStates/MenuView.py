@@ -23,7 +23,7 @@ class MenuView(arcade.View):
 
         # Make a start button
 
-        start_behavior = lambda : self.state_transition.menu_to_cut_deck(self.game_info)
+        start_behavior = lambda : self.state_transition.menu_to_pick_card(self.game_info)
         start_button = GenericButton(behavior = start_behavior, text = 'Start', width= 200)
         self.v_box.add(start_button.with_space_around(bottom = 20))
 
