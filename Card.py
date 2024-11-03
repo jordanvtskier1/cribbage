@@ -78,4 +78,4 @@ class Card:
 # To String
 
     def __str__(self):
-        return str.format("{self.rank} of {self.suit}s")
+        return "{} of {}".format(self.rank, self.suit)
