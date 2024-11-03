@@ -9,7 +9,7 @@ class Card:
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank, source="./Sprites/Cards/worms/K_Worm.png", position=[500, 500]):
+    def __init__(self, suit, rank, source="Sprites/Cards/worms/K_Worm.png", position=[500, 500]):
         self.setSuit(suit)
         self.setRank(rank)
         # Not required by constructor so that back end can make all cards
