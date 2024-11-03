@@ -1,6 +1,8 @@
-# View for picking a card to see who goes first
-# CS 3050: Software Engineering
-# Final Project: Cribbage Game
+"""
+View for picking a card to see who goes first
+CS 3050: Software Engineering
+Final Project: Cribbage Game
+"""
 
 
 # Import required files and modules
@@ -10,12 +12,14 @@ from GameStates import GameInfo
 # from GameStates.StateTransitionBackend import StateTransitionBackend
 
 # GameView inherits from arcade.View so that it can use the built in py arcade methods
-# NOTE: Now each of our views inehrits from this one view. Benefits: Less duplicated code and 
+# NOTE: Now each of our views inehrits from this one view. Benefits: Less duplicated code and
 # all children also get the LOCATIONS constants and some draw methods.
 
-# NOTE: Still working on inheritance becuase there is still duplicated code. Should discuss on Wednesday
+# NOTE: Still working on inheritance becuase there is still duplicated code.
+# Should discuss on Wednesday
 
 class GameView(arcade.View):
+    """Class representing the general view of the game"""
 
     def __init__(self, game_info: GameInfo):
         # Call parent constructor
@@ -52,6 +56,7 @@ class GameView(arcade.View):
         """
         self.clear()
         self.draw_scoreboard()
+        self.draw_pegs()
         self.draw_score()
         self.draw_deck()
     
@@ -64,8 +69,9 @@ class GameView(arcade.View):
         # Add text label to scoreboard
         arcade.draw_text("Scoreboard", self.BOARD_LOCATION[0] - 90, self.BOARD_LOCATION[1] + 260, arcade.color.BLACK, 25)
         # NOTE: I am using a sprite image found online which may not be what we want, but it works for testing
-        score_board = arcade.Sprite("./Sprites/cribbage-board.png", 0.5)
         
+        score_board = arcade.Sprite("./Sprites/cribbage-board.png", 0.5)
+        arcade.draw_rectangle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1], 180, 500, arcade.color.BLACK)
         # Set the sprites location to the BOARD_LOCATION
         score_board.center_x = self.BOARD_LOCATION[0]
         score_board.center_y = self.BOARD_LOCATION[1]
@@ -77,27 +83,110 @@ class GameView(arcade.View):
         The draw_score method draws the score of each player in the game. It does this by using a rectangle to create
         a background and text to draw out each players information.
         """
+        # Draw border of rectangle
+        arcade.draw_rectangle_filled(self.SCORE_LOCATION[0], self.SCORE_LOCATION[1], 206, 66, arcade.color.BLACK)
         # Draw background white rectangle
         arcade.draw_rectangle_filled(self.SCORE_LOCATION[0], self.SCORE_LOCATION[1], 200, 60, arcade.color.WHITE)
         # Draw lines to make boxes in rectangle
         arcade.draw_line(self.SCORE_LOCATION[0] - 100, self.SCORE_LOCATION[1], self.SCORE_LOCATION[0] + 100, self.SCORE_LOCATION[1], arcade.color.BLACK, 3)
         arcade.draw_line(self.SCORE_LOCATION[0] - 50, self.SCORE_LOCATION[1] + 30, self.SCORE_LOCATION[0] - 50, self.SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
         arcade.draw_line(self.SCORE_LOCATION[0] + 50, self.SCORE_LOCATION[1] + 30, self.SCORE_LOCATION[0] + 50, self.SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
-        # Draw border of rectangle
-        arcade.draw_line(self.SCORE_LOCATION[0] - 101, self.SCORE_LOCATION[1] + 30, self.SCORE_LOCATION[0] + 101, self.SCORE_LOCATION[1] + 30, arcade.color.BLACK, 3)
-        arcade.draw_line(self.SCORE_LOCATION[0] - 101, self.SCORE_LOCATION[1] - 30, self.SCORE_LOCATION[0] + 101, self.SCORE_LOCATION[1] - 30, arcade.color.BLACK, 3)
-        arcade.draw_line(self.SCORE_LOCATION[0] + 100, self.SCORE_LOCATION[1] - 31, self.SCORE_LOCATION[0] + 100, self.SCORE_LOCATION[1] + 31, arcade.color.BLACK, 3)
-        arcade.draw_line(self.SCORE_LOCATION[0] - 100, self.SCORE_LOCATION[1] - 31, self.SCORE_LOCATION[0] - 100, self.SCORE_LOCATION[1] + 31, arcade.color.BLACK, 3)
-        # Draw squares to signify player and their color
-        arcade.draw_rectangle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 10, 10, arcade.color.RED)
-        arcade.draw_rectangle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 10, 10, arcade.color.BLUE)
+        # Draw circles to signify player and their color
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 6, arcade.color.BLACK)
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 5, arcade.color.RED)
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 6, arcade.color.BLACK)
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 5, arcade.color.BLUE)
         # Draw player names
-        arcade.draw_text("You", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
-        arcade.draw_text("Computer", self.SCORE_LOCATION[0] - 38, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
+        arcade.draw_text("You", self.SCORE_LOCATION[0] - 47, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
+        arcade.draw_text("Computer", self.SCORE_LOCATION[0] - 47, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
         # Draw player points
         arcade.draw_text(self.game_info.our_score, self.SCORE_LOCATION[0] + 57, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)
         arcade.draw_text(self.game_info.other_score, self.SCORE_LOCATION[0] + 57, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
 
+    def draw_pegs(self):
+        """
+        Draws the pegs for the game board.
+        NOTE: Currently implemented very poorly, if I have time I will try to improve this. But it works. - Carson
+        """
+        CUSTOM_VALS1 = [[self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] + 155], 
+                       [self.BOARD_LOCATION[0] - 64, self.BOARD_LOCATION[1] + 172],
+                       [self.BOARD_LOCATION[0] - 50, self.BOARD_LOCATION[1] + 190],
+                       [self.BOARD_LOCATION[0] - 32, self.BOARD_LOCATION[1] + 204],
+                       [self.BOARD_LOCATION[0] - 12, self.BOARD_LOCATION[1] + 210],
+                       [self.BOARD_LOCATION[0] + 12, self.BOARD_LOCATION[1] + 210], 
+                       [self.BOARD_LOCATION[0] + 32, self.BOARD_LOCATION[1] + 204],
+                       [self.BOARD_LOCATION[0] + 50, self.BOARD_LOCATION[1] + 190],
+                       [self.BOARD_LOCATION[0] + 64, self.BOARD_LOCATION[1] + 172],
+                       [self.BOARD_LOCATION[0] + 70, self.BOARD_LOCATION[1] + 155],
+                       [self.BOARD_LOCATION[0] + 67, self.BOARD_LOCATION[1] - 205], 
+                       [self.BOARD_LOCATION[0] + 52, self.BOARD_LOCATION[1] - 225],
+                       [self.BOARD_LOCATION[0] + 28, self.BOARD_LOCATION[1] - 232],
+                       [self.BOARD_LOCATION[0] + 4, self.BOARD_LOCATION[1] - 225],
+                       [self.BOARD_LOCATION[0] - 14, self.BOARD_LOCATION[1] - 205]]
+        CUSTOM_VALS2 = [[self.BOARD_LOCATION[0] - 39, self.BOARD_LOCATION[1] + 151], 
+                       [self.BOARD_LOCATION[0] - 35, self.BOARD_LOCATION[1] + 160],
+                       [self.BOARD_LOCATION[0] - 30, self.BOARD_LOCATION[1] + 170],
+                       [self.BOARD_LOCATION[0] - 20, self.BOARD_LOCATION[1] + 176],
+                       [self.BOARD_LOCATION[0] - 8, self.BOARD_LOCATION[1] + 180],
+                       [self.BOARD_LOCATION[0] + 8, self.BOARD_LOCATION[1] + 180], 
+                       [self.BOARD_LOCATION[0] + 20, self.BOARD_LOCATION[1] + 176],
+                       [self.BOARD_LOCATION[0] + 30, self.BOARD_LOCATION[1] + 170],
+                       [self.BOARD_LOCATION[0] + 35, self.BOARD_LOCATION[1] + 160],
+                       [self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 151],
+                       [self.BOARD_LOCATION[0] + 38, self.BOARD_LOCATION[1] - 194], 
+                       [self.BOARD_LOCATION[0] + 35, self.BOARD_LOCATION[1] - 202],
+                       [self.BOARD_LOCATION[0] + 27, self.BOARD_LOCATION[1] - 205],
+                       [self.BOARD_LOCATION[0] + 18, self.BOARD_LOCATION[1] - 202],
+                       [self.BOARD_LOCATION[0] + 16, self.BOARD_LOCATION[1] - 194]]
+        if self.game_info.our_score == 0:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 5, arcade.color.RED)
+        elif self.game_info.our_score <= 35:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 5, arcade.color.RED)
+        elif self.game_info.our_score <= 40:
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 36][0], CUSTOM_VALS1[self.game_info.our_score - 36][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 36][0], CUSTOM_VALS1[self.game_info.our_score - 36][1], 5, arcade.color.RED)
+        elif self.game_info.our_score <= 45:
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 36][0], CUSTOM_VALS1[self.game_info.our_score - 36][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 36][0], CUSTOM_VALS1[self.game_info.our_score - 36][1], 5, arcade.color.RED)
+        elif self.game_info.our_score <= 80:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 5, arcade.color.RED)
+        elif self.game_info.our_score <= 85:
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 71][0], CUSTOM_VALS1[self.game_info.our_score - 71][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS1[self.game_info.our_score - 71][0], CUSTOM_VALS1[self.game_info.our_score - 71][1], 5, arcade.color.RED)
+        elif self.game_info.our_score <= 120:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 5, arcade.color.RED)
+        elif self.game_info.our_score >= 121:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.RED)
+        
+        if self.game_info.other_score == 0:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 35:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.other_score, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.other_score, 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 40:
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 36][0], CUSTOM_VALS2[self.game_info.other_score - 36][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 36][0], CUSTOM_VALS2[self.game_info.other_score - 36][1], 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 45:
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 36][0], CUSTOM_VALS2[self.game_info.other_score - 36][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 36][0], CUSTOM_VALS2[self.game_info.other_score - 36][1], 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 80:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.other_score - 45), 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.other_score - 45), 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 85:
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 71][0], CUSTOM_VALS2[self.game_info.other_score - 71][1], 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(CUSTOM_VALS2[self.game_info.other_score - 71][0], CUSTOM_VALS2[self.game_info.other_score - 71][1], 5, arcade.color.BLUE)
+        elif self.game_info.other_score <= 120:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 14, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.other_score - 85), 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 14, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.other_score - 85), 5, arcade.color.BLUE)
+        elif self.game_info.other_score >= 121:
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 6, arcade.color.BLACK)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.BLUE)
 
     def draw_deck(self):
         """
@@ -115,10 +204,10 @@ class GameView(arcade.View):
             card.setSprite("./Sprites/playingCards.png")
             # NOTE: We can use the f strings to get specific card images
             # card.setSource(f"./Sprites/Cards/{card.suit}Suits/{card.rank}_{card.suit}.png")
-            
+
             # Set the position of the cards in the deck to the location the deck should be at in the window
             card.setPosition(self.DECK_LOCATION)
-            
+         
             # Then draw each card
-            card.draw() 
+            card.draw()
 
