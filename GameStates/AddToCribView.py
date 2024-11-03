@@ -78,7 +78,6 @@ class AddToCribView(GameView):
 
         # For each card in hand
         for card in self.game_info.our_hand:
-            card.setSprite(self.TEST_SPRITE)
             # Adjust by the spacer so cards are not on top of eachother
             if card in self.cards_clicked:
                 card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
@@ -98,7 +97,6 @@ class AddToCribView(GameView):
 
         # For each card in hand
         for card in self.game_info.other_hand:
-            card.setSprite(self.TEST_SPRITE)
             # Adjust by the spacer so cards are not on top of eachother
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += 50
@@ -119,7 +117,6 @@ class AddToCribView(GameView):
             # Draw each card in the crib
             # NOTE: Currently face up need to implement face down
             for card in self.game_info.crib:
-                card.setSprite(self.TEST_SPRITE)
                 card.setPosition([self.CRIB_LOCATION2[0], self.CRIB_LOCATION2[1]])
                 card.draw()
 
@@ -130,7 +127,6 @@ class AddToCribView(GameView):
             arcade.draw_text("Crib", self.CRIB_LOCATION1[0] - 25, self.CRIB_LOCATION1[1] + 75, arcade.color.BLACK, 20)
             # Draw each card in the crib
             for card in self.game_info.crib:
-                card.setSprite(self.TEST_SPRITE)
                 card.setPosition([self.CRIB_LOCATION1[0], self.CRIB_LOCATION1[1]])
                 card.draw()
 

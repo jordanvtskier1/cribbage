@@ -29,22 +29,27 @@ class StateTransitionBackend:
         from GameStates.PickCardView import PickCardView
         # Backend logic goes here if any
 
-        game_info.deck = Game.create_deck()
+        Game.create_deck(game_info)
         #
         pick_card_view = PickCardView(game_info)
         self.window.show_view(pick_card_view)
+
     def pick_card_to_add_crib(self, game_info, card):  
         from GameStates.AddToCribView import AddToCribView
         # Backend logic goes here if any
-
+        Game.deal_hands(game_info)
         #
         add_to_crib_view = AddToCribView(game_info)
         self.window.show_view(add_to_crib_view)
 
-    def add_crib_to_cut_deck(self, game_info, cards):
+    def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
         from GameStates.CutDeckView import CutDeckView
         # Backend logic goes here if any
+        indexes = []
+        for card in cards:
+            indexes.append(game_info.our_hand.index(card))
 
+        Game.send_to_crib(game_info= game_info, hand_indexes= indexes)
         #
         cut_deck_view = CutDeckView(game_info)
         self.window.show_view(cut_deck_view)
