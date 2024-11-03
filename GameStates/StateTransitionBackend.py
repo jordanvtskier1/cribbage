@@ -1,11 +1,21 @@
 from GameStates.GameInfo import GameInfo
 from GameStates.GameState import GameState
 from GameStates.AddToCribState import AddToCribState
+from GameStates.PickCardView import PickCardView
+from Card import Card
 
 
 
 class StateTransitionBackend:
     def __init__(self):
+        pass
+
+    def menu_to_pick_card(self, game_info: GameInfo, card: Card):
+        #return PickCardView(game_info)
+        pass
+    
+    def pick_card_to_crib(self, game_info: GameInfo, card: Card):
+        #return AddCribView(game_info)
         pass
 
     @staticmethod

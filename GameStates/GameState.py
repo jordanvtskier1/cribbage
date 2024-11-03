@@ -1,13 +1,14 @@
 import arcade
-import GameInfo
+from GameStates import GameInfo
 
-class GameState:
+class GameState(arcade.View):
 
     representableSprites = arcade.SpriteList()
     clickableSprites = arcade.SpriteList()
     gameInfo = GameInfo.GameInfo()
 
     def __init__(self, game_info: GameInfo):
+       super().__init__()
        self.gameInfo = game_info
 
     def on_draw(self):
