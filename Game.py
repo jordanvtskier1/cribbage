@@ -12,8 +12,8 @@ class Game:
     HAND = 4
     POINTS = 15
     MAX_TOTAL = 31
-    SUITS = ["Clubs", "Spades", "Diamonds", "Hearts"]
-    CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
+    SUITS = ["Clubs", "Worms", "Diamonds", "Hearts"]
+    CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
     # NOTE: Feel free to add or alter variables just mention the change in your commit message - Carson
     def __init__(self):
