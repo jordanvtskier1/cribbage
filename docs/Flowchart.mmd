@@ -1,11 +1,12 @@
 graph TD;
-    Start_Menu-->Deal_Cards;
-    Deal_Cards-->Add_To_Crib;
-    Add_To_Crib-->Play;
+    Start_Menu-->Pick_Card;
+    Pick_Card-->Add_To_Crib;
+    Add_To_Crib-->Cut_Deck;
+    Cut_Deck-->Play
     Play-->Wait;
     Wait-->Play;
     Wait-->Calculate_Score;
     Play-->Calculate_Score;
-    Calculate_Score-->Deal_Cards;
+    Calculate_Score-->Add_To_Crib;
 
 
