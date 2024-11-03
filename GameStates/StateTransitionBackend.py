@@ -3,6 +3,7 @@ from GameStates.GameInfo import GameInfo
 from Game import Game
 
 
+
 class StateTransitionBackend:
     def __init__(self, window):
         self.window = window
@@ -53,8 +54,26 @@ class StateTransitionBackend:
         cut_deck_view = CutDeckView(game_info)
         self.window.show_view(cut_deck_view)
 
-    def cut_deck_to_play(self, game_info):
+    def cut_deck_to_play(self, card, game_info):
+        from GameStates.PlayView import PlayView
+        #Currently the state pick card is working as cut deck?
+        # TODO : Fix that i guess
         # Backend logic goes here if any
 
         #
-        pass
+        play_view = PlayView(game_info)
+        self.window.show_view(play_view)
+
+    def play_to_wait(self, game_info: GameInfo, card):
+        from GameStates.PlayView import PlayView
+
+        # Backend logic
+
+
+        game_info.our_hand.remove(card)
+        game_info.cards_in_play.append(card)
+        # game_info.is_turn = False
+
+        #
+        play_view = PlayView(game_info)
+        self.window.show_view(play_view)

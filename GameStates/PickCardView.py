@@ -42,19 +42,19 @@ class PickCardView(GameView):
         # We still want to draw the card that was picked before the back end is called.
         # So I have moved the call to the backend here so that the drawing may happen first and then
         # after a short delay the backend is called and the view switches.
-        if begin_backend_call:
-            # We require a second check for if this is the second time on_draw has been called since the
-            # call to the backend. This is because the on_draw method does not fully draw until it completes.
-            # So we have to wait for the second call of on_draw.
-            # Will ask Professor Hibbeler during class
-            if wait_for_second_draw:
-                # This is causing a crash
-                # time.sleep(0.5)
-
-                # Back end transition call TESTING
-                self.transition.pick_card_to_add_crib(self.game_info, self.cards_clicked[0])
-            else:
-                wait_for_second_draw = True
+        # if begin_backend_call:
+        #     # We require a second check for if this is the second time on_draw has been called since the
+        #     # call to the backend. This is because the on_draw method does not fully draw until it completes.
+        #     # So we have to wait for the second call of on_draw.
+        #     # Will ask Professor Hibbeler during class
+        #     if wait_for_second_draw:
+        #         # This is causing a crash
+        #         # time.sleep(0.5)
+        #
+        #         # Back end transition call TESTING
+        #         # self.transition.pick_card_to_add_crib(self.game_info, self.cards_clicked[0])
+        #     else:
+        #         wait_for_second_draw = True
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -76,14 +76,12 @@ class PickCardView(GameView):
             # Retrieve the top card of the cards at the given location
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
 
-            self.cards_clicked.append(card)
-
             # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
-
+            self.transition.pick_card_to_add_crib(game_info= self.game_info, card = card)
             # A variable to denote when to begin calling the back end in on_draw
-            global begin_backend_call
-            begin_backend_call = True
+            # global begin_backend_call
+            # begin_backend_call = True
 
 
 
