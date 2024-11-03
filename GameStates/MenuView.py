@@ -40,6 +40,13 @@ class MenuView(arcade.View):
                 child=self.v_box)
         )
 
+    # If we don't disable the manager it will still "draw" the buttons (They are invisible as far as I can tell)
+    # But there functions still work, so if on a later view we click where a button was it will do it's function call
+    # Which is what was happening. But works with this added.
+    def on_hide_view(self):
+        # Disable the UIManager when the view is hidden.
+        self.manager.disable()
+
     def on_draw(self):
         self.clear()
         self.manager.draw()

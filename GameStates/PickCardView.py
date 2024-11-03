@@ -17,9 +17,9 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 # NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
 class PickCardView(GameView):
 
-    global begin_backend_call, wait_for_second_draw
-    begin_backend_call = False
-    wait_for_second_draw = False
+    # global begin_backend_call, wait_for_second_draw
+    # begin_backend_call = False
+    # wait_for_second_draw = False
 
     def __init__(self, game_info: GameInfo):
         # Call parent constructor
@@ -30,8 +30,8 @@ class PickCardView(GameView):
         """
         The on_draw method draws the components of the game
         """
-        global begin_backend_call
-        global wait_for_second_draw
+        # global begin_backend_call
+        # global wait_for_second_draw
 
         self.clear()
         self.draw_scoreboard()
@@ -61,6 +61,7 @@ class PickCardView(GameView):
         """
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks
         """
+        pass
         # Create a sprite list to hold card sprites
         card_sprites = arcade.SpriteList()
 
@@ -78,6 +79,8 @@ class PickCardView(GameView):
 
             # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
+            # Need a way to have program draw card picked for user to see before this call to the transition,
+            # so that they know which card they picked. Current method was causing error so discuss monday
             self.transition.pick_card_to_add_crib(game_info= self.game_info, card = card)
             # A variable to denote when to begin calling the back end in on_draw
             # global begin_backend_call
@@ -104,4 +107,3 @@ class PickCardView(GameView):
                 card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_offset, self.CENTER_CARD_LOCATION[1]])
             card.draw()
             card_offset += 10
-
