@@ -16,6 +16,7 @@ class Game:
     CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
     # NOTE: Feel free to add or alter variables just mention the change in your commit message - Carson
+
     def __init__(self):
         # List of Card Objects
         self.deck = []
@@ -33,11 +34,15 @@ class Game:
         self.is_player1 = True
         
 
-    def create_deck(self, SUITS, CARD_VALUES): 
-        for suit in SUITS: 
-            for value in CARD_VALUES: 
-                self.deck.append(Card(suit, value))
-        return random.shuffle(self.deck)
+    @classmethod
+    def create_deck(cls):
+        from GUI.CardSpriteResolver import CardSpriteResolver
+        deck = []
+        for suit in cls.SUITS:
+            for value in cls.CARD_VALUES:
+                deck.append(Card(suit, value))
+        random.shuffle(deck)
+        return deck
     
     
     def deal_hands(self, DEAL): 

@@ -22,8 +22,8 @@ class MenuView(arcade.View):
         self.v_box = arcade.gui.UIBoxLayout()
 
         # Make a start button
-
         start_behavior = lambda : self.state_transition.menu_to_pick_card(self.game_info)
+
         start_button = GenericButton(behavior = start_behavior, text = 'Start', width= 200)
         self.v_box.add(start_button.with_space_around(bottom = 20))
 
@@ -43,3 +43,5 @@ class MenuView(arcade.View):
     def on_draw(self):
         self.clear()
         self.manager.draw()
+
+
