@@ -1,0 +1,69 @@
+define constants (numbers, suits, max pegging points, different scoring values like 15 and 31, number of cards to deal) 
+
+deck() 
+	for each suit in suits 
+		for each number in numbers 
+			append to set of cards 
+	randomize the order of the deck of cards
+	returns deck of shuffled cards 
+
+deal(deck)
+	return set of six random cards for each player
+	print(user hand)
+
+crib(hand)
+	if computer player 
+		randomly select which cards to send to crib 
+		remove the cards from computer players hand 
+		add to set of crib cards 
+	if user 
+		get user input of what cards they would like to get rid of
+		remove the cards from their hand
+		add to set of crib cards
+	return set of four crib cards
+
+cut_deck(deck)
+	non dealer cuts deck and reveals card 
+	print(cut card)
+	if the cut card is a jack 
+		non dealer gets two points 
+	return cut card 
+play_game() 
+	running total = 0 
+	while both players points are under 121 (there are 121 holes for pegs) 
+	dealer alternates every round
+		while the score is under 31
+			if non-dealer has card that does not make running total > 31
+				if non-dealer = computer 
+					pick random card from hand to play 
+					add value to running total 
+					print(running total)
+					
+					implement rules into if statements such as if equals 15 or multiple of the same value in a row
+
+				if non-dealer = user
+					get user input of what card they want to play
+					add value to running total
+					print(running total) 
+			if non-dealer has card that does not make running total > 31
+				if dealer = computer 
+					pick random card from hand to play 
+					add value to running total 
+					print(running total)
+				if dealer = user
+					get user input of what card they want to play
+					add value to running total 
+					print(running total)
+	calculate_score(hand) 
+
+calculate_score(hand) 
+	count pairs
+	count runs
+	count 15s  
+	add points to player totals 
+	print(user_score)
+	print(computer_score)
+
+play_game()
+		
+ 
