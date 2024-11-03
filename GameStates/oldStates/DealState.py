@@ -1,5 +1,5 @@
 import arcade
-from GameStates.GameState import GameState
+from GameStates.oldStates.GameState import GameState
 from GameInfo import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
