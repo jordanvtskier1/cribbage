@@ -46,7 +46,7 @@ class GameView(arcade.View):
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
 
         # NOTE: Currently for testing until card sprites are finished
-        self.TEST_SPRITE = "./Sprites/Cards/WormSuits/K_Worm.png"
+        self.TEST_SPRITE = "./Sprites/Cards/worms/K_Worm"
 
 
     def on_draw(self):
