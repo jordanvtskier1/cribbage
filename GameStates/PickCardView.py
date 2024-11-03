@@ -48,7 +48,9 @@ class PickCardView(GameView):
             # So we have to wait for the second call of on_draw.
             # Will ask Professor Hibbeler during class
             if wait_for_second_draw:
-                time.sleep(0.5)
+                # This is causing a crash
+                # time.sleep(0.5)
+
                 # Back end transition call TESTING
                 self.transition.pick_card_to_add_crib(self.game_info, self.cards_clicked[0])
             else:

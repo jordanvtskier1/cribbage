@@ -42,13 +42,20 @@ class Game:
         game_info.our_hand.pop(hand_index)
 
     @classmethod
-    def send_to_crib(cls, hand_indexes, game_info: GameInfo):
-        
-        if len(hand_indexes) != 2:
+    def send_to_crib(cls, cards, game_info: GameInfo):
+
+        # This popped a card and then used an index which was not valid any more
+        # if len(hand_indexes) != 2:
+        #     raise Exception("Must send 2 cards to the crib")
+        # for hand_index in hand_indexes:
+        #     game_info.crib.append(game_info.our_hand[hand_index])
+        #     game_info.our_hand.pop(hand_index)
+
+        if len(cards) != 2:
             raise Exception("Must send 2 cards to the crib")
-        for hand_index in hand_indexes:
-            game_info.crib.append(game_info.our_hand[hand_index])
-            game_info.our_hand.pop(hand_index)
+        for card in cards:
+            game_info.crib.append(card)
+            game_info.our_hand.remove(card)
 
 
     # My idea for how multiplayer will work

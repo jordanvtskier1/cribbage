@@ -45,11 +45,10 @@ class StateTransitionBackend:
     def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
         from GameStates.CutDeckView import CutDeckView
         # Backend logic goes here if any
-        indexes = []
-        for card in cards:
-            indexes.append(game_info.our_hand.index(card))
 
-        Game.send_to_crib(game_info= game_info, hand_indexes= indexes)
+        Game.send_to_crib(game_info= game_info, cards= cards)
+        #TODO: Other player sends to crib
+
         #
         cut_deck_view = CutDeckView(game_info)
         self.window.show_view(cut_deck_view)
