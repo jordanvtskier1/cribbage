@@ -10,10 +10,10 @@ from GameStates import GameInfo
 # from GameStates.StateTransitionBackend import StateTransitionBackend
 
 # GameView inherits from arcade.View so that it can use the built in py arcade methods
-# NOTE: Now each of our views inehrits from this one view. Benefits: Less duplicated code and 
+# NOTE: Now each of our views inherits from this one view. Benefits: Less duplicated code and
 # all children also get the LOCATIONS constants and some draw methods.
 
-# NOTE: Still working on inheritance becuase there is still duplicated code. Should discuss on Wednesday
+# NOTE: Still working on inheritance because there is still duplicated code. Should discuss on Wednesday
 
 class GameView(arcade.View):
 
@@ -28,7 +28,7 @@ class GameView(arcade.View):
         # self.transition = self.StateTransitionBackend()
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
 
-        # Constants to represent locations on the screen for drawing compoenents of the game.
+        # Constants to represent locations on the screen for drawing components of the game.
         # These are set as class variables so that the views that come after this view can inherit them
         # To reduce duplicated code, so all children of GameView have these variables
         self.SCREEN_WIDTH = 1000
@@ -43,7 +43,7 @@ class GameView(arcade.View):
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
 
         # NOTE: Currently for testing until card sprites are finished
-        self.TEST_SPRITE = "./Sprites/PlayingCards.png"
+        self.TEST_SPRITE = "./Sprites/Cards/WormSuits/K_Worm.png"
 
 
     def on_draw(self):
