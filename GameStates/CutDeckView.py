@@ -19,6 +19,7 @@ class CutDeckView(GameView):
         self.clear()
         self.draw_scoreboard()
         self.draw_score()
+        self.draw_pegs()
         self.draw_deck()
         self.draw_our_hand()
         self.draw_other_hand()
@@ -26,19 +27,22 @@ class CutDeckView(GameView):
         self.draw_spread_deck()
     
     def on_mouse_press(self, x, y, button, modifiers):
-        card_sprites = arcade.SpriteList()
-        for card in self.game_info.deck:
-            card_sprites.append(card.sprite)
-        # Retrieve all cards pressed at the given location
-        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-        # As long as a card was pressed
-        if len(cards_pressed) > 0:
-            # Adjust the game state so that the card pressed is moved to the center of play
-            card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
-            #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
-            #self.window.show_view(crib_view)
-            print("Card Picked: ", card.getSuit(), card.getRank())
+        if self.game_info.is_turn:
+            card_sprites = arcade.SpriteList()
+            for card in self.game_info.deck:
+                card_sprites.append(card.sprite)
+            # Retrieve all cards pressed at the given location
+            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+
+            # As long as a card was pressed
+            if len(cards_pressed) > 0:
+                # Adjust the game state so that the card pressed is moved to the center of play
+                card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
+                # Backend transition call
+                #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
+                #self.window.show_view(crib_view)
+                print("Card Picked: ", card.getSuit(), card.getRank())
 
     def draw_our_hand(self):
         """

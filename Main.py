@@ -13,6 +13,10 @@ SCREEN_TITLE = "Super Cool Cribbage"
 
 
 def main():
+    # window = Window()
+    # window.setup()
+    # arcade.run()
+
     # Creates a window for the cribbage game to be displayed on
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     state_transition = StateTransitionBackend(window)

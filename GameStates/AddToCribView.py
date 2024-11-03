@@ -8,6 +8,7 @@ from GameStates import GameInfo
 # NOTE: Transition is currently commented out to prevent errors until it is implemented
 # from GameStates import StateTransitionBackend
 from GameStates.GameView import GameView
+from GameStates.CutDeckView import CutDeckView
 
 # AddToCribView inherits from GameView so that it can use all its methods
 # NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
@@ -25,6 +26,7 @@ class AddToCribView(GameView):
         self.clear()
         self.draw_scoreboard()
         self.draw_score()
+        self.draw_pegs()
         self.draw_deck()
         self.draw_our_hand()
         self.draw_other_hand()
@@ -33,34 +35,37 @@ class AddToCribView(GameView):
 
 
     def on_mouse_press(self, x, y, button, modifiers):
-        card_sprites = arcade.SpriteList()
-        for card in self.game_info.our_hand:
-            card_sprites.append(card.sprite)
-        # Retrieve all cards pressed at the given location
-        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-        # As long as a card was pressed
-        if len(cards_pressed) > 0:
-            # Adjust the game state so that the card pressed is moved to the center of play
-            card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
-            if card not in self.cards_clicked:
-                if len(self.cards_clicked) <= 1:
-                    self.cards_clicked.append(card)
-                    print("Card Picked: ", card.getSuit(), card.getRank())
+        if self.game_info.is_turn:
+            card_sprites = arcade.SpriteList()
+            for card in self.game_info.our_hand:
+                card_sprites.append(card.sprite)
+            # Retrieve all cards pressed at the given location
+            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+
+            # As long as a card was pressed
+            if len(cards_pressed) > 0:
+                # Adjust the game state so that the card pressed is moved to the center of play
+                card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
+                if card not in self.cards_clicked:
+                    if len(self.cards_clicked) <= 1:
+                        self.cards_clicked.append(card)
+                        print("Card Picked: ", card.getSuit(), card.getRank())
+                    else:
+                        print("Maximum Number of Cards Already Selected")
                 else:
-                    print("Maximum Number of Cards Already Selected")
-            else:
-                self.cards_clicked.remove(card)
-                print("Card Unpicked: ", card.getSuit(), card.getRank())
-        if 35 <= y <= 85 and 175 <= x <= 325:
-            if len(self.cards_clicked) >= 2:
-                print("Cards Added To Crib: ")
-                for card in self.cards_clicked:
-                    print(" ", card.getSuit(), card.getRank())
-                #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
-                #self.window.show_view(crib_view)
-            else: 
-                print("Not enough Cards picked")
+                    self.cards_clicked.remove(card)
+                    print("Card Unpicked: ", card.getSuit(), card.getRank())
+            if 35 <= y <= 85 and 175 <= x <= 325:
+                if len(self.cards_clicked) >= 2:
+                    print("Cards Added To Crib: ")
+                    for card in self.cards_clicked:
+                        print(" ", card.getSuit(), card.getRank())
+                    # Back end transition call
+                    #crib_view = self.transition.pick_card_to_crib(self.game_info, card)
+                    #self.window.show_view(crib_view)
+                else: 
+                    print("Not enough Cards picked")
 
 
     def draw_our_hand(self):
