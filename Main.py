@@ -21,14 +21,16 @@ def main():
     # Create a game_state object
     game_info = GameInfo()
 
-    # pick_card_view = PickCardView(game_info)
-    # window.show_view(pick_card_view)
+    # Can uncomment the below code to test each view individually
 
-    # add_crib_view = AddToCribView(game_info)
-    # window.show_view(add_crib_view)
+    #pick_card_view = PickCardView(game_info)
+    #window.show_view(pick_card_view)
 
-    # cut_deck_view = CutDeckView(game_info)
-    # window.show_view(cut_deck_view)
+    #add_crib_view = AddToCribView(game_info)
+    #window.show_view(add_crib_view)
+
+    #cut_deck_view = CutDeckView(game_info)
+    #window.show_view(cut_deck_view)
 
     # Run the Window
     arcade.run()
