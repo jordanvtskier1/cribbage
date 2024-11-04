@@ -1,11 +1,11 @@
 import arcade
-import GameInfo
+from GameStates.GameInfo import GameInfo
 
 class GameState:
 
     representableSprites = arcade.SpriteList()
     clickableSprites = arcade.SpriteList()
-    gameInfo = GameInfo.GameInfo()
+    gameInfo = GameInfo()
 
     def __init__(self, game_info: GameInfo):
        self.gameInfo = game_info

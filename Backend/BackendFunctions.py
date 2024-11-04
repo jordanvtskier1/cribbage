@@ -27,6 +27,7 @@ class Backend:
             game_info.other_hand.append(game_info.deck.pop(0))
         return game_info
     
+    @staticmethod
     def add_to_crib(game_info: GameInfo, card1: Card, card2: Card):
         game_info.crib.append(card1)
         game_info.crib.append(card2)
@@ -102,8 +103,40 @@ class Backend:
     @staticmethod
     def take_turn(game_info: GameInfo, card):
         game_info.cards_in_play.append(card)
-        game_info.sum(game_info.cards_in_play)
-        game_info.our_hand.remove(card) 
+        game_info.our_hand.remove(card)
+
+        card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+        #fifteen
+        if card_sum == 15:
+            game_info.our_score += 2
+        #31
+        if card_sum == 31:
+            game_info.our_score += 2
+
+         # Pair, triple, and quad
+        if len(game_info.cards_in_play) >= 2 and game_info.cards_in_play[-2].getRank() == card.getRank():
+            # Triple
+            if len(game_info.cards_in_play) >= 3 and game_info.cards_in_play[-3].getRank() == card.getRank():
+                # Quad
+                if len(game_info.cards_in_play) >= 4 and game_info.cards_in_play[-4].getRank() == card.getRank():
+                    game_info.our_score += 12  # Quad score (quadruple, 4 cards)
+                else:
+                    game_info.our_score += 6  # Triple score
+            else:
+                game_info.our_score += 2  # Pair score
+
+        # Run
+        run_length = 1
+        sorted_ranks = sorted(card.getRankAsInt() for card in game_info.cards_in_play[-5:])  # Last 5 cards
+        for i in range(len(sorted_ranks) - 1):
+            if sorted_ranks[i] + 1 == sorted_ranks[i + 1]:  # Check if consecutive
+                run_length += 1
+            else:
+                run_length = 1  # Reset if sequence is broken
+            
+            if run_length >= 3:
+                game_info.our_score += run_length  # Add score for the run length
+
         return game_info
 
         
