@@ -233,11 +233,12 @@ class GameView(arcade.View):
             arcade.draw_rectangle_filled(self.CRIB_LOCATION2[0] + 30, self.CRIB_LOCATION2[1], 150, 125,
                                          arcade.color.GRAY)
             arcade.draw_text("Crib", self.CRIB_LOCATION2[0], self.CRIB_LOCATION2[1] + 75, arcade.color.BLACK, 20)
-
+            offset = 0
             # Draw each card in the crib
             # NOTE: Currently face up need to implement face down
             for card in self.game_info.crib:
-                card.setPosition([self.CRIB_LOCATION2[0], self.CRIB_LOCATION2[1]])
+                card.setPosition([self.CRIB_LOCATION2[0] + offset, self.CRIB_LOCATION2[1]])
+                offset += 20
                 card.draw()
 
         # Otherwise draw on opps side
@@ -246,7 +247,9 @@ class GameView(arcade.View):
             arcade.draw_rectangle_filled(self.CRIB_LOCATION1[0] + 30, self.CRIB_LOCATION1[1], 150, 125,
                                          arcade.color.GRAY)
             arcade.draw_text("Crib", self.CRIB_LOCATION1[0] - 25, self.CRIB_LOCATION1[1] + 75, arcade.color.BLACK, 20)
+            offset = 0
             # Draw each card in the crib
             for card in self.game_info.crib:
-                card.setPosition([self.CRIB_LOCATION1[0], self.CRIB_LOCATION1[1]])
+                card.setPosition([self.CRIB_LOCATION1[0] + offset, self.CRIB_LOCATION1[1]])
+                offset += 20
                 card.draw()

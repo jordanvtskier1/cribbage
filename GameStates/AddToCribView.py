@@ -58,7 +58,7 @@ class AddToCribView(GameView):
                     for card in self.cards_clicked:
                         print(" ", card.getSuit(), card.getRank())
                     # Back end transition call
-                    self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked)
+                    self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
                 else: 
                     print("Not enough Cards picked")
 
@@ -98,34 +98,6 @@ class AddToCribView(GameView):
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += 50
             card.draw()
-
-    def draw_crib(self):
-        """
-        The draw_cribbage method draws the cribbage on the side of whose turn it is. It does this by retrieving
-        the proper game_state information to determine which player you are and if it is that players turn, it
-        the correctly draws the cribbage on that side.
-        """
-        # If it is your turn draw the crib on your side
-        if self.game_info.is_dealer:
-            # Draw an additonal rectangle background and text label for crib
-            arcade.draw_rectangle_filled(self.CRIB_LOCATION2[0] + 30, self.CRIB_LOCATION2[1], 150, 125, arcade.color.GRAY)
-            arcade.draw_text("Crib", self.CRIB_LOCATION2[0], self.CRIB_LOCATION2[1] + 75, arcade.color.BLACK, 20)
-            
-            # Draw each card in the crib
-            # NOTE: Currently face up need to implement face down
-            for card in self.game_info.crib:
-                card.setPosition([self.CRIB_LOCATION2[0], self.CRIB_LOCATION2[1]])
-                card.draw()
-
-        # Otherwise draw on opps side
-        else:
-            # Draw an additonal rectangle background and text label for crib
-            arcade.draw_rectangle_filled(self.CRIB_LOCATION1[0] + 30, self.CRIB_LOCATION1[1], 150, 125, arcade.color.GRAY)
-            arcade.draw_text("Crib", self.CRIB_LOCATION1[0] - 25, self.CRIB_LOCATION1[1] + 75, arcade.color.BLACK, 20)
-            # Draw each card in the crib
-            for card in self.game_info.crib:
-                card.setPosition([self.CRIB_LOCATION1[0], self.CRIB_LOCATION1[1]])
-                card.draw()
 
     def draw_crib_button(self):
         # Draws the deal button
