@@ -75,3 +75,5 @@ class PlayView(GameView):
             x_offset += IN_PLAY_X_OFFSET
             y_offset *= -1
 
+    def on_hide_view(self):
+        self.manager.disable()
