@@ -74,6 +74,10 @@ class StateTransitionBackend:
         game_info.cards_in_play.append(card)
         # game_info.is_turn = False
 
-        #
+        # We don´t really have a wait state yet, because there is nothing to wait for
+        # TODO Change wait state
         play_view = PlayView(game_info)
         self.window.show_view(play_view)
+
+    def play_to_show_score(self, game_info: GameInfo):
+        pass
