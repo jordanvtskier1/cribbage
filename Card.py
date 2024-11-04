@@ -9,12 +9,13 @@ class Card:
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank, source="./Sprites/PlayingCards.png", position=[500, 500]):
+    def __init__(self, suit, rank, position=[500, 500]):
+        from GUI.CardSpriteResolver import CardSpriteResolver
         self.setSuit(suit)
         self.setRank(rank)
         # Not required by constructor so that back end can make all cards
         # Then front end can use setters to add sprites and locations
-        self.setSprite(source)
+        self.setSprite(CardSpriteResolver.getSpriteFile(suit, value = rank))
         self.setPosition(position)
 
 #============================================================#

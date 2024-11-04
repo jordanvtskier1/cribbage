@@ -8,7 +8,7 @@ from Card import Card
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Super Cool Cribbage"
-TEST_SPRITE = "./Sprites/Cards/WormSuits/K_Worm.png"
+TEST_SPRITE = "./Sprites/Cards/worms/K_Worm.png"
 # Positions to begin drawing certain parts of the game
 # Kind of wonky rn subject to change/adjustment
 DECK_LOCATION = [50, SCREEN_HEIGHT / 2]

@@ -4,6 +4,7 @@
 import arcade
 import random
 from Card import Card
+from GameStates.GameInfo import GameInfo
 
 
 class Game:
@@ -12,50 +13,49 @@ class Game:
     HAND = 4
     POINTS = 15
     MAX_TOTAL = 31
-    SUITS = ["Clubs", "Spades", "Diamonds", "Hearts"]
-    CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
+    SUITS = ["Clubs", "Worms", "Diamonds", "Hearts"]
+    CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
-    # NOTE: Feel free to add or alter variables just mention the change in your commit message - Carson
     def __init__(self):
-        # List of Card Objects
-        self.deck = []
-        self.crib = []
-        self.cards_in_play = []
-        self.player1_hand = []
-        self.player2_hand = []
-        # Integers of player scores
-        self.player1_score = 123
-        self.player2_score = 456
-        # Booleans for determining the State of Game
-        self.crib_hidden = True
-        self.player1_dealer = True
-        self.player1_turn = True
-        self.is_player1 = True
+        pass
         
 
-    def create_deck(self, SUITS, CARD_VALUES): 
-        for suit in SUITS: 
-            for value in CARD_VALUES: 
-                self.deck.append(Card(suit, value))
-        return random.shuffle(self.deck)
+    @classmethod
+    def create_deck(cls, game_info: GameInfo):
+        from GUI.CardSpriteResolver import CardSpriteResolver
+        for suit in cls.SUITS:
+            for value in cls.CARD_VALUES:
+                game_info.deck.append(Card(suit, value))
+        random.shuffle(game_info.deck)
+        return
     
-    
-    def deal_hands(self, DEAL): 
-        for index in range(0, (DEAL*2), 2):
-            self.player1_hand.append(self.deck[index])
-            self.player2_hand.append(self.deck[index + 1])
-        return self.player1_hand, self.player2_hand
-    
-    def card_played(self, hand_index):
-        self.cards_in_play.append(self.player1_hand[hand_index])
-        self.player1_hand.pop(hand_index)
+    @classmethod
+    def deal_hands(cls, game_info: GameInfo):
+        for index in range(0, (cls.DEAL*2), 2):
+            game_info.our_hand.append(game_info.deck[index])
+            game_info.other_hand.append(game_info.deck[index + 1])
+        return
 
-    def send_to_crib(self, hand_index):
-        
-        if len(hand_index) != 2:
+    @classmethod
+    def card_played(cls, hand_index, game_info: GameInfo):
+        game_info.cards_in_play.append(game_info.our_hand[hand_index])
+        game_info.our_hand.pop(hand_index)
+
+    @classmethod
+    def send_to_crib(cls, cards, game_info: GameInfo):
+
+        # This popped a card and then used an index which was not valid any more
+        # if len(hand_indexes) != 2:
+        #     raise Exception("Must send 2 cards to the crib")
+        # for hand_index in hand_indexes:
+        #     game_info.crib.append(game_info.our_hand[hand_index])
+        #     game_info.our_hand.pop(hand_index)
+
+        if len(cards) != 2:
             raise Exception("Must send 2 cards to the crib")
-        self.crib.append(self.player1_hand[hand_index])
-        self.player1_hand.pop(hand_index)
+        for card in cards:
+            game_info.crib.append(card)
+            game_info.our_hand.remove(card)
 
 
     # My idea for how multiplayer will work
