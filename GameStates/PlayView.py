@@ -25,7 +25,7 @@ class PlayView(GameView):
 
 
         # Make a calculate_score_button button
-        calculate_score_behavior = lambda : self.transition.play_to_show_score()
+        calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         quit_button = GenericButton(behavior=calculate_score_behavior,
                                     text="Calculate Score",
                                     width=200)

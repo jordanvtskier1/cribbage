@@ -77,5 +77,15 @@ class StateTransitionBackend:
             play_view = PlayView(game_info)
 
         self.window.show_view(play_view)
-    
-    
+
+    def play_to_show_score(self, game_info: GameInfo):
+        from GameStates.ShowScoreView import ShowScoreView
+        self.window.show_view(ShowScoreView(game_info))
+
+    def show_score_to_crib(self, game_info: GameInfo):
+        from GameStates.AddToCribView import AddToCribView
+
+        Game.create_deck(game_info)
+        Game.deal_hands(game_info)
+
+        self.window.show_view(AddToCribView(game_info))

@@ -23,6 +23,8 @@ class Game:
     @classmethod
     def create_deck(cls, game_info: GameInfo):
         from GUI.CardSpriteResolver import CardSpriteResolver
+        game_info.reset()
+
         for suit in cls.SUITS:
             for value in cls.CARD_VALUES:
                 game_info.deck.append(Card(suit, value))
