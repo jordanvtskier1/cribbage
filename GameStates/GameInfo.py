@@ -27,3 +27,10 @@ class GameInfo:
         self.is_dealer = True
         self.is_turn = True
         self.can_play = False
+
+    def reset(self):
+        self.deck = []
+        self.cards_in_play = []
+        self.our_hand = []
+        self.other_hand = []
+
