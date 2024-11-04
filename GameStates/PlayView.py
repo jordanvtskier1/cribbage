@@ -25,5 +25,7 @@ class PlayView(GameView):
             clickable_sprites.append(card.sprite)
         cards_pressed = arcade.get_sprites_at_point((x, y), clickable_sprites)
         if len(cards_pressed) > 0:
-            card = self.game_info.our_hand[self.game_info.our_hand.index(cards_pressed[-1])]
-            self.transition.play_to_wait(game_info = self.game_info, card_sprite = card)
+
+            index = clickable_sprites.index(cards_pressed[-1])
+            card = self.game_info.our_hand[index]
+            self.transition.play_to_wait(game_info = self.game_info, card = card)
