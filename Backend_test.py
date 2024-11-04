@@ -26,3 +26,4 @@ for card in game_info.other_hand:
 print("\nDECK:")
 for card in game_info.deck:
     print(card)
+

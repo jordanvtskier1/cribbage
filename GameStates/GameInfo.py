@@ -20,6 +20,7 @@ class GameInfo:
         # Integers of player scores
         self.our_score = 0
         self.other_score = 0
+        self.crib_score = 0
         # Booleans for determining the State of Game
         self.crib_hidden = True
         self.is_dealer = False
