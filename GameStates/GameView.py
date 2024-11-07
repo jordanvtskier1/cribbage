@@ -7,11 +7,11 @@ Final Project: Cribbage Game
 import arcade
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
-from GUI.CardSpriteResolver import CardSpriteResolver
 
 
 class GameView(arcade.View):
     """Class representing the general view of the game"""
+
 
     def __init__(self, game_info: GameInfo):
 
