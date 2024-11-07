@@ -8,36 +8,48 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 
 
-# CutDeckView inherits from GameView so that it can use all its methods
-# NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
 class CutDeckView(GameView):
-    
+    """Class representing the cutting of the deck"""
+
     def __init__(self, game_info: GameInfo):
         super().__init__(game_info)
 
+
     def on_draw(self):
+        """
+        The on_draw method draws the components of the game every frame
+        """
+
         self.clear()
+
+        self.draw_spread_deck()
         self.draw_scoreboard()
-        self.draw_score()
         self.draw_pegs()
+        self.draw_score()
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        self.draw_spread_deck()
     
+
     def on_mouse_press(self, x, y, button, modifiers):
+        """
+        The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
+        Clicking a card to cut the deck
+        """
 
-        # if self.game_info.is_turn:
-        card_sprites = arcade.SpriteList()
-        for card in self.game_info.deck:
-            card_sprites.append(card.sprite)
-        # Retrieve all cards pressed at the given location
-        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+        if self.game_info.is_turn and not self.game_info.is_dealer:
+            # Get card object sprites
+            card_sprites = arcade.SpriteList()
+            for card in self.game_info.deck:
+                card_sprites.append(card.sprite)
 
-        # As long as a card was pressed
-        if len(cards_pressed) > 0:
-            # Adjust the game state so that the card pressed is moved to the center of play
-            card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
-            print("Card Picked: ", card.getSuit(), card.getRank())
-            self.transition.cut_deck_to_play(self.game_info, card)
+            # Retrieve all cards pressed at the given location
+            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
+            if len(cards_pressed) > 0:
+                # Retrieve the top card of the cards at the given location
+                card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
+
+                # Display what happened to the terminal for testing purposes
+                print("Card Picked: ", card.getSuit(), card.getRank())
+                self.transition.cut_deck_to_play(self.game_info, card)
