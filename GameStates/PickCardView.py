@@ -17,20 +17,21 @@ class PickCardView(GameView):
 
     def on_draw(self):
         """
-        The on_draw method draws the components of the game
+        The on_draw method draws the components of the game every frame
         """
 
         self.clear()
 
-        self.draw_scoreboard()
-        self.draw_score()
         self.draw_spread_deck()
+        self.draw_scoreboard()
         self.draw_pegs()
+        self.draw_score()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
+        Clicking a card to see who goes first.
         """
 
         # Get card object sprites
@@ -41,7 +42,7 @@ class PickCardView(GameView):
         # Retrieve all sprites pressed at the given location
         cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-        # As long as a sprite was pressed at the location
+        # As long as a sprite was pressed
         if len(cards_pressed) > 0:
             # Retrieve the top card of the cards at the given location
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]

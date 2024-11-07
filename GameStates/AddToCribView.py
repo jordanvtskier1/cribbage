@@ -2,47 +2,77 @@
 # CS 3050: Software Engineering
 # Final Project: Cribbage Game
 
-# Import required files and modules
+
 import arcade
 from GameStates import GameInfo
-from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
-from GameStates.CutDeckView import CutDeckView
+from GUI.Buttons.GenericButton import GenericButton
+import arcade.gui
 
-# AddToCribView inherits from GameView so that it can use all its methods
-# NOTE: Now inherits from GameView. Benefits: Gets all of GameViews variables and methods
+
 class AddToCribView(GameView):
-    
+    """Class representing the adding cards to the crib portion of the game"""
+
     def __init__(self, game_info: GameInfo):
-        # Call parent constructor
         super().__init__(game_info)
+
+        # Setup add to crib button
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        add_crib_behavior = lambda : self.add_crib_check()
+        crib_button = GenericButton(behavior=add_crib_behavior,
+                                    text="Add to Crib",
+                                    width=150,
+                                    height=50)
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                child=crib_button,
+                align_x = -250,
+                align_y = -250)
+        )
 
 
     def on_draw(self):
+        """
+        The on_draw method draws the components of the game every frame
+        """
+
         self.clear()
-        self.draw_scoreboard()
-        self.draw_score()
-        self.draw_pegs()
+
         self.draw_deck()
+        self.draw_scoreboard()
+        self.draw_pegs()
+        self.draw_score()
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        self.draw_crib_button()
+        self.manager.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """
+        The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
+        Clicking a card from your hand selects it to be added to the crib.
+        Clicking the crib button adds the cards to the crib.
+        """
 
         if self.game_info.is_turn:
+            # Get card object sprites
             card_sprites = arcade.SpriteList()
             for card in self.game_info.our_hand:
                 card_sprites.append(card.sprite)
+
             # Retrieve all cards pressed at the given location
             cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
             # As long as a card was pressed
             if len(cards_pressed) > 0:
-                # Adjust the game state so that the card pressed is moved to the center of play
+                # Retrieve the top card of the cards at the given location
                 card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
+
+                # Handle logic of card clicking
                 if card not in self.cards_clicked:
                     if len(self.cards_clicked) <= 1:
                         self.cards_clicked.append(card)
@@ -52,19 +82,22 @@ class AddToCribView(GameView):
                 else:
                     self.cards_clicked.remove(card)
                     print("Card Unpicked: ", card.getSuit(), card.getRank())
-            if 35 <= y <= 85 and 175 <= x <= 325:
-                if len(self.cards_clicked) >= 2:
-                    print("Cards Added To Crib: ")
-                    for card in self.cards_clicked:
-                        print(" ", card.getSuit(), card.getRank())
-                    # Back end transition call
-                    self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
-                else: 
-                    print("Not enough Cards picked")
 
 
-    def draw_crib_button(self):
-        # Draws the deal button
-        arcade.draw_rectangle_filled(250, 60, 150, 25, arcade.color.LIGHT_GRAY)
-        arcade.draw_text("Add Cards To Crib", 190, 55, arcade.color.BLACK, 11)
-        
+    def on_hide_view(self):
+        self.manager.disable()
+
+
+    def add_crib_check(self):
+        """
+        Method to verify enough cards were selected for the crib.
+        Calls transition if true and displays message if not.
+        """
+        if len(self.cards_clicked) >= 2:
+            print("Cards Added To Crib: ")
+            for card in self.cards_clicked:
+                print(" ", card.getSuit(), card.getRank())
+            # Back end transition call
+            self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
+        else: 
+            print("Not enough Cards picked")
