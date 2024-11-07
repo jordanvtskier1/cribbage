@@ -50,26 +50,20 @@ class StateTransitionBackend:
         from GameStates.PlayView import PlayView
         
         game_info = Backend.cut_deck(game_info, card)
-
-        # Calculate hand score
-        game_info = Backend.calculate_hand_score(game_info)
-
-        # opponent_score = Firebase.getOppScore()
-        # game_info.other_score = opponent_score
         
         play_view = PlayView(game_info)
         self.window.show_view(play_view)
 
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.PlayView import PlayView
-        from GameStates.WaitView import WaitView
+        #from GameStates.WaitView import WaitView
 
         played_card_sum = sum(card.getValue() for card in game_info.cards_in_play)
     
-        if sum(played_card_sum, card.getValue()) > 31:
+        if played_card_sum + card.getValue() > 31:
             game_info.is_turn = False
             game_info.can_play = False
-            play_view = WaitView(game_info)
+            play_view = PlayView(game_info)#WaitView(game_info)
 
         else:
             game_info = Backend.play_card(game_info, card)
@@ -80,12 +74,17 @@ class StateTransitionBackend:
 
     def play_to_show_score(self, game_info: GameInfo):
         from GameStates.ShowScoreView import ShowScoreView
+        # Calculate hand score
+        game_info = Backend.calculate_hand_score(game_info)
+
+        # opponent_score = Firebase.getOppScore()
+        # game_info.other_score = opponent_score
         self.window.show_view(ShowScoreView(game_info))
 
     def show_score_to_crib(self, game_info: GameInfo):
         from GameStates.AddToCribView import AddToCribView
 
-        Game.create_deck(game_info)
-        Game.deal_hands(game_info)
+        Backend.create_deck(game_info)
+        Backend.deal_cards(game_info)
 
         self.window.show_view(AddToCribView(game_info))

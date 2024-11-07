@@ -15,7 +15,7 @@ class GameInfo:
         self.crib = []
         self.has_crib = False
         self.cards_in_play = []
-        self.top_card = []
+        self.top_card = Card("Clubs","K")
         self.our_hand = []
         self.other_hand = []
         # self.our_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]

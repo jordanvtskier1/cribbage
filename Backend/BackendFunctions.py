@@ -40,16 +40,18 @@ class Backend:
     def cut_deck(game_info: GameInfo, card: Card):
         game_info.top_card = card
         game_info.deck.remove(card)
+        game_info.deck.append(card)
         return game_info
     
     @staticmethod
     def calculate_hand_score(game_info: GameInfo):
 
-        complete_hand = game_info.our_hand.append(game_info.top_card[0])
+        complete_hand = game_info.our_hand
+        complete_hand.append(game_info.top_card)
 
         # one for his nob
-        top_card = game_info.top_card[0]
-        if Card(top_card.getSuit(), "Jack") in game_info.our_hand:
+        top_card = game_info.top_card
+        if Card(top_card.getSuit(), "J") in game_info.our_hand:
             game_info.our_score += 1
 
 
@@ -149,11 +151,11 @@ class Backend:
     @staticmethod
     def calculate_crib_score(game_info: GameInfo):
 
-        complete_crib = game_info.crib.append(game_info.top_card[0])
+        complete_crib = game_info.crib.append(game_info.top_card)
 
         # one for his nob
-        top_card = game_info.top_card[0]
-        if Card(top_card.getSuit(), "Jack") in game_info.crib:
+        top_card = game_info.top_card
+        if Card(top_card.getSuit(), "J") in game_info.crib:
             game_info.crib_score += 1
 
 

@@ -20,7 +20,6 @@ class CutDeckView(GameView):
         self.draw_scoreboard()
         self.draw_score()
         self.draw_pegs()
-        self.draw_deck()
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
