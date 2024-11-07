@@ -39,23 +39,6 @@ class PickCardView(GameView):
         self.draw_spread_deck()
         self.draw_pegs()
 
-        # We still want to draw the card that was picked before the back end is called.
-        # So I have moved the call to the backend here so that the drawing may happen first and then
-        # after a short delay the backend is called and the view switches.
-        # if begin_backend_call:
-        #     # We require a second check for if this is the second time on_draw has been called since the
-        #     # call to the backend. This is because the on_draw method does not fully draw until it completes.
-        #     # So we have to wait for the second call of on_draw.
-        #     # Will ask Professor Hibbeler during class
-        #     if wait_for_second_draw:
-        #         # This is causing a crash
-        #         # time.sleep(0.5)
-        #
-        #         # Back end transition call TESTING
-        #         # self.transition.pick_card_to_add_crib(self.game_info, self.cards_clicked[0])
-        #     else:
-        #         wait_for_second_draw = True
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -85,25 +68,3 @@ class PickCardView(GameView):
             # A variable to denote when to begin calling the back end in on_draw
             # global begin_backend_call
             # begin_backend_call = True
-
-
-
-
-    def draw_spread_deck(self):
-        """
-        The draw_spread_deck method draws out the cards in the deck in a spread out fashion
-        """
-        # Offset to space cards, so that they overlap eachother like a fanned out deck
-        card_offset = 0
-        # For each card in the deck
-        for card in self.game_info.deck:
-            # Draw it to match a fanned out deck on the screen
-            if card in self.cards_clicked:
-                if self.game_info.is_turn:
-                    card.setPosition([self.SCREEN_WIDTH // 2, 100])
-                else:
-                    card.setPosition([self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - 100])
-            else:
-                card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_offset, self.CENTER_CARD_LOCATION[1]])
-            card.draw()
-            card_offset += 10

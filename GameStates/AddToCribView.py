@@ -63,42 +63,6 @@ class AddToCribView(GameView):
                     print("Not enough Cards picked")
 
 
-    def draw_our_hand(self):
-        """
-        The draw_your_hand method draws the cards in your hand. It does this by retrieving the correct 
-        hand list for you from the game_state and displaying it on the bottom middle of the screen.
-        """
-        # Spacer to space out the cards in hand
-        card_spacer = 0
-
-        clicked_adjuster = 25
-
-        # For each card in hand
-        for card in self.game_info.our_hand:
-            # Adjust by the spacer so cards are not on top of eachother
-            if card in self.cards_clicked:
-                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
-            else:
-                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1]])
-
-            card_spacer += 50
-            card.draw()
-
-    def draw_other_hand(self):
-        """
-        The draw_opps_hand method draws the cards in your opps hand. It does this by retrieving the correct 
-        hand list for your opp from the game_state and displaying it on the top middle of the screen.
-        """
-        # Spacer to space out the cards in hand
-        card_spacer = 0
-
-        # For each card in hand
-        for card in self.game_info.other_hand:
-            # Adjust by the spacer so cards are not on top of eachother
-            card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
-            card_spacer += 50
-            card.draw()
-
     def draw_crib_button(self):
         # Draws the deal button
         arcade.draw_rectangle_filled(250, 60, 150, 25, arcade.color.LIGHT_GRAY)

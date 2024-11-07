@@ -41,6 +41,7 @@ class PlayView(GameView):
     def on_draw(self):
         self.clear()
         self.draw_deck()
+        self.draw_crib()
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
