@@ -2,13 +2,31 @@
 from GameStates.GameInfo import GameInfo
 from Backend.BackendFunctions import Backend
 from Card import Card
+from Connection.config import init
+import json
 
 
 
 class StateTransitionBackend:
     def __init__(self, window):
         self.window = window
+        self.database_ref = init()
+        # player1 or player2
+        self.player = ""
 
+    def create_game_to_pick_card(self, game_info: GameInfo, game_name):
+        from GameStates.PickCardView import PickCardView
+
+        game_info = Backend.create_deck(game_info)
+        self.player = "player1"
+        self.database_ref.set({
+            'deck': [card.getDict() for card in game_info.deck],
+            'game_name': game_name
+        })
+
+        #pick_card_view = PickCardView(game_info)
+        #self.window.show_view(pick_card_view)
+    
 
     def menu_to_pick_card(self, game_info: GameInfo):
         from GameStates.PickCardView import PickCardView
