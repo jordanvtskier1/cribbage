@@ -113,10 +113,3 @@ class AddToCribView(GameView):
             self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
         else: 
             print("Not enough Cards picked")
-
-    def draw_tips(self):
-        """
-        The draw_tips method draws the tips for the player to help them understand the game
-        """
-        arcade.draw_rectangle_filled(self.YOUR_HAND_LOCATION[0] + 150, self.YOUR_HAND_LOCATION[1] + 100, 350, 30, arcade.color.LIGHT_GRAY)
-        arcade.draw_text(self.tip_string, self.YOUR_HAND_LOCATION[0] - 20, self.YOUR_HAND_LOCATION[1] + 93, arcade.color.BLACK, 10)

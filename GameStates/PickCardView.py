@@ -14,6 +14,8 @@ class PickCardView(GameView):
     def __init__(self, game_info: GameInfo):
         super().__init__(game_info)
 
+        self.tip_string = "Choose a card to see who goes first"
+
 
     def on_draw(self):
         """
@@ -26,6 +28,7 @@ class PickCardView(GameView):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
+        self.draw_tips()
 
 
     def on_mouse_press(self, x, y, button, modifiers):

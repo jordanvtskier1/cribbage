@@ -18,6 +18,8 @@ class GameView(arcade.View):
         super().__init__()
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
 
+        self.tip_string = ""
+
         # Represents cards clicked by user
         self.cards_clicked = []
 
@@ -48,6 +50,7 @@ class GameView(arcade.View):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
+        self.draw_tips()
 
 
     def draw_deck(self):
@@ -241,3 +244,11 @@ class GameView(arcade.View):
                 card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_spacer, self.CENTER_CARD_LOCATION[1]])
             card.draw()
             card_spacer += 10
+
+    def draw_tips(self):
+        """
+        The draw_tips method draws the tips for the player to help them understand the game
+        """
+        arcade.draw_rectangle_filled(self.YOUR_HAND_LOCATION[0] + 150, self.YOUR_HAND_LOCATION[1] + 100, 300, 30, arcade.color.LIGHT_GRAY)
+        arcade.draw_text(self.tip_string, self.YOUR_HAND_LOCATION[0] + 5, self.YOUR_HAND_LOCATION[1] + 94, arcade.color.BLACK, 10)
+

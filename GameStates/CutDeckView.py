@@ -14,6 +14,8 @@ class CutDeckView(GameView):
     def __init__(self, game_info: GameInfo):
         super().__init__(game_info)
 
+        self.tip_string = "Pick a card to cut the deck"
+
 
     def on_draw(self):
         """
@@ -29,6 +31,8 @@ class CutDeckView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
+        if not self.game_info.is_dealer:
+            self.draw_tips()
     
 
     def on_mouse_press(self, x, y, button, modifiers):
