@@ -16,6 +16,8 @@ class AddToCribView(GameView):
     def __init__(self, game_info: GameInfo):
         super().__init__(game_info)
 
+        self.tip_string = "Choose a two cards to add to the crib"
+
         # Setup add to crib button
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -49,6 +51,7 @@ class AddToCribView(GameView):
         self.draw_other_hand()
         self.draw_crib()
         self.manager.draw()
+        self.draw_tips()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -82,6 +85,15 @@ class AddToCribView(GameView):
                 else:
                     self.cards_clicked.remove(card)
                     print("Card Unpicked: ", card.getSuit(), card.getRank())
+                
+                # Modify tip string to help user know what to do next
+                match len(self.cards_clicked):
+                        case 0:
+                            self.tip_string = "Choose a two cards to add to the crib"
+                        case 1:
+                            self.tip_string = "Choose another card to add to the crib"
+                        case 2:
+                            self.tip_string = "Click add to crib to add your cards to the crib"
 
 
     def on_hide_view(self):
@@ -101,3 +113,10 @@ class AddToCribView(GameView):
             self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
         else: 
             print("Not enough Cards picked")
+
+    def draw_tips(self):
+        """
+        The draw_tips method draws the tips for the player to help them understand the game
+        """
+        arcade.draw_rectangle_filled(self.YOUR_HAND_LOCATION[0] + 150, self.YOUR_HAND_LOCATION[1] + 100, 350, 30, arcade.color.LIGHT_GRAY)
+        arcade.draw_text(self.tip_string, self.YOUR_HAND_LOCATION[0] - 20, self.YOUR_HAND_LOCATION[1] + 93, arcade.color.BLACK, 10)

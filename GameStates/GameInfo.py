@@ -21,12 +21,12 @@ class GameInfo:
         # self.our_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
         # self.other_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
         # Integers of player scores
-        self.our_score = 33
+        self.our_score = 0
         self.other_score = 0
         self.crib_score = 0
         # Booleans for determining the State of Game
         self.crib_hidden = True
-        self.is_dealer = True
+        self.is_dealer = False
         self.is_turn = True
         self.can_play = False
 
