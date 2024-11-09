@@ -27,6 +27,20 @@ class StateTransitionBackend:
         #pick_card_view = PickCardView(game_info)
         #self.window.show_view(pick_card_view)
     
+    def join_game_to_pick_card(self, game_info: GameInfo, game_name): 
+        from GameStates.PickCardView import PickCardView
+
+        self.player = "player2"
+
+        game_data = self.database_ref.get().val()
+        if game_data:
+            # Retrieve and convert deck data
+            deck_data = game_data.get('deck')
+            game_info.deck = [Card.fromDict(card_dict) for card_dict in deck_data]  # Assuming a Card.fromDict method
+            game_info.game_name = game_data.get('game_name')
+
+        #pick_card_view = PickCardView(game_info)
+        #self.window.show_view(pick_card_view)
 
     def menu_to_pick_card(self, game_info: GameInfo):
         from GameStates.PickCardView import PickCardView
@@ -40,6 +54,8 @@ class StateTransitionBackend:
     def pick_card_to_add_crib(self, game_info, card):
         from GameStates.AddToCribView import AddToCribView
         
+        opponent_card = self.get_opponent_card(game_info.game_name, self.player)
+
         # opponent_card = Firebase.getCard()
         # if card > opponent_card:
             # game_info.is_dealer = False
