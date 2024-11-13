@@ -44,21 +44,21 @@ class Card:
         return self.rank
     
     def getValue(self):
-        if self.rank == "Ace":
+        if self.rank == "A":
             return 1
-        elif self.rank in ["Jack", "Queen", "King"]:
+        elif self.rank in ["J", "Q", "K"]:
             return 10
         else:
             return self.rank
         
     def getRankAsInt(self):
-        if self.rank == "Ace":
+        if self.rank == "A":
             return 1
-        elif self.rank == "Jack":
+        elif self.rank == "J":
             return 11
-        elif self.rank == "Queen":
+        elif self.rank == "Q":
             return 12
-        elif self.rank == "King":
+        elif self.rank == "K":
             return 13
         else:
             return self.rank
@@ -83,3 +83,17 @@ class Card:
 
     def __str__(self):
         return "{} of {}".format(self.rank, self.suit)
+
+#============================================================#
+# Comparison
+    def __gt__(self, card):
+        return self.getRankAsInt() > card.getRankAsInt()
+
+    def __eq__(self, card):
+        return self.getRankAsInt() == card.getRankAsInt()
+    
+    def isSameCard(self, card):
+        if self.getRank() == card.getRank() and self.getSuit() == card.getSuit():
+            return True
+        else:
+            return False

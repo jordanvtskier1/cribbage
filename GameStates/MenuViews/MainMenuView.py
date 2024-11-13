@@ -7,8 +7,9 @@ from GUI.Buttons.GenericButton import GenericButton
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 
-class MenuView(arcade.View):
+class MainMenuView(arcade.View):
     def __init__(self, game_info, state_transition: StateTransitionBackend):
+        from GameStates.MenuViews.PlayMenuView import PlayMenuView
         super().__init__()
         self.state_transition = state_transition
         self.game_info = game_info
@@ -21,11 +22,22 @@ class MenuView(arcade.View):
 
         self.v_box = arcade.gui.UIBoxLayout()
 
-        # Make a start button
-        start_behavior = lambda : self.state_transition.menu_to_pick_card(self.game_info)
+        game_title = arcade.gui.UILabel(
+            text=" BUG CRIBBAGE !!! :O",
+            text_color=arcade.color.DARK_RED,
+            width=350,
+            height=40,
+            font_size=24,
+            font_name="Kenney Future")
+        self.v_box.add(game_title)
 
-        start_button = GenericButton(behavior = start_behavior, text = 'Start', width= 200)
-        self.v_box.add(start_button.with_space_around(bottom = 20))
+        # Make a start button
+        play_behavior = lambda : self.window.show_view(
+            PlayMenuView(game_info= self.game_info, state_transition= self.state_transition)
+        )
+
+        play_button = GenericButton(behavior = play_behavior, text = 'Play', width= 200)
+        self.v_box.add(play_button.with_space_around(bottom = 20))
 
         # Make a quit button
         quit_behavior = lambda : arcade.exit()

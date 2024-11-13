@@ -15,7 +15,7 @@ class GameInfo:
         self.crib = []
         self.has_crib = False
         self.cards_in_play = []
-        self.top_card = []
+        self.top_card = Card("Clubs","K")
         self.our_hand = []
         self.other_hand = []
         # self.our_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
@@ -26,7 +26,7 @@ class GameInfo:
         self.crib_score = 0
         # Booleans for determining the State of Game
         self.crib_hidden = True
-        self.is_dealer = True
+        self.is_dealer = False
         self.is_turn = True
         self.can_play = False
         

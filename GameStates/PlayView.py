@@ -5,11 +5,13 @@ from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 import arcade.gui
 
+from GameStates.StateTransitionBackend import StateTransitionBackend
+
 IN_PLAY_LOCATION = [335, 340]
 IN_PLAY_X_OFFSET = 40
 IN_PLAY_Y_OFFSET = 15
 #Make 8 once we are done with other player
-MAX_PLAYABLE_CARDS = 4
+MAX_PLAYABLE_CARDS = 8
 
 
 CALCULATE_SCORE_Y = -200
@@ -17,8 +19,8 @@ CALCULATE_SCORE_X = -75
 
 class PlayView(GameView):
 
-    def __init__(self, game_info: GameInfo):
-        super().__init__(game_info)
+    def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
+        super().__init__(game_info, state_transition)
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -40,6 +42,8 @@ class PlayView(GameView):
 
     def on_draw(self):
         self.clear()
+        self.draw_deck()
+        self.draw_crib()
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
