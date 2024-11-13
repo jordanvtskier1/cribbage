@@ -15,3 +15,8 @@ game_info = GameInfo()
 state_transition.create_game_to_pick_card(game_info, "Kate")
 
 
+
+#state_transition.join_game_to_pick_card(game_info, "Kate")
+
+
+
