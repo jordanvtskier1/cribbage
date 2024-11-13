@@ -6,46 +6,40 @@ from Connection.config import init
 import json
 import firebase_admin
 import threading
+import arcade
 
 
 
 class StateTransitionBackend:
-    def __init__(self, window):
+    def __init__(self, window: arcade.Window):
         self.window = window
-        '''
-        if not firebase_admin._apps:
-            self.database_ref = init()
-        else:
-            self.database_ref = firebase_admin.get_app("my_app")'''
-        
         self.database_ref = init()
+        
         
 
     def create_game_to_pick_card(self, game_info: GameInfo, game_name):
         from GameStates.PickCardView import PickCardView
 
         game_info = Backend.create_deck(game_info)
-        game_info.which_player = "player1"
-        game_info.other_player = "player2"
+        self.player = "player1"
+        self.opponent = "player2"
         self.database_ref.update({
             game_name: {'deck': [card.getDict() for card in game_info.deck]}
         })
 
         self.database_ref = self.database_ref.child(game_name)
 
-
-
-        #pick_card_view = PickCardView(game_info)
-        #self.window.show_view(pick_card_view)
+        pick_card_view = PickCardView(game_info, self)
+        self.window.show_view(pick_card_view)
     
     def join_game_to_pick_card(self, game_info: GameInfo, game_name: str): 
         from GameStates.PickCardView import PickCardView
 
-        game_info.which_player = "player2"
-        game_info.other_player = "player1"
+        self.player = "player2"
+        self.opponent = "player1"
         self.database_ref = self.database_ref.child(game_name)
 
-        game_data = self.database_ref.get()#.val()
+        game_data = self.database_ref.get()
         if game_data is None:
             raise ValueError(f"The Game {game_name} does not exist.")
 
@@ -57,66 +51,77 @@ class StateTransitionBackend:
         for card in game_info.deck:
             print(card)
 
-        #pick_card_view = PickCardView(game_info)
-        #self.window.show_view(pick_card_view)
+        pick_card_view = PickCardView(game_info, state_transition=self)
+        self.window.show_view(pick_card_view)
 
-    def menu_to_pick_card(self, game_info: GameInfo):
+    '''def menu_to_pick_card(self, game_info: GameInfo):
         from GameStates.PickCardView import PickCardView
 
         game_info = Backend.create_deck(game_info)
         
         pick_card_view = PickCardView(game_info, state_transition= self)
-        self.window.show_view(pick_card_view)
+        self.window.show_view(pick_card_view)'''
 
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
         from GameStates.AddToCribView import AddToCribView
+        from GameStates.PickCardView import PickCardView
         
         query = {
-            "player1": {'card_pick': card.getDict()}
+            self.player: {'card_pick': card.getDict()}
         }
-        print(query)
-        """self.database_ref.update({
-                    game_info.which_player: {'card_pick': card.getDict()}
-                })"""
         self.database_ref.update(query)
 
+        card_dict = {}
 
-        opponent_card = {}
-        stop_event = threading.Event()
 
         # Callback function to capture data change
         def on_card_pick_change(event):
-            nonlocal opponent_card
+            nonlocal card_dict
             print("Data change detected at player1/card_pick")
-            opponent_card = event.data
+            card_dict = event.data
             # Stop listening after the first change is captured
-            stop_event.set() 
-
+            try:
+                listener.close()
+            except:
+                pass
         
+        listener = self.database_ref.child(self.opponent+"/card_pick").listen(on_card_pick_change)
 
-        
-        listener = self.database_ref.child("player1"+"/card_pick").listen(on_card_pick_change)
-
-        stop_event.wait()
-        listener.close()
         # Wait until data is captured
-        while not opponent_card:
+        while not card_dict:
             pass  # Busy-wait until card data is set
 
-        print(opponent_card)
+        
 
-        # opponent_card = Firebase.getCard()
-        # if card > opponent_card:
-            # game_info.is_dealer = False
-            # game_info.has_crib = False
-        # else:
-            # game_info.is_dealer = True
-            # game_info.has_crib = True
-        game_info = Backend.deal_cards(game_info)
+        opponent_card = Card(card_dict["suit"], card_dict["rank"])
 
-        add_to_crib_view = AddToCribView(game_info, state_transition= self)
-        self.window.show_view(add_to_crib_view)
+        if card > opponent_card:
+            game_info.is_dealer = False
+            add_to_crib_view = AddToCribView(game_info, state_transition= self)
+            self.window.show_view(add_to_crib_view)
+
+        elif card < opponent_card:
+            game_info.is_dealer = True
+            game_info = Backend.deal_cards(game_info)
+
+            self.database_ref.update({
+            'deck': [card.getDict() for card in game_info.deck],
+            self.player: {'hand': [card.getDict() for card in game_info.our_hand]},
+            self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
+            })
+
+            add_to_crib_view = AddToCribView(game_info, state_transition= self)
+            self.window.show_view(add_to_crib_view)
+
+        elif card==opponent_card:
+            view = PickCardView(game_info, state_transition=self)
+            self.window.show_view(view)
+
+        
+        
+
+        
         
 
     def add_crib_to_cut_deck(self, game_info: GameInfo, card1, card2):
