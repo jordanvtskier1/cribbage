@@ -89,3 +89,5 @@ class StateTransitionBackend:
         Backend.deal_cards(game_info)
 
         self.window.show_view(AddToCribView(game_info))
+
+

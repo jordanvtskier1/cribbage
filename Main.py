@@ -6,7 +6,7 @@ Final Project: Cribbage Game
 
 import arcade
 from GameStates.GameInfo import GameInfo
-from GameStates.MenuView import MenuView
+from GameStates.MenuViews.MainMenuView import MainMenuView
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 SCREEN_WIDTH = 1000
@@ -21,7 +21,7 @@ def main():
     state_transition = StateTransitionBackend(window)
     game_info = GameInfo()
 
-    menu = MenuView(game_info=game_info,  state_transition=state_transition)
+    menu = MainMenuView(game_info=game_info, state_transition=state_transition)
     window.show_view(menu)
 
     # Run the Window
