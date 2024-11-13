@@ -84,6 +84,7 @@ class StateTransitionBackend:
     def show_score_to_crib(self, game_info: GameInfo):
         from GameStates.AddToCribView import AddToCribView
 
+        game_info.reset()
         Backend.create_deck(game_info)
         Backend.deal_cards(game_info)
 

@@ -42,7 +42,6 @@ class AddToCribView(GameView):
         """
 
         self.clear()
-
         self.draw_deck()
         self.draw_scoreboard()
         self.draw_pegs()
@@ -61,39 +60,39 @@ class AddToCribView(GameView):
         Clicking the crib button adds the cards to the crib.
         """
 
-        if self.game_info.is_turn:
-            # Get card object sprites
-            card_sprites = arcade.SpriteList()
-            for card in self.game_info.our_hand:
-                card_sprites.append(card.sprite)
+        #if self.game_info.is_turn:
+        # Get card object sprites
+        card_sprites = arcade.SpriteList()
+        for card in self.game_info.our_hand:
+            card_sprites.append(card.sprite)
 
-            # Retrieve all cards pressed at the given location
-            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+        # Retrieve all cards pressed at the given location
+        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-            # As long as a card was pressed
-            if len(cards_pressed) > 0:
-                # Retrieve the top card of the cards at the given location
-                card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
+        # As long as a card was pressed
+        if len(cards_pressed) > 0:
+            # Retrieve the top card of the cards at the given location
+            card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
 
-                # Handle logic of card clicking
-                if card not in self.cards_clicked:
-                    if len(self.cards_clicked) <= 1:
-                        self.cards_clicked.append(card)
-                        print("Card Picked: ", card.getSuit(), card.getRank())
-                    else:
-                        print("Maximum Number of Cards Already Selected")
+            # Handle logic of card clicking
+            if card not in self.cards_clicked:
+                if len(self.cards_clicked) <= 1:
+                    self.cards_clicked.append(card)
+                    print("Card Picked: ", card.getSuit(), card.getRank())
                 else:
-                    self.cards_clicked.remove(card)
-                    print("Card Unpicked: ", card.getSuit(), card.getRank())
-                
-                # Modify tip string to help user know what to do next
-                match len(self.cards_clicked):
-                        case 0:
-                            self.tip_string = "Choose a two cards to add to the crib"
-                        case 1:
-                            self.tip_string = "Choose another card to add to the crib"
-                        case 2:
-                            self.tip_string = "Click add to crib to add your cards to the crib"
+                    print("Maximum Number of Cards Already Selected")
+            else:
+                self.cards_clicked.remove(card)
+                print("Card Unpicked: ", card.getSuit(), card.getRank())
+
+            # Modify tip string to help user know what to do next
+            match len(self.cards_clicked):
+                    case 0:
+                        self.tip_string = "Choose a two cards to add to the crib"
+                    case 1:
+                        self.tip_string = "Choose another card to add to the crib"
+                    case 2:
+                        self.tip_string = "Click add to crib to add your cards to the crib"
 
 
     def on_hide_view(self):

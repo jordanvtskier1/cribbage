@@ -41,19 +41,19 @@ class CutDeckView(GameView):
         Clicking a card to cut the deck
         """
 
-        if self.game_info.is_turn and not self.game_info.is_dealer:
-            # Get card object sprites
-            card_sprites = arcade.SpriteList()
-            for card in self.game_info.deck:
-                card_sprites.append(card.sprite)
+        #if self.game_info.is_turn and not self.game_info.is_dealer:
+        # Get card object sprites
+        card_sprites = arcade.SpriteList()
+        for card in self.game_info.deck:
+            card_sprites.append(card.sprite)
 
-            # Retrieve all cards pressed at the given location
-            cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
+        # Retrieve all cards pressed at the given location
+        cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
-            if len(cards_pressed) > 0:
-                # Retrieve the top card of the cards at the given location
-                card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
+        if len(cards_pressed) > 0:
+            # Retrieve the top card of the cards at the given location
+            card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
 
-                # Display what happened to the terminal for testing purposes
-                print("Card Picked: ", card.getSuit(), card.getRank())
-                self.transition.cut_deck_to_play(self.game_info, card)
+            # Display what happened to the terminal for testing purposes
+            print("Card Picked: ", card.getSuit(), card.getRank())
+            self.transition.cut_deck_to_play(self.game_info, card)
