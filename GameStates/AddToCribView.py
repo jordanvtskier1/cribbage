@@ -76,14 +76,21 @@ class AddToCribView(GameView):
             card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
 
             # Handle logic of card clicking
-            if card not in self.cards_clicked:
+            in_clicked_cards = False
+            card_index = 0
+            for i in range(len(self.cards_clicked)):
+                if card.isSameCard(self.cards_clicked[i]):
+                    in_clicked_cards = True
+                    card_index = i
+
+            if not in_clicked_cards:
                 if len(self.cards_clicked) <= 1:
                     self.cards_clicked.append(card)
                     print("Card Picked: ", card.getSuit(), card.getRank())
                 else:
                     print("Maximum Number of Cards Already Selected")
             else:
-                self.cards_clicked.remove(card)
+                self.cards_clicked.pop(card_index)
                 print("Card Unpicked: ", card.getSuit(), card.getRank())
 
             # Modify tip string to help user know what to do next

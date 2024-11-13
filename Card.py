@@ -88,3 +88,9 @@ class Card:
 
     def __eq__(self, card):
         return self.getRankAsInt() == card.getRankAsInt()
+    
+    def isSameCard(self, card):
+        if self.getRank() == card.getRank() and self.getSuit() == card.getSuit():
+            return True
+        else:
+            return False

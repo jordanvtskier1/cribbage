@@ -183,14 +183,16 @@ class GameView(arcade.View):
         """
 
         card_spacer = 0
-        clicked_adjuster = 25
+        clicked_adjuster = 0
 
         for card in self.game_info.our_hand:
+            clicked_adjuster = 0
             # Adjust cards position if it is clicked
-            if card in self.cards_clicked:
-                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
-            else:
-                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1]])
+            for card2 in self.cards_clicked:
+                if card.isSameCard(card2):
+                    clicked_adjuster = 25
+            
+            card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
             card_spacer += 50
             card.draw()
