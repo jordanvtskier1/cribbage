@@ -91,13 +91,38 @@ class StateTransitionBackend:
         # Wait until data is captured
         while not card_dict:
             pass  # Busy-wait until card data is set
-
-        
-
         opponent_card = Card(card_dict["suit"], card_dict["rank"])
+
 
         if card > opponent_card:
             game_info.is_dealer = False
+
+            deal_dict = {}
+
+            # Callback function to capture data change
+            def on_deal_change(event):
+                nonlocal deal_dict
+                print("Data change detected game node")
+                deal_dict = event.data
+                # Stop listening after the first change is captured
+                try:
+                    listener.close()
+                except:
+                    pass
+            
+            listener = self.database_ref.listen(on_deal_change)
+
+            # Wait until data is captured
+            while not deal_dict:
+                pass  # Busy-wait until card data is set
+
+            deck_data = deal_dict.get('deck')
+            game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
+
+            game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.player)]
+            game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.opponent)]
+
+
             add_to_crib_view = AddToCribView(game_info, state_transition= self)
             self.window.show_view(add_to_crib_view)
 
