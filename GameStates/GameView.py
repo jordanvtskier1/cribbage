@@ -13,7 +13,7 @@ class GameView(arcade.View):
     """Class representing the general view of the game"""
 
 
-    def __init__(self, game_info: GameInfo):
+    def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
 
         super().__init__()
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
@@ -24,7 +24,7 @@ class GameView(arcade.View):
         self.cards_clicked = []
 
         self.game_info = game_info
-        self.transition = StateTransitionBackend(self.window)
+        self.transition = state_transition
 
         # Constants for positioning
         self.SCREEN_WIDTH = 1000

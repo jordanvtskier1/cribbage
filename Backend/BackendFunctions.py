@@ -32,10 +32,18 @@ class Backend:
     def add_to_crib(game_info: GameInfo, card1: Card, card2: Card):
         game_info.crib.append(card1)
         game_info.crib.append(card2)
-        game_info.our_hand.remove(card1)
-        game_info.our_hand.remove(card2)
-        return game_info
-    
+        return
+
+    @staticmethod
+    def remove_from_our_hand(game_info: GameInfo, cards):
+        for card in cards:
+            game_info.our_hand.remove(card)
+
+    @staticmethod
+    def remove_from_other_hand(game_info: GameInfo, cards):
+        for card in cards:
+            game_info.other_hand.remove(card)
+
     @staticmethod
     def cut_deck(game_info: GameInfo, card: Card):
         game_info.top_card = card

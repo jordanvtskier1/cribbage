@@ -80,3 +80,11 @@ class Card:
 
     def __str__(self):
         return "{} of {}".format(self.rank, self.suit)
+
+#============================================================#
+# Comparison
+    def __gt__(self, card):
+        return self.getRankAsInt() > card.getRankAsInt()
+
+    def __eq__(self, card):
+        return self.getRankAsInt() == card.getRankAsInt()

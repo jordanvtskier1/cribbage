@@ -4,6 +4,7 @@
 import arcade
 import arcade.gui
 from GUI.Buttons.GenericButton import GenericButton
+from Adversary.CPU import CPU
 
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
@@ -64,11 +65,17 @@ class PlayMenuView(arcade.View):
 
     def host_behavior(self):
         from GameStates.MenuViews.HostInputView import HostInputView
-        HostInputView(game_info=self.game_info, state_transition=self.state_transition)
+        self.window.show_view(
+            HostInputView(game_info=self.game_info, state_transition=self.state_transition)
+        )
 
     def join_behavior(self):
         from GameStates.MenuViews.JoinInputView import JoinInputView
-        JoinInputView(game_info=self.game_info, state_transition=self.state_transition)
+        self.window.show_view(
+            JoinInputView(game_info=self.game_info, state_transition=self.state_transition)
+        )
+
 
     def cpu_behavior(self):
+        self.state_transition.set_other_player( other_player_logic= CPU() )
         self.state_transition.menu_to_pick_card(game_info=self.game_info)

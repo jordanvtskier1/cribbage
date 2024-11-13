@@ -11,8 +11,8 @@ from GameStates.GameView import GameView
 class CutDeckView(GameView):
     """Class representing the cutting of the deck"""
 
-    def __init__(self, game_info: GameInfo):
-        super().__init__(game_info)
+    def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
+        super().__init__(game_info, state_transition)
 
         self.tip_string = "Pick a card to cut the deck"
 

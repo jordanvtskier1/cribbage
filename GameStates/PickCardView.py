@@ -6,13 +6,14 @@
 import arcade
 from GameStates import GameInfo
 from GameStates.GameView import GameView
+from GameStates.StateTransitionBackend import StateTransitionBackend
 
 
 class PickCardView(GameView):
     """Class representing the picking card portion of the game"""
 
-    def __init__(self, game_info: GameInfo):
-        super().__init__(game_info)
+    def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
+        super().__init__(game_info, state_transition)
 
         self.tip_string = "Choose a card to see who goes first"
 
