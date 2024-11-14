@@ -3,6 +3,7 @@ import arcade
 from GameStates.GameInfo import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
+from GUI.CardSpriteResolver import CardSpriteResolver
 import arcade.gui
 
 from GameStates.StateTransitionBackend import StateTransitionBackend
@@ -74,6 +75,7 @@ class PlayView(GameView):
         if self.game_info.is_dealer:
              y_offset *= -1
         for card in self.game_info.cards_in_play:
+            card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
             card.setPosition([initialPositionX + x_offset, initialPositionY + y_offset])
             card.draw()
             x_offset += IN_PLAY_X_OFFSET
