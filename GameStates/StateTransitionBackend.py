@@ -20,11 +20,18 @@ class StateTransitionBackend:
     def create_game_to_pick_card(self, game_info: GameInfo, game_name):
         from GameStates.PickCardView import PickCardView
 
+        #clear game with same name if it exists
+        self.database_ref.child(game_name).set("")
+
+
         game_info = Backend.create_deck(game_info)
         self.player = "player1"
         self.opponent = "player2"
         self.database_ref.update({
-            game_name: {'deck': [card.getDict() for card in game_info.deck]}
+            game_name: {'deck': [card.getDict() for card in game_info.deck],
+                        self.player: {'card_pick': ''},
+                        self.opponent: {'card_pick': ''}}
+
         })
 
         self.database_ref = self.database_ref.child(game_name)
@@ -78,19 +85,29 @@ class StateTransitionBackend:
         # Callback function to capture data change
         def on_card_pick_change(event):
             nonlocal card_dict
-            print("Data change detected at player1/card_pick")
-            card_dict = event.data
-            # Stop listening after the first change is captured
-            try:
-                listener.close()
-            except:
-                pass
-        
-        listener = self.database_ref.child(self.opponent+"/card_pick").listen(on_card_pick_change)
+            print(f"Data change detected at {event.path}")
+            if event.data:
+                print(f"Data: {event.data}")
+                card_dict = event.data
+                # Stop listening after the first change is captured
+                try:
+                    listener.close()
+                except:
+                    pass
 
-        # Wait until data is captured
-        while not card_dict:
-            pass  # Busy-wait until card data is set
+        initial_data = self.database_ref.child(self.opponent+"/card_pick").get()
+
+        if initial_data:
+            print(f"initial data: {initial_data}")
+            card_dict = initial_data
+        else:
+            listener = self.database_ref.child(self.opponent+"/card_pick").listen(on_card_pick_change)
+            #listener = self.database_ref.listen(on_card_pick_change)
+
+            # Wait until data is captured
+            while not card_dict:
+                pass  # Busy-wait until card data is set
+
         opponent_card = Card(card_dict["suit"], card_dict["rank"])
 
 
@@ -102,13 +119,14 @@ class StateTransitionBackend:
             # Callback function to capture data change
             def on_deal_change(event):
                 nonlocal deal_dict
-                print("Data change detected game node")
-                deal_dict = event.data
-                # Stop listening after the first change is captured
-                try:
-                    listener.close()
-                except:
-                    pass
+                if event.data:
+                    print(f"Data: {event.data}")
+                    deal_dict = event.data
+                    # Stop listening after the first change is captured
+                    try:
+                        listener.close()
+                    except:
+                        pass
             
             listener = self.database_ref.listen(on_deal_change)
 
@@ -119,8 +137,8 @@ class StateTransitionBackend:
             deck_data = deal_dict.get('deck')
             game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
 
-            game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.player)]
-            game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.opponent)]
+            game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.player).get("hand")]
+            game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.opponent).get("hand")]
 
 
             add_to_crib_view = AddToCribView(game_info, state_transition= self)
