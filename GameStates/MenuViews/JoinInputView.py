@@ -1,9 +1,10 @@
 from GameStates.MenuViews.GameKeyInputView import GameKeyInputView
+from GameStates.StateTransitionBackend import StateTransitionBackend
 
 
 class JoinInputView(GameKeyInputView):
 
-    def __init__(self, game_info, state_transition):
+    def __init__(self, game_info, state_transition: StateTransitionBackend):
         label = "Join Game Key"
         self.game_info = game_info
         self.state_transition = state_transition
@@ -13,4 +14,4 @@ class JoinInputView(GameKeyInputView):
                          state_transition=self.state_transition)
 
     def to_next_view(self, game_key):
-        pass
+        self.state_transition.join_game_to_pick_card(game_info=self.game_info, game_name=game_key)

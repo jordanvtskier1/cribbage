@@ -41,33 +41,30 @@ class StateTransitionBackend:
     
     def join_game_to_pick_card(self, game_info: GameInfo, game_name: str): 
         from GameStates.PickCardView import PickCardView
+        from GameStates.MenuViews.JoinInputView import JoinInputView
 
         self.player = "player2"
         self.opponent = "player1"
         self.database_ref = self.database_ref.child(game_name)
 
-        game_data = self.database_ref.get()
-        if game_data is None:
-            raise ValueError(f"The Game {game_name} does not exist.")
-
-
-        # Retrieve and convert deck data
-        deck_data = game_data.get('deck')
-        game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]  # Assuming a Card.fromDict method
-        #game_info.game_name = game_data.get('game_name')
-        for card in game_info.deck:
-            print(card)
-
-        pick_card_view = PickCardView(game_info, state_transition=self)
-        self.window.show_view(pick_card_view)
-
-    '''def menu_to_pick_card(self, game_info: GameInfo):
-        from GameStates.PickCardView import PickCardView
-
-        game_info = Backend.create_deck(game_info)
         
-        pick_card_view = PickCardView(game_info, state_transition= self)
-        self.window.show_view(pick_card_view)'''
+        if game_data is None:
+             join_game_view = JoinInputView(game_info=game_info, state_transition=self)
+             self.window.show_view(join_game_view)
+
+        else:
+            game_data = self.database_ref.get()
+            # Retrieve and convert deck data
+            deck_data = game_data.get('deck')
+            game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]  # Assuming a Card.fromDict method
+            #game_info.game_name = game_data.get('game_name')
+            for card in game_info.deck:
+                print(card)
+
+            pick_card_view = PickCardView(game_info, state_transition=self)
+            self.window.show_view(pick_card_view)
+
+
 
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
@@ -158,6 +155,12 @@ class StateTransitionBackend:
             self.window.show_view(add_to_crib_view)
 
         elif card==opponent_card:
+            # reset card choice so 
+            query = {
+            self.player: {'card_pick': ''}
+            }
+            self.database_ref.update(query)
+
             view = PickCardView(game_info, state_transition=self)
             self.window.show_view(view)
 
