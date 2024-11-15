@@ -6,6 +6,7 @@ import arcade
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
+import time
 
 
 class CutDeckView(GameView):
@@ -15,6 +16,7 @@ class CutDeckView(GameView):
         super().__init__(game_info, state_transition)
 
         self.tip_string = "Pick a card to cut the deck"
+        self.time_one = -1
 
 
     def on_draw(self):
@@ -41,7 +43,7 @@ class CutDeckView(GameView):
         Clicking a card to cut the deck
         """
 
-        #if self.game_info.is_turn and not self.game_info.is_dealer:
+        # if self.game_info.is_turn and not self.game_info.is_dealer:
         # Get card object sprites
         card_sprites = arcade.SpriteList()
         for card in self.game_info.deck:
@@ -53,7 +55,17 @@ class CutDeckView(GameView):
         if len(cards_pressed) > 0:
             # Retrieve the top card of the cards at the given location
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
-
+            if len(self.cards_clicked) == 0:
+                self.cards_clicked.append(card)
             # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
-            self.transition.cut_deck_to_play(self.game_info, card)
+
+    def on_update(self, delta_time):
+        if len(self.cards_clicked) > 0:
+            if self.time_one < 0:
+                self.time_one = time.time()
+                print(self.time_one)
+            else:
+                time_two = time.time()
+                if time_two - self.time_one > 3:
+                    self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])

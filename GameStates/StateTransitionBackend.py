@@ -29,7 +29,7 @@ class StateTransitionBackend:
         from GameStates.PickCardView import PickCardView
 
         opponent_card = self.other_player.pick_card(game_info)
-        if card> opponent_card:
+        if card > opponent_card:
             game_info.is_dealer = False
             game_info.has_crib = False
             game_info.is_turn = True

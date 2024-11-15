@@ -246,8 +246,12 @@ class GameView(arcade.View):
         for card in self.game_info.deck:
             # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
-            if card in self.cards_clicked:
-                card.setPosition([self.SCREEN_WIDTH // 2, 100 if self.game_info.is_turn else self.SCREEN_HEIGHT - 100])
+            in_clicked_cards = False
+            for i in range(len(self.cards_clicked)):
+                if card.isSameCard(self.cards_clicked[i]):
+                    in_clicked_cards = True
+            if in_clicked_cards:
+                card.setPosition([self.SCREEN_WIDTH // 4, 175 if self.game_info.is_turn else self.SCREEN_HEIGHT - 175])
             else:
                 card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_spacer, self.CENTER_CARD_LOCATION[1]])
             card.draw()
