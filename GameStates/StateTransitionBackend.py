@@ -47,7 +47,8 @@ class StateTransitionBackend:
         self.opponent = "player1"
         self.database_ref = self.database_ref.child(game_name)
 
-        
+        game_data = self.database_ref.get()
+
         if game_data is None:
              join_game_view = JoinInputView(game_info=game_info, state_transition=self)
              self.window.show_view(join_game_view)
