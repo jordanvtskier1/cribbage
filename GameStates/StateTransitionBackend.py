@@ -3,172 +3,92 @@ from GameStates.GameInfo import GameInfo
 from Backend.BackendFunctions import Backend
 from Card import Card
 from Connection.config import init
+from Adversary.CPU import CPU
+from Adversary.Multiplayer import Multiplayer
 import json
 import firebase_admin
 import threading
 import arcade
+import time
+
 
 
 
 class StateTransitionBackend:
     def __init__(self, window: arcade.Window):
         self.window = window
-        self.database_ref = init()
+        #self.database_ref = init()
         
-        
+
 
     def create_game_to_pick_card(self, game_info: GameInfo, game_name):
         from GameStates.PickCardView import PickCardView
 
-        #clear game with same name if it exists
-        self.database_ref.child(game_name).set("")
-
-
-        game_info = Backend.create_deck(game_info)
-        self.player = "player1"
-        self.opponent = "player2"
-        self.database_ref.update({
-            game_name: {'deck': [card.getDict() for card in game_info.deck],
-                        self.player: {'card_pick': ''},
-                        self.opponent: {'card_pick': ''}}
-
-        })
-
-        self.database_ref = self.database_ref.child(game_name)
-
+        self.other_player = Multiplayer()
+        self.other_player.create_game(game_info=game_info, game_name=game_name)
         pick_card_view = PickCardView(game_info, self)
         self.window.show_view(pick_card_view)
+
+
     
     def join_game_to_pick_card(self, game_info: GameInfo, game_name: str): 
         from GameStates.PickCardView import PickCardView
         from GameStates.MenuViews.JoinInputView import JoinInputView
+        
 
-        self.player = "player2"
-        self.opponent = "player1"
-        self.database_ref = self.database_ref.child(game_name)
+        self.other_player = Multiplayer()
+        self.other_player.join_game(game_info=game_info, game_name=game_name)
 
-        game_data = self.database_ref.get()
-
-        if game_data is None:
+        if not game_info.deck:
              join_game_view = JoinInputView(game_info=game_info, state_transition=self)
              self.window.show_view(join_game_view)
 
         else:
-            game_data = self.database_ref.get()
-            # Retrieve and convert deck data
-            deck_data = game_data.get('deck')
-            game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]  # Assuming a Card.fromDict method
-            #game_info.game_name = game_data.get('game_name')
-            for card in game_info.deck:
-                print(card)
-
             pick_card_view = PickCardView(game_info, state_transition=self)
             self.window.show_view(pick_card_view)
+        
 
+    """def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
+        from GameStates.AddToCribView import AddToCribView
+        from GameStates.PickCardView import PickCardView
+        
+        self.other_player.pick_card(game_info=game_info, card=card)
+        
+        # means that both players picked same card, return to pick card view
+        if not game_info.our_hand:
+            view = PickCardView(game_info, state_transition=self)
+            self.window.show_view(view)
 
+        else:
+            add_to_crib_view = AddToCribView(game_info, state_transition= self)
+            self.window.show_view(add_to_crib_view)"""
 
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
         from GameStates.AddToCribView import AddToCribView
         from GameStates.PickCardView import PickCardView
         
-        query = {
-            self.player: {'card_pick': card.getDict()}
-        }
-        self.database_ref.update(query)
+        opponent_card = self.other_player.pick_card(game_info=game_info, card=card)
 
-        card_dict = {}
-
-
-        # Callback function to capture data change
-        def on_card_pick_change(event):
-            nonlocal card_dict
-            print(f"Data change detected at {event.path}")
-            if event.data:
-                print(f"Data: {event.data}")
-                card_dict = event.data
-                # Stop listening after the first change is captured
-                try:
-                    listener.close()
-                except:
-                    pass
-
-        initial_data = self.database_ref.child(self.opponent+"/card_pick").get()
-
-        if initial_data:
-            print(f"initial data: {initial_data}")
-            card_dict = initial_data
-        else:
-            listener = self.database_ref.child(self.opponent+"/card_pick").listen(on_card_pick_change)
-            #listener = self.database_ref.listen(on_card_pick_change)
-
-            # Wait until data is captured
-            while not card_dict:
-                pass  # Busy-wait until card data is set
-
-        opponent_card = Card(card_dict["suit"], card_dict["rank"])
-
-
-        if card > opponent_card:
-            game_info.is_dealer = False
-
-            deal_dict = {}
-
-            # Callback function to capture data change
-            def on_deal_change(event):
-                nonlocal deal_dict
-                if event.data:
-                    print(f"Data: {event.data}")
-                    deal_dict = event.data
-                    # Stop listening after the first change is captured
-                    try:
-                        listener.close()
-                    except:
-                        pass
-            
-            listener = self.database_ref.listen(on_deal_change)
-
-            # Wait until data is captured
-            while not deal_dict:
-                pass  # Busy-wait until card data is set
-
-            deck_data = deal_dict.get('deck')
-            game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
-
-            game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.player).get("hand")]
-            game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.opponent).get("hand")]
-
-
-            add_to_crib_view = AddToCribView(game_info, state_transition= self)
-            self.window.show_view(add_to_crib_view)
-
-        elif card < opponent_card:
-            game_info.is_dealer = True
-            game_info = Backend.deal_cards(game_info)
-
-            self.database_ref.update({
-            'deck': [card.getDict() for card in game_info.deck],
-            self.player: {'hand': [card.getDict() for card in game_info.our_hand]},
-            self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
-            })
-
-            add_to_crib_view = AddToCribView(game_info, state_transition= self)
-            self.window.show_view(add_to_crib_view)
-
-        elif card==opponent_card:
-            # reset card choice so 
-            query = {
-            self.player: {'card_pick': ''}
-            }
-            self.database_ref.update(query)
-
+        # means that both players picked same card, return to pick card view
+        if card == opponent_card:
             view = PickCardView(game_info, state_transition=self)
             self.window.show_view(view)
+        else:
+            if card > opponent_card:
+                game_info.is_dealer = False
+                self.other_player.get_deal(game_info)
 
-        
-        
+            elif card < opponent_card:
+                game_info.is_dealer = True
+                game_info.is_dealer = True
+                game_info = Backend.deal_cards(game_info)
+                self.other_player.send_deal(game_info)
 
-        
+            add_to_crib_view = AddToCribView(game_info, state_transition= self)
+            self.window.show_view(add_to_crib_view)
+
+
         
 
     def add_crib_to_cut_deck(self, game_info: GameInfo, card1, card2):
