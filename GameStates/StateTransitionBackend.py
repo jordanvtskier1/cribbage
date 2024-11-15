@@ -48,20 +48,6 @@ class StateTransitionBackend:
             self.window.show_view(pick_card_view)
         
 
-    """def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
-        from GameStates.AddToCribView import AddToCribView
-        from GameStates.PickCardView import PickCardView
-        
-        self.other_player.pick_card(game_info=game_info, card=card)
-        
-        # means that both players picked same card, return to pick card view
-        if not game_info.our_hand:
-            view = PickCardView(game_info, state_transition=self)
-            self.window.show_view(view)
-
-        else:
-            add_to_crib_view = AddToCribView(game_info, state_transition= self)
-            self.window.show_view(add_to_crib_view)"""
 
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
