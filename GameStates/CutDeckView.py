@@ -67,5 +67,5 @@ class CutDeckView(GameView):
                 print(self.time_one)
             else:
                 time_two = time.time()
-                if time_two - self.time_one > 3:
+                if time_two - self.time_one > 2:
                     self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])

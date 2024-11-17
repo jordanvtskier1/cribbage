@@ -86,11 +86,11 @@ class Card:
     def __gt__(self, card):
         return self.getRankAsInt() > card.getRankAsInt()
 
-    def __eq__(self, card):
-        return self.getRankAsInt() == card.getRankAsInt()
+    # Overriding the equality operator for card causes the following logical error:
+    # When using methods such as remove or lines like card in cards
+    # Any card with the same value/Rank as Int is affected not just the one card object desired.
+    # def __eq__(self, card):
+    #     return self.getRankAsInt() == card.getRankAsInt()
     
-    def isSameCard(self, card):
-        if self.getRank() == card.getRank() and self.getSuit() == card.getSuit():
-            return True
-        else:
-            return False
+    def isSameValue(self, card):
+        return self.getRankAsInt() == card.getRankAsInt()
