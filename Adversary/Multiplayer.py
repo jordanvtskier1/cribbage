@@ -100,6 +100,7 @@ class Multiplayer(OtherPlayerLogic):
         'cut_card': game_info.top_card.getDict()
         })
 
+    #TODO: change so that we send hand and cards in play
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
         self.player: {'played_card': card.getDict()},
@@ -124,6 +125,7 @@ class Multiplayer(OtherPlayerLogic):
         card_dict = self.listen_get_cards("cut_card")
         return Card(card_dict["suit"], card_dict["rank"])
 
+    # TODO: change so that we get player hand and cards in play
     def play_card(self, game_info: GameInfo):
         card_dict = self.listen_get_cards(self.opponent+"/played_card")
         return Card(card_dict["suit"], card_dict["rank"])
@@ -163,6 +165,7 @@ class Multiplayer(OtherPlayerLogic):
 
     #@staticmethod
     def listen_get_cards(self, path):
+        time.sleep(1)
         card_dict = {}
         # Callback function to capture data change
         def on_card_pick_change(event):
