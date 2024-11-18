@@ -125,7 +125,7 @@ class Multiplayer(OtherPlayerLogic):
         return Card(card_dict["suit"], card_dict["rank"])
 
     def play_card(self, game_info: GameInfo):
-        card_dict = self.listen_get_cards(self.opponent+"/cut_card")
+        card_dict = self.listen_get_cards(self.opponent+"/played_card")
         return Card(card_dict["suit"], card_dict["rank"])
 
 
