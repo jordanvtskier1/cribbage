@@ -67,8 +67,6 @@ class StateTransitionBackend:
 
             elif card < opponent_card:
                 game_info.is_dealer = True
-                game_info.is_dealer = True
-                game_info = Backend.deal_cards(game_info)
                 self.other_player.send_deal(game_info)
 
             add_to_crib_view = AddToCribView(game_info, state_transition= self)
@@ -81,7 +79,7 @@ class StateTransitionBackend:
         from GameStates.CutDeckView import CutDeckView
         # Backend logic goes here if any
 
-        Backend.add_to_crib(game_info, card1, card2)
+        Backend.add_to_crib(game_info, [card1, card2])
         Backend.remove_from_our_hand(game_info, [card1, card2])
 
         # opponent_cards = Firebase.get_crib_picks()

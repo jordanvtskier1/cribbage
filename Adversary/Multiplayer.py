@@ -19,8 +19,6 @@ class Multiplayer(OtherPlayerLogic):
         self.database_ref.update(query)
 
         card_dict = {}
-
-
         # Callback function to capture data change
         def on_card_pick_change(event):
             nonlocal card_dict
@@ -89,6 +87,7 @@ class Multiplayer(OtherPlayerLogic):
 
 
     def send_deal(self, game_info: GameInfo):
+        game_info = Backend.deal_cards(game_info)
 
         self.database_ref.update({
         'deck': [card.getDict() for card in game_info.deck],
@@ -100,7 +99,16 @@ class Multiplayer(OtherPlayerLogic):
  
 
     def add_to_cribbage(self, game_info: GameInfo):
-        pass
+
+        self.database_ref.update({
+        self.player: {'hand': [card.getDict() for card in game_info.our_hand],
+                      'crib_picks' : [card.getDict() for card in game_info.crib]}        
+        })
+
+        crib_data = self.listen_get_cards(self.opponent+"/crib_picks")
+        return [Card(card_dict["suit"], card_dict["rank"]) for card_dict in crib_data]
+
+
 
     def cut_deck(self, game_info: GameInfo):
         pass
@@ -140,3 +148,35 @@ class Multiplayer(OtherPlayerLogic):
             deck_data = game_data.get('deck')
             game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
         
+
+    #@staticmethod
+    def listen_get_cards(self, path):
+        card_dict = {}
+        # Callback function to capture data change
+        def on_card_pick_change(event):
+            nonlocal card_dict
+            print(f"Data change detected at {event.path}")
+            if event.data:
+                print(f"Data: {event.data}")
+                card_dict = event.data
+                # Stop listening after the first change is captured
+                try:
+                    listener.close()
+                except:
+                    pass
+
+        initial_data = self.database_ref.child(path).get()
+
+        if initial_data:
+            print(f"initial data: {initial_data}")
+            card_dict = initial_data
+        else:
+            listener = self.database_ref.child(path).listen(on_card_pick_change)
+
+            # Wait until data is captured
+            while not card_dict:
+                pass  # Busy-wait until card data is 
+            
+            card_dict
+
+        return card_dict

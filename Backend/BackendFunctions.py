@@ -29,13 +29,13 @@ class Backend:
         return game_info
     
     @staticmethod
-    def add_to_crib(game_info: GameInfo, card1: Card, card2: Card):
-        game_info.crib.append(card1)
-        game_info.crib.append(card2)
+    def add_to_crib(game_info: GameInfo, cards: list[Card]):
+        for card in cards:
+            game_info.crib.append(card)
         return
 
     @staticmethod
-    def remove_from_our_hand(game_info: GameInfo, cards):
+    def remove_from_our_hand(game_info: GameInfo, cards: list[Card]):
         for card in cards:
             game_info.our_hand.remove(card)
 
