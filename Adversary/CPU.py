@@ -1,5 +1,6 @@
 from Adversary.OtherPlayerLogic import OtherPlayerLogic
 from GameStates.GameInfo import GameInfo
+from Card import Card
 import random
 
 class CPU(OtherPlayerLogic):
@@ -7,13 +8,15 @@ class CPU(OtherPlayerLogic):
         super().__init__()
 
     # picks card from deck
-    def pick_card(self, game_info: GameInfo):
-        deck_size = len( game_info.deck )
-
+    def pick_card(self, game_info: GameInfo, card: Card):
+        
+        # Randomly select a card from the deck
+        deck_size = len(game_info.deck)
         card_index = random.randint(0, deck_size - 1)
+        opponent_card = game_info.deck[card_index]  
 
-        card = game_info.deck[card_index]
-        return card
+        print(f"CPU picked card: {opponent_card}")
+        return opponent_card
 
     def add_to_cribbage(self, game_info: GameInfo):
         card_indexes = [
