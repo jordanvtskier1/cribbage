@@ -87,19 +87,32 @@ class StateTransitionBackend:
 
         Backend.add_to_crib(game_info, [opponent_cards[0], opponent_cards[1]])
         Backend.remove_from_other_hand(game_info, [opponent_cards[0],  opponent_cards[1]])
-        
-        cut_deck_view = CutDeckView(game_info, state_transition= self)
-        self.window.show_view(cut_deck_view)
+
+
+        if game_info.is_dealer:
+            cut_deck_view = CutDeckView(game_info, state_transition= self)
+            self.window.show_view(cut_deck_view)
+        else:
+            #wait_view = WaitCutDeckView(game_info, state_transition= self)
+            #self.window.show_view(wait_view)
+            self.wait_for_cut_deck(game_info)
+
 
     def cut_deck_to_play(self, game_info, card):
         from GameStates.PlayView import PlayView
 
-        # We should pass none if we dont want to cut the deck
-        if card is None:
-            card = self.other_player.cut_deck(game_info)
-
         game_info = Backend.cut_deck(game_info, card)
         
+        self.other_player.send_cut(game_info)
+
+        play_view = PlayView(game_info, state_transition= self)
+        self.window.show_view(play_view)
+
+    def wait_for_cut_deck(self, game_info):
+        from GameStates.PlayView import PlayView
+
+        card = self.other_player.cut_deck(game_info)
+        game_info = Backend.cut_deck(game_info, card)
         play_view = PlayView(game_info, state_transition= self)
         self.window.show_view(play_view)
 

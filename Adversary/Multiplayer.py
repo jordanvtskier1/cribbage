@@ -95,6 +95,11 @@ class Multiplayer(OtherPlayerLogic):
         self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
         })
 
+    def send_cut(self, game_info: GameInfo):
+        self.database_ref.update({
+        'cut_card': game_info.top_card.getDict()
+        })
+
 
  
 
@@ -111,7 +116,8 @@ class Multiplayer(OtherPlayerLogic):
 
 
     def cut_deck(self, game_info: GameInfo):
-        pass
+        card_dict = self.listen_get_cards("cut_card")
+        return Card(card_dict["suit"], card_dict["rank"])
 
     def play_card(self, game_info: GameInfo):
         pass
@@ -177,6 +183,4 @@ class Multiplayer(OtherPlayerLogic):
             while not card_dict:
                 pass  # Busy-wait until card data is 
             
-            card_dict
-
         return card_dict
