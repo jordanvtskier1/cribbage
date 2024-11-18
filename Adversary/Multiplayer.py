@@ -76,7 +76,7 @@ class Multiplayer(OtherPlayerLogic):
         listener = self.database_ref.listen(on_deal_change)
 
         # Wait until data is captured
-        while not deal_dict.get(self.player).get("hand"):
+        while not deal_dict.get(self.player, {}).get("hand"):
             pass  # Busy-wait until card data is set
 
         deck_data = deal_dict.get('deck')
