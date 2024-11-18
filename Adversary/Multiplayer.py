@@ -100,6 +100,11 @@ class Multiplayer(OtherPlayerLogic):
         'cut_card': game_info.top_card.getDict()
         })
 
+    def send_play(self, game_info: GameInfo, card: Card):
+        self.database_ref.update({
+        self.player: {'played_card': card.getDict()},
+        })
+
 
  
 
@@ -120,7 +125,8 @@ class Multiplayer(OtherPlayerLogic):
         return Card(card_dict["suit"], card_dict["rank"])
 
     def play_card(self, game_info: GameInfo):
-        pass
+        card_dict = self.listen_get_cards(self.opponent+"/cut_card")
+        return Card(card_dict["suit"], card_dict["rank"])
 
 
     def create_game(self, game_info: GameInfo, game_name: str):
@@ -170,8 +176,10 @@ class Multiplayer(OtherPlayerLogic):
                     listener.close()
                 except:
                     pass
-
-        initial_data = self.database_ref.child(path).get()
+        
+        # We do not want old data for played card because it will be the card from last turn
+        if path != self.opponent+"/played_card":
+            initial_data = self.database_ref.child(path).get()
 
         if initial_data:
             print(f"initial data: {initial_data}")

@@ -100,14 +100,19 @@ class StateTransitionBackend:
 
     def cut_deck_to_play(self, game_info, card):
         from GameStates.PlayView import PlayView
+        #from GameStates.WaitView import WaitView
 
         game_info = Backend.cut_deck(game_info, card)
         
         self.other_player.send_cut(game_info)
 
-        play_view = PlayView(game_info, state_transition= self)
-        self.window.show_view(play_view)
-
+        
+        #wait_view = WaitView(game_info, state_transition= self)
+        #self.window.show_view(wait_view)
+        # Delete later, temporary solution
+        self.wait_to_play(game_info)
+            
+            
     def wait_for_cut_deck(self, game_info):
         from GameStates.PlayView import PlayView
 
@@ -121,28 +126,47 @@ class StateTransitionBackend:
         from GameStates.PlayView import PlayView
         #from GameStates.WaitView import WaitView
 
-        #When it is not our turn
-        if card is None or game_info.is_turn is False:
-            other_card = self.other_player.play_card(game_info)
-            #TODO add backend logic for playing cards ? I dont know how it works
-            game_info.cards_in_play.append(other_card)
-            game_info.other_hand.remove(other_card)
-            game_info.is_turn = True
+        played_card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+
+        if played_card_sum + card.getValue() > 31:
+            game_info.can_play = False
+
+            self.other_player.send_play(game_info, None)
+            #TODO add output message
+            
 
         else:
-            played_card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+            game_info.cards_in_play.append(card)
+            game_info.our_hand.remove(card)
 
-            if played_card_sum + card.getValue() > 31:
-                game_info.can_play = False
-                #TODO add output message
-
-            else:
-                game_info = Backend.play_card(game_info, card)
-
+            play_score = Backend.play_card(game_info, card)
+            game_info.our_score += play_score
             game_info.is_turn = False
-        play_view = PlayView(game_info, state_transition= self)
 
+            self.other_player.send_play(game_info, card)
+
+        # TODO: create WaitView
+        #wait_view = WaitView(game_info, state_transition= self)
+        #self.window.show_view(wait_view)
+        self.wait_to_play(game_info)
+            
+
+
+    def wait_to_play(self, game_info: GameInfo):
+        from GameStates.PlayView import PlayView
+
+        other_card = self.other_player.play_card(game_info)
+        #TODO add backend logic for playing cards ? I dont know how it works
+        game_info.cards_in_play.append(other_card)
+        game_info.other_hand.remove(other_card)
+        game_info.is_turn = True
+
+        play_view = PlayView(game_info, state_transition= self)
         self.window.show_view(play_view)
+
+
+
+
 
     def play_to_show_score(self, game_info: GameInfo):
         from GameStates.ShowScoreView import ShowScoreView
