@@ -85,7 +85,7 @@ class StateTransitionBackend:
         # opponent_cards = Firebase.get_crib_picks()
         opponent_cards = self.other_player.add_to_cribbage(game_info)
 
-        Backend.add_to_crib(game_info, opponent_cards[0], opponent_cards[1])
+        Backend.add_to_crib(game_info, [opponent_cards[0], opponent_cards[1]])
         Backend.remove_from_other_hand(game_info, [opponent_cards[0],  opponent_cards[1]])
         
         cut_deck_view = CutDeckView(game_info, state_transition= self)
