@@ -125,7 +125,7 @@ class Multiplayer(OtherPlayerLogic):
         return Card(card_dict["suit"], card_dict["rank"])
 
     def play_card(self, game_info: GameInfo):
-        card_dict = self.listen_get_cards(self.opponent+"/cut_card")
+        card_dict = self.listen_get_cards(self.opponent+"/played_card")
         return Card(card_dict["suit"], card_dict["rank"])
 
 
@@ -177,11 +177,12 @@ class Multiplayer(OtherPlayerLogic):
                 except:
                     pass
         
+        initial_data = None
         # We do not want old data for played card because it will be the card from last turn
         if path != self.opponent+"/played_card":
             initial_data = self.database_ref.child(path).get()
 
-        if initial_data:
+        if initial_data is not None:
             print(f"initial data: {initial_data}")
             card_dict = initial_data
         else:
