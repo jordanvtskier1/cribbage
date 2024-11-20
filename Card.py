@@ -69,6 +69,9 @@ class Card:
     def getPosition(self):
         return [self.sprite.center_x, self.sprite.center_y]
     
+    def getDict(self):
+        return {"suit": self.suit, "rank": self.rank}
+    
 #============================================================#
 # Drawing
 

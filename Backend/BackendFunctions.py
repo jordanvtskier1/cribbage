@@ -29,13 +29,13 @@ class Backend:
         return game_info
     
     @staticmethod
-    def add_to_crib(game_info: GameInfo, card1: Card, card2: Card):
-        game_info.crib.append(card1)
-        game_info.crib.append(card2)
+    def add_to_crib(game_info: GameInfo, cards: list[Card]):
+        for card in cards:
+            game_info.crib.append(card)
         return
 
     @staticmethod
-    def remove_from_our_hand(game_info: GameInfo, cards):
+    def remove_from_our_hand(game_info: GameInfo, cards: list[Card]):
         for card in cards:
             game_info.our_hand.remove(card)
 
@@ -119,16 +119,14 @@ class Backend:
 
     @staticmethod
     def play_card(game_info: GameInfo, card: Card):
-        game_info.cards_in_play.append(card)
-        game_info.our_hand.remove(card)
-
+        play_score = 0
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
         #fifteen
         if card_sum == 15:
-            game_info.our_score += 2
+            play_score += 2
         #31
         if card_sum == 31:
-            game_info.our_score += 2
+            play_score += 2
 
          # Pair, triple, and quad
         if len(game_info.cards_in_play) >= 2 and game_info.cards_in_play[-2].getRank() == card.getRank():
@@ -136,11 +134,11 @@ class Backend:
             if len(game_info.cards_in_play) >= 3 and game_info.cards_in_play[-3].getRank() == card.getRank():
                 # Quad
                 if len(game_info.cards_in_play) >= 4 and game_info.cards_in_play[-4].getRank() == card.getRank():
-                    game_info.our_score += 12  # Quad score (quadruple, 4 cards)
+                    play_score += 12  # Quad score (quadruple, 4 cards)
                 else:
-                    game_info.our_score += 6  # Triple score
+                    play_score += 6  # Triple score
             else:
-                game_info.our_score += 2  # Pair score
+                play_score += 2  # Pair score
 
         # Run
         run_length = 1
@@ -152,9 +150,9 @@ class Backend:
                 run_length = 1  # Reset if sequence is broken
             
             if run_length >= 3:
-                game_info.our_score += run_length  # Add score for the run length
+                play_score += run_length  # Add score for the run length
 
-        return game_info
+        return play_score
 
     @staticmethod
     def calculate_crib_score(game_info: GameInfo):
