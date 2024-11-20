@@ -18,6 +18,7 @@ class StateTransitionBackend:
     def __init__(self, window: arcade.Window):
         self.window = window
         self.database_ref = init()
+        self.other_player = OtherPlayerLogic()
         
 
 
