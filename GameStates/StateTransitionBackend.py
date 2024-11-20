@@ -17,7 +17,7 @@ import time
 class StateTransitionBackend:
     def __init__(self, window: arcade.Window):
         self.window = window
-        #self.database_ref = init()
+        self.database_ref = init()
         
 
 
@@ -25,6 +25,8 @@ class StateTransitionBackend:
         from GameStates.PickCardView import PickCardView
 
         self.other_player = Multiplayer()
+        game_info.opponent = "player2"
+        game_info.player = "player1"
         self.other_player.create_game(game_info=game_info, game_name=game_name)
         pick_card_view = PickCardView(game_info, self)
         self.window.show_view(pick_card_view)
@@ -37,6 +39,8 @@ class StateTransitionBackend:
         
 
         self.other_player = Multiplayer()
+        game_info.opponent = "player1"
+        game_info.player = "player2"
         self.other_player.join_game(game_info=game_info, game_name=game_name)
 
         if not game_info.deck:
@@ -50,11 +54,10 @@ class StateTransitionBackend:
 
 
 
-    def pick_card_to_add_crib(self, game_info: GameInfo, card: Card):
+    def pick_card_to_add_crib(self, game_info: GameInfo, card: Card, opponent_card: Card):
         from GameStates.AddToCribView import AddToCribView
         from GameStates.PickCardView import PickCardView
-        
-        opponent_card = self.other_player.pick_card(game_info=game_info, card=card)
+
 
         # means that both players picked same card, return to pick card view
         if card == opponent_card:

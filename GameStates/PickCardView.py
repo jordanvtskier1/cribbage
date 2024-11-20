@@ -7,7 +7,7 @@ import arcade
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GameStates.StateTransitionBackend import StateTransitionBackend
-
+from Card import Card
 
 class PickCardView(GameView):
     """Class representing the picking card portion of the game"""
@@ -16,6 +16,28 @@ class PickCardView(GameView):
         super().__init__(game_info, state_transition)
 
         self.tip_string = "Choose a card to see who goes first"
+        self.db_ref = state_transition.database_ref
+        self.card_picked = None
+        self.card_dict = {}
+        self.other_card = None
+        self.listener = None
+
+    def on_show(self):
+
+        self.listen()
+
+    def listen(self):
+
+        def listener(event):
+            print(event.event_type)  # can be 'put' or 'patch'
+            print(event.path)  # relative to the reference, it seems
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data is not None:
+                self.card_dict = event.data
+                self.other_card = Card( event.data["suit"], event.data["rank"] )
+
+        self.listener = self.db_ref.child(self.game_info.opponent + "/card_pick").listen(listener)
 
 
     def on_draw(self):
@@ -30,6 +52,12 @@ class PickCardView(GameView):
         self.draw_pegs()
         self.draw_score()
         self.draw_tips()
+
+        if self.other_card is not None and self.card_picked is not None:
+            self.transition.pick_card_to_add_crib(game_info=self.game_info,
+                                                  card=self.card_picked,
+                                                  opponent_card = self.other_card)
+
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -53,4 +81,11 @@ class PickCardView(GameView):
 
             # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
-            self.transition.pick_card_to_add_crib(game_info= self.game_info, card = card)
+            self.card_picked = card
+            query = {
+                self.game_info.player: {'card_pick': card.getDict()}
+            }
+            self.db_ref.update(query)
+
+    def on_hide_view(self):
+        self.listener.stop()
