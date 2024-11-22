@@ -17,6 +17,22 @@ class PickCardView(GameView):
 
         self.tip_string = "Choose a card to see who goes first"
 
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        self.manager.add(
+            arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        )
+
 
     def on_draw(self):
         """
@@ -29,7 +45,8 @@ class PickCardView(GameView):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
-        self.draw_tips()
+        #self.draw_tips()
+        self.manager.draw()
 
 
     def on_mouse_press(self, x, y, button, modifiers):

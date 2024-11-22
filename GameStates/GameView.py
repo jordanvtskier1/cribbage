@@ -38,7 +38,7 @@ class GameView(arcade.View):
         self.CENTER_CARD_LOCATION = [(self.SCREEN_WIDTH // 4) + 50, self.SCREEN_HEIGHT / 2]
         self.BOARD_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT / 2]
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
-
+        self.GUIDE_LOCATION = [(self.SCREEN_WIDTH // 2), self.SCREEN_WIDTH // 8]
 
     def on_draw(self):
         """
@@ -91,65 +91,65 @@ class GameView(arcade.View):
         # TODO: Find better implementation method
         if self.game_info.our_score == 0:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 5, arcade.color.RED)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 5, arcade.color.TAN)
         elif self.game_info.our_score <= 35:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 5, arcade.color.RED)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 5, arcade.color.TAN)
         elif self.game_info.our_score <= 38:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 40:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 43:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 45:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 80:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 5, arcade.color.RED)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 83:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 85:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 5, arcade.color.RED) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 5, arcade.color.TAN) 
         elif self.game_info.our_score <= 120:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 5, arcade.color.RED)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 5, arcade.color.TAN)
         elif self.game_info.our_score >= 121:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.RED)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.TAN)
         
         if self.game_info.other_score == 0:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 5, arcade.color.TAN)
         elif self.game_info.other_score <= 35:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.other_score, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.other_score, 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.other_score, 5, arcade.color.TAN)
         elif self.game_info.other_score <= 40:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40 + 7.5 * (self.game_info.other_score - 36), self.BOARD_LOCATION[1] + 152.5 + 7.5 * (self.game_info.other_score - 36), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40 + 7.5 * (self.game_info.other_score - 36), self.BOARD_LOCATION[1] + 152.5 + 7.5 * (self.game_info.other_score - 36), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40 + 7.5 * (self.game_info.other_score - 36), self.BOARD_LOCATION[1] + 152.5 + 7.5 * (self.game_info.other_score - 36), 5, arcade.color.TAN)
         elif self.game_info.other_score <= 45:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 7.5 * (self.game_info.other_score - 41), self.BOARD_LOCATION[1] + 182.5 - 7.5 * (self.game_info.other_score - 41), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 7.5 * (self.game_info.other_score - 41), self.BOARD_LOCATION[1] + 182.5 - 7.5 * (self.game_info.other_score - 41), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 7.5 * (self.game_info.other_score - 41), self.BOARD_LOCATION[1] + 182.5 - 7.5 * (self.game_info.other_score - 41), 5, arcade.color.TAN)
         elif self.game_info.other_score <= 80:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.other_score - 45), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.other_score - 45), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 39, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.other_score - 45), 5, arcade.color.TAN)
         elif self.game_info.other_score <= 83:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 37.5 - 5 * (self.game_info.other_score - 81), self.BOARD_LOCATION[1] - 192.5 - 5 * (self.game_info.other_score - 81), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 37.5 - 5 * (self.game_info.other_score - 81), self.BOARD_LOCATION[1] - 192.5 - 5 * (self.game_info.other_score - 81), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 37.5 - 5 * (self.game_info.other_score - 81), self.BOARD_LOCATION[1] - 192.5 - 5 * (self.game_info.other_score - 81), 5, arcade.color.TAN)
         elif self.game_info.other_score <= 85:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 27.5 - 5 * (self.game_info.other_score - 83), self.BOARD_LOCATION[1] - 202.5 + 5 * (self.game_info.other_score - 83), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 27.5 - 5 * (self.game_info.other_score - 83), self.BOARD_LOCATION[1] - 202.5 + 5 * (self.game_info.other_score - 83), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 27.5 - 5 * (self.game_info.other_score - 83), self.BOARD_LOCATION[1] - 202.5 + 5 * (self.game_info.other_score - 83), 5, arcade.color.TAN)
         elif self.game_info.other_score <= 120:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 14, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.other_score - 85), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 14, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.other_score - 85), 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 14, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.other_score - 85), 5, arcade.color.TAN)
         elif self.game_info.other_score >= 121:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.BLUE)
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.TAN)
 
 
     def draw_score(self):
@@ -166,9 +166,9 @@ class GameView(arcade.View):
         
         # Draw circles to signify player and their color
         arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 6, arcade.color.BLACK)
-        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 5, arcade.color.RED)
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] + 15, 5, arcade.color.TAN)
         arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 6, arcade.color.BLACK)
-        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 5, arcade.color.BLUE)
+        arcade.draw_circle_filled(self.SCORE_LOCATION[0] - 75, self.SCORE_LOCATION[1] - 15, 5, arcade.color.TAN)
         
         # Draw player names
         arcade.draw_text("You", self.SCORE_LOCATION[0] - 47, self.SCORE_LOCATION[1] + 7, arcade.color.BLACK, 15)

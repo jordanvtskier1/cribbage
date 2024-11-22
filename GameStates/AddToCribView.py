@@ -35,6 +35,17 @@ class AddToCribView(GameView):
                 align_x = -250,
                 align_y = -250)
         )
+        self.manager.add(arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        )
 
 
     def on_draw(self):
@@ -51,7 +62,7 @@ class AddToCribView(GameView):
         self.draw_other_hand()
         self.draw_crib()
         self.manager.draw()
-        self.draw_tips()
+        #self.draw_tips()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
