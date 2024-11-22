@@ -18,6 +18,21 @@ class StateTransitionBackend:
     def __init__(self, window: arcade.Window):
         self.window = window
         #self.database_ref = init()
+
+        #Uninitialized other player
+        self.other_player = OtherPlayerLogic()
+
+
+    def set_other_player(self, other_player_logic):
+        self.other_player = other_player_logic
+
+    def menu_to_pick_card(self, game_info: GameInfo):
+        from GameStates.PickCardView import PickCardView
+
+        game_info = Backend.create_deck(game_info)
+        
+        pick_card_view = PickCardView(game_info, state_transition= self)
+        self.window.show_view(pick_card_view)
         
 
 
