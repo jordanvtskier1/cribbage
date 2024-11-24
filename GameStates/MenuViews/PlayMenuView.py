@@ -65,17 +65,22 @@ class PlayMenuView(arcade.View):
 
     def host_behavior(self):
         from GameStates.MenuViews.HostInputView import HostInputView
+
+        self.game_info.is_multiplayer = True
         self.window.show_view(
             HostInputView(game_info=self.game_info, state_transition=self.state_transition)
         )
 
     def join_behavior(self):
         from GameStates.MenuViews.JoinInputView import JoinInputView
+
+        self.game_info.is_multiplayer = True
         self.window.show_view(
             JoinInputView(game_info=self.game_info, state_transition=self.state_transition)
         )
 
 
     def cpu_behavior(self):
+        self.game_info.is_multiplayer = False
         self.state_transition.set_other_player( other_player_logic= CPU() )
         self.state_transition.menu_to_pick_card(game_info=self.game_info)

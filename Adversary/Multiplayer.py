@@ -90,10 +90,10 @@ class Multiplayer(OtherPlayerLogic):
         game_info = Backend.deal_cards(game_info)
 
         self.database_ref.update({
-        'deck': [card.getDict() for card in game_info.deck],
-        self.player: {'hand': [card.getDict() for card in game_info.our_hand]},
-        self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
-        })
+            'deck': [card.getDict() for card in game_info.deck],
+            self.player: {'hand': [card.getDict() for card in game_info.our_hand]},
+            self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
+            })
 
     def send_cut(self, game_info: GameInfo):
         self.database_ref.update({
@@ -212,6 +212,48 @@ class Multiplayer(OtherPlayerLogic):
 
                 #Play animation
                 view.animate_other_card()
+                try:
+                    listener.close()
+                except:
+                    pass
 
-        listener = db_ref.child(view.game_info.opponent + "/card_pick")
-        listener.listen(get_picked_card)
+        listener = db_ref.child(view.game_info.opponent + "/card_pick").listen(get_picked_card)
+
+    @staticmethod
+    def listen_to_deal(view):
+        db_ref = view.db_ref
+        deal_dict = {}
+        player = view.game_info.player
+        opponent = view.game_info.opponent
+
+
+        # Callback function to capture data change
+        def on_deal_change(event):
+            nonlocal deal_dict
+            if event.data is not None:
+                print(f"Data: {event.data}")
+                deal_dict = event.data
+                view.listener_done = True
+
+                Multiplayer.assign_deal(game_info= view.game_info, deal_dict= deal_dict)
+
+                # Stop listening after the first change is captured
+                try:
+                    listener.close()
+                except:
+                    pass
+
+        listener = db_ref.listen(on_deal_change)
+
+    @staticmethod
+    def assign_deal( game_info: GameInfo, deal_dict: dict):
+        player = game_info.player
+        opponent = game_info.opponent
+
+        deck_data = deal_dict.get('deck')
+        game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
+
+        game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in
+                              deal_dict.get(player).get("hand")]
+        game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in
+                                deal_dict.get(opponent).get("hand")]

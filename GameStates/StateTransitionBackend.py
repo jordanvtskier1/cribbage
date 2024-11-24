@@ -64,29 +64,35 @@ class StateTransitionBackend:
             self.window.show_view(pick_card_view)
         
 
-
+    def wait_for_deal_to_add_crib(self, game_info: GameInfo):
+        from GameStates.AddToCribView import AddToCribView
+        add_to_crib_view = AddToCribView(game_info, state_transition=self)
+        self.window.show_view(add_to_crib_view)
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card, opponent_card: Card):
-        from GameStates.AddToCribView import AddToCribView
+
         from GameStates.PickCardView import PickCardView
+        from GameStates.WaitForDealView import WaitForDealView
 
 
         # means that both players picked same card, return to pick card view
-        if card == opponent_card:
-            view = PickCardView(game_info, state_transition=self)
-            self.window.show_view(view)
-        else:
-            if card > opponent_card:
-                game_info.is_dealer = False
-                self.other_player.get_deal(game_info)
-
-            elif card < opponent_card:
-                game_info.is_dealer = True
-                self.other_player.send_deal(game_info)
-
-            add_to_crib_view = AddToCribView(game_info, state_transition= self)
-            self.window.show_view(add_to_crib_view)
-
+        # TODO: Uncomment
+        # if card == opponent_card:
+        #     view = PickCardView(game_info, state_transition=self)
+        #     self.window.show_view(view)
+        # else:
+        #     if card > opponent_card:
+        #         game_info.is_dealer = False
+        #         self.other_player.get_deal(game_info)
+        #
+        #     elif card < opponent_card:
+        #         game_info.is_dealer = True
+        #         self.other_player.send_deal(game_info)
+        #
+        #     add_to_crib_view = AddToCribView(game_info, state_transition= self)
+        #     self.window.show_view(add_to_crib_view)
+        wait_view = WaitForDealView(game_info, state_transition= self)
+        self.window.show_view(wait_view)
 
         
 

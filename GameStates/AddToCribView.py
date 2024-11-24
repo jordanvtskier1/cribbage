@@ -9,7 +9,7 @@ from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
-
+from Card import Card
 
 class AddToCribView(GameView):
     """Class representing the adding cards to the crib portion of the game"""

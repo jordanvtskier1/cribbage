@@ -30,10 +30,9 @@ class PickCardView(GameView):
         self.card_dict = {}
         self.other_card = None
         self.listener = None
-        self.transition_ready = True
 
-        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, 175]
-        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, self.SCREEN_HEIGHT - 175]
+        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, 175]
+        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - 175]
 
         self.set_spread_deck()
 
@@ -62,7 +61,7 @@ class PickCardView(GameView):
         self.draw_tips()
         self.animate_cards()
 
-        if self.other_card is not None and self.card_picked is not None:
+        if self.can_transition():
             self.transition.pick_card_to_add_crib(game_info=self.game_info,
                                                   card=self.card_picked,
                                                   opponent_card = self.other_card)
@@ -109,15 +108,21 @@ class PickCardView(GameView):
         self.card_picked.start_shake(duration=self.ANIMATION_DURATION,
                                      end_position=self.OUR_CARD_END_POSITION)
 
-
     def animate_cards(self):
-        self.transition_ready = True
         for card in [self.card_picked, self.other_card]:
             if card is None:
                 continue
             if card.is_animating:
                 card.shake_card()
-                self.transition_ready = False
+
+
+    def can_transition(self):
+        for card in [self.card_picked, self.other_card]:
+            if card is None:
+                return False
+            if card.is_animating:
+                return False
+        return True
 
     def on_hide_view(self):
         self.db_ref.child(self.game_info.opponent + "/card_pick").delete()

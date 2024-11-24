@@ -2,18 +2,20 @@
 # CS 3050: Software Engineering
 #
 
+
 import arcade
 from random import randint
 
 from pyglet.resource import animation
 
+DEFAULT_ANIMATION_DURATION = 120
 
 class Card:
 
 #============================================================#
 # Constructor
 
-    def __init__(self, suit, rank, position=[500, 500]):
+    def __init__(self, suit = "Worms", rank = "A", position=[500, 500]):
         from GUI.CardSpriteResolver import CardSpriteResolver
         self.setSuit(suit)
         self.setRank(rank)
@@ -115,8 +117,6 @@ class Card:
         self.original_position = self.getPosition()
         self.end_animation_position = end_position
 
-
-
     def stop_shake(self, position):
         self.is_animating = False
 
@@ -141,3 +141,48 @@ class Card:
 
         if self.animation_time <= 0:
             self.stop_shake(self.getPosition())
+
+    def spin_once(self):
+        self.sprite.angle += 1
+
+    def spin_once_fast(self):
+        self.sprite.angle += 10
+
+    def stop_spin(self):
+        self.sprite.angle = 0
+
+    def stop_spinning_animation(self):
+        if not self.can_stop_spinning():
+            self.spin_once()
+            self.draw()
+            return False
+        else:
+            #To say we are done
+            return True
+
+    def can_stop_spinning(self):
+        ERROR = 10
+        return self.sprite.angle <= ERROR or self.sprite.angle >= -ERROR
+
+    def get_dealt_animation(self, end_position):
+        error_tolerance = 0.5
+
+        self.is_animating = True
+        self.end_animation_position = end_position
+
+        current_position = self.getPosition()
+        dx = (end_position[0] - current_position[0]) / DEFAULT_ANIMATION_DURATION
+        dy = (end_position[1] - current_position[1]) / DEFAULT_ANIMATION_DURATION
+
+        if abs(dx) >= error_tolerance or abs(dy) >= error_tolerance:
+            self.spin_once_fast()
+            dx = (end_position[0] - current_position[0])/DEFAULT_ANIMATION_DURATION
+            dy = (end_position[1] - current_position[1] )/DEFAULT_ANIMATION_DURATION
+            self.setPosition([current_position[0] + dx, current_position[1] + dy])
+        elif not self.can_stop_spinning():
+            self.spin_once()
+        else:
+            self.stop_spin()
+            self.setPosition(end_position)
+            self.is_animating = False
+        self.draw()
