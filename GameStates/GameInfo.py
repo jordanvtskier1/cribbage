@@ -29,7 +29,9 @@ class GameInfo:
         self.is_dealer = False
         self.is_turn = True
         self.can_play = False
- 
+
+        self.opponent = "player2"
+        self.player = "player1"
 
     def reset(self):
         self.deck = []
