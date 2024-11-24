@@ -36,6 +36,23 @@ class AddToCribView(GameView):
                 align_y = -250)
         )
 
+    def on_show(self):
+
+        self.listen()
+
+    def listen(self):
+
+        def listener(event):
+            print(event.event_type)  # can be 'put' or 'patch'
+            print(event.path)  # relative to the reference, it seems
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data is not None:
+                self.card_dict = event.data
+                self.other_card = Card( event.data["suit"], event.data["rank"] )
+
+        self.listener = self.db_ref.child(self.game_info.opponent + "/card_pick").listen(listener)
+
 
     def on_draw(self):
         """

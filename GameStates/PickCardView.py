@@ -88,4 +88,4 @@ class PickCardView(GameView):
             self.db_ref.update(query)
 
     def on_hide_view(self):
-        self.listener.stop()
+        self.db_ref.child(self.game_info.opponent + "/card_pick").delete()
