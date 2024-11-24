@@ -193,7 +193,7 @@ class GameView(arcade.View):
             # Adjust cards position if it is clicked
             if card in self.cards_clicked:
                 clicked_adjuster = 25
-            
+
             card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
             card_spacer += 50
@@ -235,22 +235,26 @@ class GameView(arcade.View):
             card.draw()
 
 
+    def set_spread_deck(self):
+        CARD_OFFSET = 10
+
+        card_spacer = 0
+
+        for card in self.game_info.deck:
+            # card.setSprite("./Sprites/Cards/card-back.png")
+            # If a card is clicked change it's position
+            card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_spacer, self.CENTER_CARD_LOCATION[1]])
+
+            card_spacer += CARD_OFFSET
+
     def draw_spread_deck(self):
         """
         The draw_spread_deck method draws out the cards in the deck in a spread out fashion.
         """
-
-        card_spacer = 0
-        
         for card in self.game_info.deck:
             # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
-            if card in self.cards_clicked:
-                card.setPosition([self.SCREEN_WIDTH // 4, 175 if self.game_info.is_turn else self.SCREEN_HEIGHT - 175])
-            else:
-                card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_spacer, self.CENTER_CARD_LOCATION[1]])
             card.draw()
-            card_spacer += 10
 
     def draw_tips(self):
         """

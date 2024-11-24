@@ -2,15 +2,24 @@
 # CS 3050: Software Engineering
 # Final Project: Cribbage Game
 
-
+import time
 import arcade
+
+from Adversary.Multiplayer import Multiplayer
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from Card import Card
+from Adversary.CPU import CPU
+from Adversary.Multiplayer import Multiplayer
+
+
+
+#card.setPosition([self.SCREEN_WIDTH // 4, 175 if self.game_info.is_turn else self.SCREEN_HEIGHT - 175])
 
 class PickCardView(GameView):
     """Class representing the picking card portion of the game"""
+    ANIMATION_DURATION = 120
 
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
@@ -21,24 +30,23 @@ class PickCardView(GameView):
         self.card_dict = {}
         self.other_card = None
         self.listener = None
+        self.transition_ready = True
+
+        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, 175]
+        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, self.SCREEN_HEIGHT - 175]
+
+        self.set_spread_deck()
+
 
     def on_show(self):
 
-        self.listen()
+        if self.game_info.is_multiplayer:
+            Multiplayer.listen_pick_card(view = self)
+        else:
+            #Our CPU will act as a mock listener:
+            CPU.pick_card(view = self)
 
-    def listen(self):
-
-        def listener(event):
-            print(event.event_type)  # can be 'put' or 'patch'
-            print(event.path)  # relative to the reference, it seems
-            print(event.data)  # new data at /reference/event.path. None if deleted
-
-            if event.data is not None:
-                self.card_dict = event.data
-                self.other_card = Card( event.data["suit"], event.data["rank"] )
-
-        self.listener = self.db_ref.child(self.game_info.opponent + "/card_pick").listen(listener)
-
+        self.set_spread_deck()
 
     def on_draw(self):
         """
@@ -52,6 +60,7 @@ class PickCardView(GameView):
         self.draw_pegs()
         self.draw_score()
         self.draw_tips()
+        self.animate_cards()
 
         if self.other_card is not None and self.card_picked is not None:
             self.transition.pick_card_to_add_crib(game_info=self.game_info,
@@ -75,17 +84,40 @@ class PickCardView(GameView):
         cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
         # As long as a sprite was pressed
-        if len(cards_pressed) > 0:
+        if len(cards_pressed) > 0 and self.card_picked is None:
             # Retrieve the top card of the cards at the given location
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
 
             # Display what happened to the terminal for testing purposes
             print("Card Picked: ", card.getSuit(), card.getRank())
             self.card_picked = card
+
+            #start animation
+            self.animate_our_card()
+
+            # Send card to other player
             query = {
                 self.game_info.player: {'card_pick': card.getDict()}
             }
             self.db_ref.update(query)
+
+
+    def animate_other_card(self):
+        self.other_card.start_shake(duration=self.ANIMATION_DURATION,
+                                    end_position=self.OTHER_CARD_END_POSITION)
+    def animate_our_card(self):
+        self.card_picked.start_shake(duration=self.ANIMATION_DURATION,
+                                     end_position=self.OUR_CARD_END_POSITION)
+
+
+    def animate_cards(self):
+        self.transition_ready = True
+        for card in [self.card_picked, self.other_card]:
+            if card is None:
+                continue
+            if card.is_animating:
+                card.shake_card()
+                self.transition_ready = False
 
     def on_hide_view(self):
         self.db_ref.child(self.game_info.opponent + "/card_pick").delete()

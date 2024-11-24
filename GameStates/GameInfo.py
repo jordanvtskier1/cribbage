@@ -15,7 +15,7 @@ class GameInfo:
         self.crib = []
         self.has_crib = False
         self.cards_in_play = []
-        self.top_card = Card("Clubs","K")
+        self.top_card = None
         self.our_hand = []
         self.other_hand = []
         # self.our_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
@@ -29,9 +29,9 @@ class GameInfo:
         self.is_dealer = False
         self.is_turn = True
         self.can_play = False
-
         self.opponent = "player2"
         self.player = "player1"
+        self.is_multiplayer = False
 
     def reset(self):
         self.deck = []

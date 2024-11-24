@@ -8,15 +8,18 @@ class CPU(OtherPlayerLogic):
         super().__init__()
 
     # picks card from deck
-    def pick_card(self, game_info: GameInfo, card: Card):
+    @staticmethod
+    def pick_card(view):
         
         # Randomly select a card from the deck
-        deck_size = len(game_info.deck)
+        deck_size = len(view.game_info.deck)
         card_index = random.randint(0, deck_size - 1)
-        opponent_card = game_info.deck[card_index]  
+        opponent_card = view.game_info.deck[card_index]
 
         print(f"CPU picked card: {opponent_card}")
-        return opponent_card
+        view.other_card = opponent_card
+        view.animate_other_card()
+
 
     def add_to_cribbage(self, game_info: GameInfo):
         card_indexes = random.sample(range(len(game_info.other_hand)), 2)

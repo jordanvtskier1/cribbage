@@ -196,3 +196,22 @@ class Multiplayer(OtherPlayerLogic):
                 pass  # Busy-wait until card data is 
             
         return card_dict
+
+#     These functions are called on the views instead
+#===========================================================#
+    @staticmethod
+    def listen_pick_card(view):
+        db_ref = view.db_ref
+        def get_picked_card(event):
+            print(event.event_type)  # can be 'put' or 'patch'
+            print(event.path)  # relative to the reference, it seems
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data is not None:
+                view.other_card = Card( event.data["suit"], event.data["rank"] )
+
+                #Play animation
+                view.animate_other_card()
+
+        listener = db_ref.child(view.game_info.opponent + "/card_pick")
+        listener.listen(get_picked_card)

@@ -3,6 +3,10 @@
 #
 
 import arcade
+from random import randint
+
+from pyglet.resource import animation
+
 
 class Card:
 
@@ -18,6 +22,10 @@ class Card:
         self.setSprite(CardSpriteResolver.getSpriteFile(suit, value = rank))
         self.setPosition(position)
 
+        self.is_animating = False
+        self.animation_time = 0
+        self.end_animation_position = []
+        self.original_position = []
 #============================================================#
 # Setters
 
@@ -97,3 +105,39 @@ class Card:
     
     def isSameValue(self, card):
         return self.getRankAsInt() == card.getRankAsInt()
+
+#============================================================#
+# Card animations
+
+    def start_shake(self, duration, end_position):
+        self.is_animating = True
+        self.animation_time = duration
+        self.original_position = self.getPosition()
+        self.end_animation_position = end_position
+
+
+
+    def stop_shake(self, position):
+        self.is_animating = False
+
+        # Show card as not backwards
+
+        # Put in position
+        self.sprite.center_x = self.end_animation_position[0]
+        self.sprite.center_y = self.end_animation_position[1]
+
+
+    def shake_card(self):
+        SHAKE_VALUE = 20
+
+        if self.animation_time % 2:
+            self.sprite.center_x += randint(-SHAKE_VALUE, SHAKE_VALUE)
+            self.sprite.center_y += randint(-SHAKE_VALUE, SHAKE_VALUE)
+        else:
+            self.setPosition( self.original_position)
+        self.animation_time -= 1
+
+        self.draw()
+
+        if self.animation_time <= 0:
+            self.stop_shake(self.getPosition())
