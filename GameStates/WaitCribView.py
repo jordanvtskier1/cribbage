@@ -33,10 +33,7 @@ class WaitCribView(GameView):
     def on_show(self):
         self.set_our_hand()
         self.set_other_hand()
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_to_cribbage(view=self)
-        else:
-            CPU.listen_to_cribbage(view=self)
+        self.other_player.listen_to_cribbage(view=self)
 
     def on_draw(self):
         """

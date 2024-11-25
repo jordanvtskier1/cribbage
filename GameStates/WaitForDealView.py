@@ -53,10 +53,7 @@ class WaitForDealView(GameView):
         self.waiting_deck = Card(position= self.WAITING_DECK_POSITION)
 
     def on_show(self):
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_to_deal(view = self)
-        else: 
-            CPU.listen_to_deal(view = self)
+        self.other_player.listen_to_deal(view = self)
 
 
     def on_draw(self):

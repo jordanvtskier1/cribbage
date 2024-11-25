@@ -79,7 +79,8 @@ class StateTransitionBackend:
 
             elif card.getRankAsInt() < opponent_card.getRankAsInt():
                 game_info.is_dealer = True
-                self.other_player.send_deal(game_info)
+                game_info = Backend.deal_cards(game_info)
+                game_info.other_player.send_deal(game_info)
 
                 add_to_crib_view = AddToCribView(game_info, state_transition= self)
                 self.window.show_view(add_to_crib_view)

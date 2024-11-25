@@ -45,7 +45,7 @@ class CPU(OtherPlayerLogic):
 
     @staticmethod
     def send_deal(game_info: GameInfo):
-        game_info = Backend.deal_cards(game_info)
+        pass
 
     @staticmethod
     def listen_to_cribbage(view):

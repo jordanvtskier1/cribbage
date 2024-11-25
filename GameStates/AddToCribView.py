@@ -140,11 +140,8 @@ class AddToCribView(GameView):
 
     def update_db(self, cards):
         if self.game_info.is_multiplayer:
-            db_ref = self.transition.database_ref
-            db_ref.update({
-                self.game_info.player: {'hand': [card.getDict() for card in game_info.our_hand],
-                              'crib_picks': [card.getDict() for card in cards]}
-            })
+            self.other_player.add_to_cribbage(game_info, cards)
+            
 
     def can_transition(self):
         if len(self.cards_to_crib) == 2:

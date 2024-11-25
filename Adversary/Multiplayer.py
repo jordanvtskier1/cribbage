@@ -33,23 +33,21 @@ class Multiplayer(OtherPlayerLogic):
         listener = self.database_ref.listen(on_deal_change)
 
         # Wait until data is captured
-        while not deal_dict.get(self.player, {}).get("hand"):
+        while not deal_dict.get(game_info.player, {}).get("hand"):
             pass  # Busy-wait until card data is set
 
         deck_data = deal_dict.get('deck')
         game_info.deck = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deck_data]
 
-        game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.player).get("hand")]
-        game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(self.opponent).get("hand")]
+        game_info.our_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(game_info.player).get("hand")]
+        game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in deal_dict.get(game_info.opponent).get("hand")]
 
 
     def send_deal(self, game_info: GameInfo):
-        game_info = Backend.deal_cards(game_info)
-
         self.database_ref.update({
             'deck': [card.getDict() for card in game_info.deck],
-            self.player: {'hand': [card.getDict() for card in game_info.our_hand]},
-            self.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
+            game_info.player: {'hand': [card.getDict() for card in game_info.our_hand]},
+            game_info.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
             })
 
     def send_cut(self, game_info: GameInfo):
@@ -60,31 +58,27 @@ class Multiplayer(OtherPlayerLogic):
     #TODO: change so that we send hand and cards in play
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
-        self.player: {'played_card': card.getDict()},
+        game_info.player: {'played_card': card.getDict()},
         })
 
 
  
-
-    def add_to_cribbage(self, game_info: GameInfo):
-
+    # send crib picks to databse
+    def add_to_cribbage(self, game_info: GameInfo, cards):
         self.database_ref.update({
-        self.player: {'hand': [card.getDict() for card in game_info.our_hand],
-                      'crib_picks' : [card.getDict() for card in game_info.crib]}        
+        game_info.player: {'hand': [card.getDict() for card in game_info.our_hand],
+                      'crib_picks' : [card.getDict() for card in cards]}        
         })
-
-        crib_data = self.listen_get_cards(self.opponent+"/crib_picks")
-        return [Card(card_dict["suit"], card_dict["rank"]) for card_dict in crib_data]
 
 
 
     def cut_deck(self, game_info: GameInfo):
-        card_dict = self.listen_get_cards("cut_card")
+        card_dict = self.listen_get_cards("cut_card", game_info)
         return Card(card_dict["suit"], card_dict["rank"])
 
     # TODO: change so that we get player hand and cards in play
     def play_card(self, game_info: GameInfo):
-        card_dict = self.listen_get_cards(self.opponent+"/played_card")
+        card_dict = self.listen_get_cards(game_info.opponent+"/played_card", game_info)
         return Card(card_dict["suit"], card_dict["rank"])
 
 
@@ -115,7 +109,7 @@ class Multiplayer(OtherPlayerLogic):
         
 
     #@staticmethod
-    def listen_get_cards(self, path):
+    def listen_get_cards(self, path, game_info):
         time.sleep(1)
         card_dict = {}
         # Callback function to capture data change
@@ -133,7 +127,7 @@ class Multiplayer(OtherPlayerLogic):
         
         initial_data = None
         # We do not want old data for played card because it will be the card from last turn
-        if path != self.opponent+"/played_card":
+        if path != game_info.opponent+"/played_card":
             initial_data = self.database_ref.child(path).get()
 
         if initial_data is not None:
@@ -177,10 +171,7 @@ class Multiplayer(OtherPlayerLogic):
         self.database_ref.update(query)
 
 
-
-    @staticmethod
-    def listen_to_deal(view):
-        db_ref = view.db_ref
+    def listen_to_deal(self, view):
         deal_dict = {}
         player = view.game_info.player
         opponent = view.game_info.opponent
@@ -202,10 +193,11 @@ class Multiplayer(OtherPlayerLogic):
                 except:
                     pass
 
-        listener = db_ref.listen(on_deal_change)
+        listener = self.database_ref.listen(on_deal_change)
+
 
     @staticmethod
-    def assign_deal( game_info: GameInfo, deal_dict: dict):
+    def assign_deal(game_info: GameInfo, deal_dict: dict):
         player = game_info.player
         opponent = game_info.opponent
 
@@ -217,9 +209,9 @@ class Multiplayer(OtherPlayerLogic):
         game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in
                                 deal_dict.get(opponent).get("hand")]
 
-    #@staticmethod
+
+
     def listen_to_cribbage(self, view):
-        db_ref = view.db_ref
 
         def get_crib_picks(event):
             print(event.event_type)  # can be 'put' or 'patch'
@@ -230,7 +222,7 @@ class Multiplayer(OtherPlayerLogic):
                 cards = []
 
                 for card_dict in event.data:
-                    view.game_info.crib.append(
+                    view.other_picks.append(
                         Card(
                             card_dict["suit"],
                             card_dict["rank"]
@@ -244,4 +236,4 @@ class Multiplayer(OtherPlayerLogic):
                 except:
                     pass
 
-        listener = db_ref.child(view.game_info.opponent + "/crib_picks").listen(get_crib_picks)
+        listener = self.database_ref.child(view.game_info.opponent + "/crib_picks").listen(get_crib_picks)
