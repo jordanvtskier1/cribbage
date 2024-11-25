@@ -23,6 +23,8 @@ class StateTransitionBackend:
     def cpu_to_pick_card(self, game_info: GameInfo):
         from GameStates.PickCardView import PickCardView
 
+        game_info.is_multiplayer = False
+
         game_info.other_player = CPU()
         game_info = Backend.create_deck(game_info)
         pick_card_view = PickCardView(game_info, state_transition=self)

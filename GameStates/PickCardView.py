@@ -121,7 +121,8 @@ class PickCardView(GameView):
         return True
 
     def on_hide_view(self):
-        self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
+        if self.game_info.is_multiplayer:
+            self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
 
     def update_db(self, card):
         if not self.game_info.is_multiplayer:
