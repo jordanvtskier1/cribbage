@@ -23,6 +23,10 @@ class PlayView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
+        self.db_ref = state_transition.database_ref
+        self.has_played = False
+        self.picked_card = None
+
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
@@ -54,6 +58,12 @@ class PlayView(GameView):
         if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
             self.manager.draw()
 
+        if self.can_play_animation():
+            self.card_animation(card = self.picked_card)
+
+        if self.can_transition():
+            self.make_transition()
+
     # We assume it is always our turn
     def on_mouse_press(self, x, y, button, modifiers):
         clickable_sprites = arcade.SpriteList()
@@ -64,7 +74,31 @@ class PlayView(GameView):
 
             index = clickable_sprites.index(cards_pressed[-1])
             card = self.game_info.our_hand[index]
-            self.transition.play_to_wait(game_info = self.game_info, card = card)
+
+            #Check if we can click this card, if not we give up on it
+
+            # Play card animation
+            if card is not None:
+                self.has_played = True
+                self.picked_card = card
+
+
+            # Write to database
+            self.update_db(card)
+
+
+
+    def update_db(self, card):
+        if self.game_info.is_multiplayer:
+            self.db_ref.update({
+                self.game_info.player : {'played_card': card.getDict()},
+            })
+
+    def can_play_animation(self):
+        return self.has_played and self.picked_card is not None
+
+    def card_animation(self, card):
+        pass
 
     def draw_cards_in_play(self):
         initialPositionX = IN_PLAY_LOCATION[0]
@@ -80,6 +114,21 @@ class PlayView(GameView):
             card.draw()
             x_offset += IN_PLAY_X_OFFSET
             y_offset *= -1
+
+
+    #TODO Figure out when to do show_score
+    def can_transition(self):
+        if (self.has_played
+            and
+            self.picked_card is not None
+            and
+            self.picked_card.is_animating is False):
+
+                return True
+        return False
+
+    def make_transition(self):
+        self.transition.play_to_show_score(game_info=self.game_info)
 
     def on_hide_view(self):
         self.manager.disable()
