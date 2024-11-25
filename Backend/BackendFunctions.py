@@ -219,7 +219,13 @@ class Backend:
         return game_info
 
     
+    @staticmethod
+    def can_play_card(game_info: GameInfo, card):
 
+        max_in_play_sum = 31
+
+        card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+        return card.getValue() + card_sum <= max_in_play_sum
 
 
 

@@ -115,7 +115,6 @@ class Card:
 
 #============================================================#
 # Card animations
-
     def start_shake(self, duration, end_position):
         self.is_animating = True
         self.animation_time = duration

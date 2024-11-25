@@ -50,9 +50,9 @@ class Multiplayer(OtherPlayerLogic):
             game_info.opponent:  {'hand': [card.getDict() for card in game_info.other_hand]}
             })
 
-    def send_cut(self, game_info: GameInfo):
+    def send_cut(self, card):
         self.database_ref.update({
-        'cut_card': game_info.top_card.getDict()
+        'cut_card': card.getDict()
         })
 
     #TODO: change so that we send hand and cards in play
@@ -235,5 +235,31 @@ class Multiplayer(OtherPlayerLogic):
                     listener.close()
                 except:
                     pass
-
         listener = self.database_ref.child(view.game_info.opponent + "/crib_picks").listen(get_crib_picks)
+
+    @staticmethod
+    def listen_to_cut(view):
+        path = "cut_card"
+
+        # Callback function to capture data change
+        def listen_to_event(event):
+            print(event.event_type)  # can be 'put' or 'patch'
+            print(event.path)  # relative to the reference, it seems
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data is not None:
+                view.listener_done = True
+
+                view.picked_card = Card(
+                            event.data["suit"],
+                            event.data["rank"]
+                        )
+
+                # Stop listening after the first change is captured
+                try:
+                    listener.close()
+                except:
+                    pass
+
+        listener = view.db_ref.child(path).listen(listen_to_event)
+

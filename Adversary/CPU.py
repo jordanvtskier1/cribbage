@@ -63,16 +63,55 @@ class CPU(OtherPlayerLogic):
 
         view.listener_done = True
 
-    def cut_deck(self, game_info: GameInfo):
+    @staticmethod
+    def listen_to_cut(view):
+        t = Thread(target=CPU.listen_to_cut_async, args=[view])
+        t.start()
+
+
+    @staticmethod
+    def listen_to_cut_async(view):
+        time.sleep(2)
+        view.picked_card = CPU.cut_deck( game_info = view.game_info )
+        view.listener_done = True
+
+    @staticmethod
+    def cut_deck(game_info: GameInfo):
         # Randomly select a card from the deck
         deck_size = len(game_info.deck)
         card_index = random.randint(0, deck_size - 1)
         cut_card = game_info.deck[card_index]  
 
-        print(f"CPU cut card: {cut_card}")
         return cut_card
 
-    def play_card(self, game_info: GameInfo):
-        card_index = random.randint(0, len(game_info.other_hand) - 1)
-        card = game_info.other_hand[card_index]
-        return card
+    @staticmethod
+    def listen_to_play(view):
+        t = Thread(target=CPU.listen_to_play_async, args=[view])
+        t.start()
+
+    @staticmethod
+    def listen_to_play_async(view):
+        time.sleep(2)
+        played_card = CPU.play_card(game_info=view.game_info)
+        view.card_was_played(card=played_card)
+
+    """
+    We should only play a card if the count would go under 31.
+    Otherwise we return no cards
+    """
+    @staticmethod
+    def play_card(game_info: GameInfo):
+
+        pick_range = list( range( len(game_info.other_hand) - 1))
+
+        # Try picks until one works
+        while len(pick_range) > 0:
+            card_index = random.choice( pick_range )
+            card = game_info.other_hand[card_index]
+
+            if Backend.can_play_card(game_info, card):
+                return card
+
+            # We cant pick that index
+            pick_range.remove( card_index )
+        return None
