@@ -25,7 +25,6 @@ class PickCardView(GameView):
         super().__init__(game_info, state_transition)
 
         self.tip_string = "Choose a card to see who goes first"
-        self.db_ref = state_transition.database_ref
         self.card_picked = None
         self.card_dict = {}
         self.other_card = None
@@ -38,12 +37,13 @@ class PickCardView(GameView):
 
 
     def on_show(self):
-
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_pick_card(view = self)
-        else:
+        
+        self.other_player.pick_card(view = self)
+        #if self.game_info.is_multiplayer:
+            #Multiplayer.listen_pick_card(view = self)
+        #else:
             #Our CPU will act as a mock listener:
-            CPU.pick_card(view = self)
+            #CPU.pick_card(view = self)
 
         self.set_spread_deck()
 
@@ -121,13 +121,10 @@ class PickCardView(GameView):
         return True
 
     def on_hide_view(self):
-        self.db_ref.child(self.game_info.opponent + "/card_pick").delete()
+        self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
 
     def update_db(self, card):
         if not self.game_info.is_multiplayer:
             return
 
-        query = {
-            self.game_info.player: {'card_pick': card.getDict()}
-        }
-        self.db_ref.update(query)
+        self.other_player.send_pick_card(self.game_info, card)

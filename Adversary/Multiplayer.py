@@ -10,50 +10,7 @@ class Multiplayer(OtherPlayerLogic):
          super().__init__()
          self.database_ref = init()
          
-    # Choosing a card in the pick card state
-    def pick_card(self, game_info: GameInfo, card: Card):
-
-        query = {
-            self.player: {'card_pick': card.getDict()}
-        }
-        self.database_ref.update(query)
-
-        card_dict = {}
-        # Callback function to capture data change
-        def on_card_pick_change(event):
-            nonlocal card_dict
-            print(f"Data change detected at {event.path}")
-            if event.data:
-                print(f"Data: {event.data}")
-                card_dict = event.data
-                # Stop listening after the first change is captured
-                try:
-                    listener.close()
-                except:
-                    pass
-
-        initial_data = self.database_ref.child(self.opponent+"/card_pick").get()
-
-        if initial_data:
-            print(f"initial data: {initial_data}")
-            card_dict = initial_data
-        else:
-            listener = self.database_ref.child(self.opponent+"/card_pick").listen(on_card_pick_change)
-
-            # Wait until data is captured
-            while not card_dict:
-                pass  # Busy-wait until card data is set
-
-
-        opponent_card = Card(card_dict["suit"], card_dict["rank"])
-
-        # reset card pick in case both players picked same cards and we need to pick again
-        query = {
-        self.player: {'card_pick': ''}
-        }
-        self.database_ref.update(query)
-
-        return opponent_card
+    
     
     def get_deal(self, game_info: GameInfo):
 
@@ -135,27 +92,21 @@ class Multiplayer(OtherPlayerLogic):
 
         self.database_ref.child(game_name).set("")
 
-        game_info = Backend.create_deck(game_info)
-        self.player = "player1"
-        self.opponent = "player2"
         self.database_ref.update({
             game_name: {'deck': [card.getDict() for card in game_info.deck],
-                        self.player: {'card_pick': ''},
-                        self.opponent: {'card_pick': ''}}
+                        game_info.player: {'card_pick': ''},
+                        game_info.opponent: {'card_pick': ''}}
 
         })
         self.database_ref = self.database_ref.child(game_name)
 
     def join_game(self, game_info: GameInfo, game_name: str):
-        self.player = "player2"
-        self.opponent = "player1"
-        self.database_ref = self.database_ref.child(game_name)
 
+        self.database_ref = self.database_ref.child(game_name)
         game_data = self.database_ref.get()
     
         if game_data is None:
-            pass
-        
+            pass 
         else:
             game_data = self.database_ref.get()
             # Retrieve and convert deck data
@@ -199,15 +150,14 @@ class Multiplayer(OtherPlayerLogic):
 
 #     These functions are called on the views instead
 #===========================================================#
-    @staticmethod
-    def listen_pick_card(view):
-        db_ref = view.db_ref
+    # Listen for opponents card pick 
+    def pick_card(self, view):
         def get_picked_card(event):
             print(event.event_type)  # can be 'put' or 'patch'
             print(event.path)  # relative to the reference, it seems
             print(event.data)  # new data at /reference/event.path. None if deleted
 
-            if event.data is not None:
+            if event.data != '' and event.data is not None:
                 view.other_card = Card( event.data["suit"], event.data["rank"] )
 
                 #Play animation
@@ -217,7 +167,16 @@ class Multiplayer(OtherPlayerLogic):
                 except:
                     pass
 
-        listener = db_ref.child(view.game_info.opponent + "/card_pick").listen(get_picked_card)
+        listener = self.database_ref.child(view.game_info.opponent + "/card_pick").listen(get_picked_card)
+
+
+    def send_pick_card(self, game_info: GameInfo, card: Card):
+        query = {
+            game_info.player: {'card_pick': card.getDict()}
+        }
+        self.database_ref.update(query)
+
+
 
     @staticmethod
     def listen_to_deal(view):
@@ -258,8 +217,8 @@ class Multiplayer(OtherPlayerLogic):
         game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in
                                 deal_dict.get(opponent).get("hand")]
 
-    @staticmethod
-    def listen_to_cribbage(view):
+    #@staticmethod
+    def listen_to_cribbage(self, view):
         db_ref = view.db_ref
 
         def get_crib_picks(event):

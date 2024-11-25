@@ -1,4 +1,6 @@
 from Card import Card
+from Adversary.OtherPlayerLogic import OtherPlayerLogic
+
 class GameInfo:
     MAX_PEGGING = 121
     DEAL = 6
@@ -32,6 +34,7 @@ class GameInfo:
         self.opponent = "player2"
         self.player = "player1"
         self.is_multiplayer = False
+        self.other_player = OtherPlayerLogic()
 
     def reset(self):
         self.deck = []

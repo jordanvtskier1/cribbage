@@ -17,18 +17,12 @@ import time
 class StateTransitionBackend:
     def __init__(self, window: arcade.Window):
         self.window = window
-        self.database_ref = init()
-        self.other_player = OtherPlayerLogic()
 
-    def set_other_player(self, other_player_logic):
-        self.other_player = other_player_logic
-
-    def menu_to_pick_card(self, game_info: GameInfo):
+    def cpu_to_pick_card(self, game_info: GameInfo):
         from GameStates.PickCardView import PickCardView
 
+        game_info.other_player = CPU()
         game_info = Backend.create_deck(game_info)
-
-
         pick_card_view = PickCardView(game_info, state_transition=self)
         self.window.show_view(pick_card_view)
 
@@ -36,10 +30,12 @@ class StateTransitionBackend:
     def create_game_to_pick_card(self, game_info: GameInfo, game_name):
         from GameStates.PickCardView import PickCardView
 
-        self.other_player = Multiplayer()
+        game_info.other_player = Multiplayer()
+
+        game_info = Backend.create_deck(game_info)
         game_info.opponent = "player2"
         game_info.player = "player1"
-        self.other_player.create_game(game_info=game_info, game_name=game_name)
+        game_info.other_player.create_game(game_info=game_info, game_name=game_name)
         pick_card_view = PickCardView(game_info, self)
         self.window.show_view(pick_card_view)
 
@@ -48,12 +44,12 @@ class StateTransitionBackend:
         from GameStates.PickCardView import PickCardView
         from GameStates.MenuViews.JoinInputView import JoinInputView
         
-
-        self.other_player = Multiplayer()
+        game_info.other_player = Multiplayer()
         game_info.opponent = "player1"
         game_info.player = "player2"
-        self.other_player.join_game(game_info=game_info, game_name=game_name)
+        game_info.other_player.join_game(game_info=game_info, game_name=game_name)
 
+        # If no deck, then game does not exist. Return to Join view
         if not game_info.deck:
              join_game_view = JoinInputView(game_info=game_info, state_transition=self)
              self.window.show_view(join_game_view)
@@ -70,18 +66,18 @@ class StateTransitionBackend:
         from GameStates.AddToCribView import AddToCribView
 
         # means that both players picked same card, return to pick card view
-        if card == opponent_card:
+        if card.getRankAsInt() == opponent_card.getRankAsInt():
             view = PickCardView(game_info, state_transition=self)
             self.window.show_view(view)
         else:
-            if card > opponent_card:
+            if card.getRankAsInt() > opponent_card.getRankAsInt():
                 game_info.is_dealer = False
 
                 # We wait until other player deals
                 view = WaitForDealView(game_info, state_transition=self)
                 self.window.show_view(view)
 
-            elif card < opponent_card:
+            elif card.getRankAsInt() < opponent_card.getRankAsInt():
                 game_info.is_dealer = True
                 self.other_player.send_deal(game_info)
 

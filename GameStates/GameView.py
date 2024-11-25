@@ -11,7 +11,6 @@ from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GUI.CardSpriteResolver import CardSpriteResolver
 
-
 class GameView(arcade.View):
     """Class representing the general view of the game"""
 
@@ -27,8 +26,9 @@ class GameView(arcade.View):
         self.cards_clicked = []
 
         self.game_info = game_info
+        self.other_player = game_info.other_player
         self.transition = state_transition
-
+        
         # Constants for positioning
         self.SCREEN_WIDTH = 1000
         self.SCREEN_HEIGHT = 650  
