@@ -19,6 +19,11 @@ class CutDeckView(GameView):
         self.time_one = -1
 
 
+    def on_show(self):
+        self.set_other_hand()
+        self.set_our_hand()
+        self.set_spread_deck()
+
     def on_draw(self):
         """
         The on_draw method draws the components of the game every frame

@@ -9,6 +9,10 @@ class OtherPlayerLogic:
     def pick_card(self, game_info: GameInfo):
         pass
 
+    @staticmethod
+    def send_deal(game_info: GameInfo):
+        pass
+
     def add_to_cribbage(self, game_info: GameInfo):
         pass
 

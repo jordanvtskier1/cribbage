@@ -43,11 +43,25 @@ class CPU(OtherPlayerLogic):
         game_info = Backend.deal_cards(view.game_info)
         view.listener_done = True
 
+    @staticmethod
+    def send_deal(game_info: GameInfo):
+        game_info = Backend.deal_cards(game_info)
 
+    @staticmethod
+    def listen_to_cribbage(view):
+        t = Thread(target=CPU.add_to_cribbage_async, args=[view])
+        t.start()
 
-    def add_to_cribbage(self, game_info: GameInfo):
-        card_indexes = random.sample(range(len(game_info.other_hand)), 2)
-        return [game_info.other_hand[card_indexes[0]], game_info.other_hand[card_indexes[1]]]
+    @staticmethod
+    def add_to_cribbage_async(view):
+        time.sleep(1)
+        other_hand = view.game_info.other_hand
+        card_indexes = random.sample(range(len(other_hand)), 2)
+
+        cards = [ other_hand[ card_indexes[0]], other_hand[ card_indexes[1]]]
+        view.other_picks = cards
+
+        view.listener_done = True
 
     def cut_deck(self, game_info: GameInfo):
         # Randomly select a card from the deck

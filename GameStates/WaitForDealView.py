@@ -5,6 +5,7 @@
 
 import arcade
 
+from Backend_test import game_info
 from GUI.Window import TRUE_CENTER
 from GameStates import GameInfo
 from GameStates.GameView import GameView
@@ -69,7 +70,7 @@ class WaitForDealView(GameView):
         if self.listener_done:
             self.dealing_animation()
             if self.can_transition():
-                print("done")
+                self.transition.wait_deal_to_add_crib(game_info = self.game_info)
 
         
     def on_hide_view(self):

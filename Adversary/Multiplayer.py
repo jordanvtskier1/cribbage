@@ -257,3 +257,32 @@ class Multiplayer(OtherPlayerLogic):
                               deal_dict.get(player).get("hand")]
         game_info.other_hand = [Card(card_dict["suit"], card_dict["rank"]) for card_dict in
                                 deal_dict.get(opponent).get("hand")]
+
+    @staticmethod
+    def listen_to_cribbage(view):
+        db_ref = view.db_ref
+
+        def get_crib_picks(event):
+            print(event.event_type)  # can be 'put' or 'patch'
+            print(event.path)  # relative to the reference, it seems
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data is not None:
+                cards = []
+
+                for card_dict in event.data:
+                    view.game_info.crib.append(
+                        Card(
+                            card_dict["suit"],
+                            card_dict["rank"]
+                        )
+                    )
+
+                # Play animation
+                view.animate_other_card()
+                try:
+                    listener.close()
+                except:
+                    pass
+
+        listener = db_ref.child(view.game_info.opponent + "/crib_picks").listen(get_crib_picks)

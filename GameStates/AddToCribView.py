@@ -4,12 +4,16 @@
 
 
 import arcade
+
+from Backend_test import game_info
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from Card import Card
+from Adversary.Multiplayer import Multiplayer
+from Adversary.CPU import CPU
 
 class AddToCribView(GameView):
     """Class representing the adding cards to the crib portion of the game"""
@@ -17,6 +21,10 @@ class AddToCribView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
+        self.added_to_crib = False
+        self.crib_location = self.get_crib_location()
+
+        self.cards_to_crib = []
         self.tip_string = "Choose a two cards to add to the crib"
 
         # Setup add to crib button
@@ -37,22 +45,8 @@ class AddToCribView(GameView):
         )
 
     def on_show(self):
-
-        self.listen()
-
-    def listen(self):
-
-        def listener(event):
-            print(event.event_type)  # can be 'put' or 'patch'
-            print(event.path)  # relative to the reference, it seems
-            print(event.data)  # new data at /reference/event.path. None if deleted
-
-            if event.data is not None:
-                self.card_dict = event.data
-                self.other_card = Card( event.data["suit"], event.data["rank"] )
-
-        self.listener = self.db_ref.child(self.game_info.opponent + "/card_pick").listen(listener)
-
+        self.set_our_hand()
+        self.set_other_hand()
 
     def on_draw(self):
         """
@@ -69,6 +63,13 @@ class AddToCribView(GameView):
         self.draw_crib()
         self.manager.draw()
         self.draw_tips()
+
+        # Animate other cards
+        if self.added_to_crib:
+            self.card_animation(self.cards_to_crib)
+
+        if self.can_transition():
+            self.make_transition()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -88,7 +89,7 @@ class AddToCribView(GameView):
         cards_pressed = arcade.get_sprites_at_point((x, y), card_sprites)
 
         # As long as a card was pressed
-        if len(cards_pressed) > 0:
+        if len(cards_pressed) > 0 and self.added_to_crib == False:
             # Retrieve the top card of the cards at the given location
             card = self.game_info.our_hand[card_sprites.index(cards_pressed[-1])]
 
@@ -127,6 +128,40 @@ class AddToCribView(GameView):
             for card in self.cards_clicked:
                 print(" ", card.getSuit(), card.getRank())
             # Back end transition call
-            self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
+            # self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
+            self.added_to_crib = True
+            self.cards_to_crib = self.cards_clicked
+            self.cards_clicked = []
+            self.update_db(cards= self.cards_to_crib)
+
         else: 
             print("Not enough Cards picked")
+
+
+    def update_db(self, cards):
+        if self.game_info.is_multiplayer:
+            db_ref = self.transition.database_ref
+            db_ref.update({
+                self.game_info.player: {'hand': [card.getDict() for card in game_info.our_hand],
+                              'crib_picks': [card.getDict() for card in cards]}
+            })
+
+    def can_transition(self):
+        if len(self.cards_to_crib) == 2:
+            for card in self.cards_to_crib:
+                if card.is_animating:
+                    return False
+            return True
+        return False
+
+    def make_transition(self):
+        self.transition.pick_crib_transition(
+            cards= self.cards_to_crib,
+            game_info=self.game_info
+        )
+
+    #                   Animations
+    #===================================================#
+    def card_animation(self, cards):
+        for card in cards:
+            card.get_dealt_animation(end_position= self.crib_location)

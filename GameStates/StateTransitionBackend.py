@@ -44,7 +44,6 @@ class StateTransitionBackend:
         self.window.show_view(pick_card_view)
 
 
-    
     def join_game_to_pick_card(self, game_info: GameInfo, game_name: str): 
         from GameStates.PickCardView import PickCardView
         from GameStates.MenuViews.JoinInputView import JoinInputView
@@ -62,52 +61,98 @@ class StateTransitionBackend:
         else:
             pick_card_view = PickCardView(game_info, state_transition=self)
             self.window.show_view(pick_card_view)
-        
 
-    def wait_for_deal_to_add_crib(self, game_info: GameInfo):
-        from GameStates.AddToCribView import AddToCribView
-        add_to_crib_view = AddToCribView(game_info, state_transition=self)
-        self.window.show_view(add_to_crib_view)
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card, opponent_card: Card):
 
         from GameStates.PickCardView import PickCardView
         from GameStates.WaitForDealView import WaitForDealView
-
+        from GameStates.AddToCribView import AddToCribView
 
         # means that both players picked same card, return to pick card view
-        # TODO: Uncomment
-        # if card == opponent_card:
-        #     view = PickCardView(game_info, state_transition=self)
-        #     self.window.show_view(view)
-        # else:
-        #     if card > opponent_card:
-        #         game_info.is_dealer = False
-        #         self.other_player.get_deal(game_info)
-        #
-        #     elif card < opponent_card:
-        #         game_info.is_dealer = True
-        #         self.other_player.send_deal(game_info)
-        #
-        #     add_to_crib_view = AddToCribView(game_info, state_transition= self)
-        #     self.window.show_view(add_to_crib_view)
-        wait_view = WaitForDealView(game_info, state_transition= self)
-        self.window.show_view(wait_view)
+        if card == opponent_card:
+            view = PickCardView(game_info, state_transition=self)
+            self.window.show_view(view)
+        else:
+            if card > opponent_card:
+                game_info.is_dealer = False
 
-        
+                # We wait until other player deals
+                view = WaitForDealView(game_info, state_transition=self)
+                self.window.show_view(view)
 
-    def add_crib_to_cut_deck(self, game_info: GameInfo, card1, card2):
+            elif card < opponent_card:
+                game_info.is_dealer = True
+                self.other_player.send_deal(game_info)
+
+                add_to_crib_view = AddToCribView(game_info, state_transition= self)
+                self.window.show_view(add_to_crib_view)
+
+    def wait_deal_to_add_crib(self, game_info: GameInfo):
+        from GameStates.WaitCribView import WaitCribView
+
+        add_to_crib_view = WaitCribView(game_info, state_transition=self)
+        self.window.show_view(add_to_crib_view)
+
+
+    #       Cribbage to Cut transitions
+    #========================================#
+
+    """
+    We take turns adding to the cribbage in order not to
+    listen to ourselves when updating the database.
+    
+    Dealer will always add first, then wait
+    NonDealer will wait first then add
+    
+    After, both will go to cut_deck
+    """
+    def wait_crib_transition(self, game_info: GameInfo, cards):
+        from GameStates.CutDeckView import CutDeckView
+        from GameStates.AddToCribView import AddToCribView
+
+        Backend.add_to_crib(game_info, cards)
+        Backend.remove_from_other_hand(game_info, cards)
+
+        # We picked a card, waited, next cut deck
+        if game_info.is_dealer:
+            view = CutDeckView(game_info, state_transition=self)
+            self.window.show_view(view)
+
+        # waiting for other pick, we have not picked yet
+        else:
+            view = AddToCribView(game_info, state_transition=self)
+            self.window.show_view(view)
+
+    def pick_crib_transition(self, game_info: GameInfo, cards):
+        from GameStates.WaitCribView import WaitCribView
+        from GameStates.CutDeckView import CutDeckView
+
+        Backend.add_to_crib(game_info, cards)
+        Backend.remove_from_our_hand(game_info, cards)
+
+        # We picked a card now we wait
+        if game_info.is_dealer:
+            view = WaitCribView(game_info, state_transition= self)
+            self.window.show_view(view)
+
+        # We already waited, now we picked, next we transition
+        else:
+            view = CutDeckView(game_info, state_transition= self)
+            self.window.show_view(view)
+
+
+    def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
         from GameStates.CutDeckView import CutDeckView
         # Backend logic goes here if any
 
-        Backend.add_to_crib(game_info, [card1, card2])
-        Backend.remove_from_our_hand(game_info, [card1, card2])
+        Backend.add_to_crib(game_info, cards)
+
 
         # opponent_cards = Firebase.get_crib_picks()
         opponent_cards = self.other_player.add_to_cribbage(game_info)
 
-        Backend.add_to_crib(game_info, [opponent_cards[0], opponent_cards[1]])
-        Backend.remove_from_other_hand(game_info, [opponent_cards[0],  opponent_cards[1]])
+
 
 
         if game_info.is_dealer:

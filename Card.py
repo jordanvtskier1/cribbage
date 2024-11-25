@@ -6,6 +6,7 @@
 import arcade
 from random import randint
 
+from arcade import stop_sound
 from pyglet.resource import animation
 
 DEFAULT_ANIMATION_DURATION = 120
@@ -28,6 +29,10 @@ class Card:
         self.animation_time = 0
         self.end_animation_position = []
         self.original_position = []
+        self.dx = 0
+        self.dy = 0
+        self.speed_x = 0
+        self.speed_y = 0
 #============================================================#
 # Setters
 
@@ -158,6 +163,7 @@ class Card:
             return False
         else:
             #To say we are done
+            self.stop_spin()
             return True
 
     def can_stop_spinning(self):
@@ -171,18 +177,30 @@ class Card:
         self.end_animation_position = end_position
 
         current_position = self.getPosition()
-        dx = (end_position[0] - current_position[0]) / DEFAULT_ANIMATION_DURATION
-        dy = (end_position[1] - current_position[1]) / DEFAULT_ANIMATION_DURATION
 
-        if abs(dx) >= error_tolerance or abs(dy) >= error_tolerance:
+        distance_x = (end_position[0] - current_position[0])
+        distance_y = (end_position[1] - current_position[1])
+
+        if self.dx == 0 or self.dy == 0:
+            self.dx =  distance_x / DEFAULT_ANIMATION_DURATION
+            self.dy =  distance_y / DEFAULT_ANIMATION_DURATION
+
+
+        if abs(distance_x) >= error_tolerance or abs(distance_y) >= error_tolerance:
             self.spin_once_fast()
-            dx = (end_position[0] - current_position[0])/DEFAULT_ANIMATION_DURATION
-            dy = (end_position[1] - current_position[1] )/DEFAULT_ANIMATION_DURATION
-            self.setPosition([current_position[0] + dx, current_position[1] + dy])
+            self.setPosition([current_position[0] + self.dx , current_position[1] + self.dy])
         elif not self.can_stop_spinning():
             self.spin_once()
         else:
             self.stop_spin()
+            self.reset_animation()
             self.setPosition(end_position)
             self.is_animating = False
         self.draw()
+
+    def reset_animation(self):
+        self.dx = 0
+        self.dy = 0
+        self.sprite.angle = 0
+        self.original_position = []
+        self.end_animation_position = []

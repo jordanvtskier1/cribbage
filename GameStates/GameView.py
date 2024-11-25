@@ -5,6 +5,8 @@ Final Project: Cribbage Game
 """
 
 import arcade
+
+from GUI.Window import CRIB_LOCATION2, CRIB_LOCATION1
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GUI.CardSpriteResolver import CardSpriteResolver
@@ -179,38 +181,47 @@ class GameView(arcade.View):
         arcade.draw_text(self.game_info.other_score, self.SCORE_LOCATION[0] + 57, self.SCORE_LOCATION[1] - 23, arcade.color.BLACK, 15)
 
 
+    def set_our_hand(self):
+        card_spacer = 0
+
+        for card in self.game_info.our_hand:
+
+            # Adjust cards position if it is clicked
+            card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer,
+                              self.YOUR_HAND_LOCATION[1] ])
+            card_spacer += 50
+
     def draw_our_hand(self):
         """
         The draw_your_hand method draws the cards in your hand.
         """
 
         card_spacer = 0
-        clicked_adjuster = 0
 
         for card in self.game_info.our_hand:
-            card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
             clicked_adjuster = 0
             # Adjust cards position if it is clicked
             if card in self.cards_clicked:
                 clicked_adjuster = 25
+                pos = card.getPosition()
+                card.setPosition([pos[0],
+                                  self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
-            card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
-
-            card_spacer += 50
             card.draw()
 
-
-    def draw_other_hand(self):
-        """
-        The draw_opps_hand method draws the cards in your opps hand.
-        """
-
+    def set_other_hand(self):
         card_spacer = 0
 
         for card in self.game_info.other_hand:
             # card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += 50
+
+    def draw_other_hand(self):
+        """
+        The draw_opps_hand method draws the cards in your opps hand.
+        """
+        for card in self.game_info.other_hand:
             card.draw()
 
 
@@ -234,6 +245,11 @@ class GameView(arcade.View):
             card_spacer += 20
             card.draw()
 
+
+    def get_crib_location(self):
+        if self.game_info.is_dealer:
+            return CRIB_LOCATION2
+        return CRIB_LOCATION1
 
     def set_spread_deck(self):
         CARD_OFFSET = 10

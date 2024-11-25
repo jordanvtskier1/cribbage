@@ -94,11 +94,7 @@ class PickCardView(GameView):
             #start animation
             self.animate_our_card()
 
-            # Send card to other player
-            query = {
-                self.game_info.player: {'card_pick': card.getDict()}
-            }
-            self.db_ref.update(query)
+            self.update_db(card= self.card_picked)
 
 
     def animate_other_card(self):
@@ -126,3 +122,12 @@ class PickCardView(GameView):
 
     def on_hide_view(self):
         self.db_ref.child(self.game_info.opponent + "/card_pick").delete()
+
+    def update_db(self, card):
+        if not self.game_info.is_multiplayer:
+            return
+
+        query = {
+            self.game_info.player: {'card_pick': card.getDict()}
+        }
+        self.db_ref.update(query)
