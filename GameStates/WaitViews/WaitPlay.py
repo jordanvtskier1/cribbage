@@ -32,8 +32,8 @@ class WaitPlayView(GameView):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 child=score_button,
-                align_y = CALCULATE_SCORE_POSITION[1],
-                align_x = CALCULATE_SCORE_POSITION[0])
+                align_x = -50,
+                align_y = -250)
         )
         
         self.tip_string = "Wait for opponent's play . . ."

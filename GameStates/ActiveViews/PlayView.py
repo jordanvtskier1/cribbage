@@ -13,7 +13,7 @@ IN_PLAY_X_OFFSET = 40
 IN_PLAY_Y_OFFSET = 15
 
 SCREEN_WIDTH = 1000
-CALCULATE_SCORE_POSITION = [(SCREEN_WIDTH // 3), 60]
+
 
 class PlayView(GameView):
 
@@ -37,8 +37,8 @@ class PlayView(GameView):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 child = quit_button,
-                align_x = CALCULATE_SCORE_POSITION[0],
-                align_y = CALCULATE_SCORE_POSITION[1])
+                align_x = -50,
+                align_y = -250)
         )
 
 
