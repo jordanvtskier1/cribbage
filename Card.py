@@ -26,6 +26,7 @@ class Card:
         self.setPosition(position)
 
         self.is_animating = False
+        self.is_hidden = False
         self.animation_time = 0
         self.end_animation_position = []
         self.original_position = []
@@ -91,7 +92,8 @@ class Card:
 # Drawing
 
     def draw(self):
-        self.sprite.draw()
+        if not self.is_hidden:
+            self.sprite.draw()
     
 #============================================================#
 # To String
@@ -203,3 +205,37 @@ class Card:
         self.sprite.angle = 0
         self.original_position = []
         self.end_animation_position = []
+
+    def move_card(self, end_position):
+        error_tolerance = 0.5
+        duration = DEFAULT_ANIMATION_DURATION/2
+
+        self.is_animating = True
+        self.end_animation_position = end_position
+
+        current_position = self.getPosition()
+        distance_x = (end_position[0] - current_position[0])
+        distance_y = (end_position[1] - current_position[1])
+
+        if self.dx == 0 or self.dy == 0:
+            self.dx = distance_x / duration
+            self.dy = distance_y / duration
+
+        if abs(distance_x) >= error_tolerance or abs(distance_y) >= error_tolerance:
+            self.setPosition([current_position[0] + self.dx, current_position[1] + self.dy])
+        else:
+            self.reset_animation()
+            self.setPosition(end_position)
+            self.is_animating = False
+        self.draw()
+
+    def reveal_card(self):
+        self.is_hidden = False
+        #set card sprite to revealed
+
+    def hide_card(self):
+        self.is_hidden = True
+
+    def turn_card(self):
+        self.is_hidden = False
+        #set card sprite to hidden

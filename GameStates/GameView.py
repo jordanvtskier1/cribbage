@@ -45,8 +45,6 @@ class GameView(arcade.View):
         self.IN_PLAY_Y_OFFSET = 15
 
 
-
-
     def on_draw(self):
         """
         The on_draw method draws the components of the game every frame
@@ -196,6 +194,7 @@ class GameView(arcade.View):
                               self.YOUR_HAND_LOCATION[1] ])
             card_spacer += 50
 
+
     def draw_our_hand(self):
         """
         The draw_your_hand method draws the cards in your hand.
@@ -214,6 +213,7 @@ class GameView(arcade.View):
 
             card.draw()
 
+
     def set_other_hand(self):
         card_spacer = 0
 
@@ -221,6 +221,7 @@ class GameView(arcade.View):
             # card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += 50
+
 
     def draw_other_hand(self):
         """
@@ -289,6 +290,8 @@ class GameView(arcade.View):
             if not card.is_animating:
                 card.draw()
 
+
+
     # Returns the next position of the card in play.
     def next_in_play_position(self, opponent: bool):
         initial_position_x = self.IN_PLAY_LOCATION[0]
@@ -300,5 +303,9 @@ class GameView(arcade.View):
             y_offset *= -1
         return [initial_position_x + x_offset, initial_position_y + y_offset]
 
+
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+
+
+

@@ -6,6 +6,7 @@ import arcade
 
 from Adversary.Multiplayer import Multiplayer
 from GameStates import GameInfo
+from GameStates.CutDeckAnimation import CutDeckAnimation
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 import time
@@ -20,6 +21,7 @@ class CutDeckView(GameView):
         self.tip_string = "Pick a card to cut the deck"
         self.time_one = -1
         self.picked_card = None
+        self.animator = CutDeckAnimation(deck = self.game_info.deck, card = None)
 
 
     def on_show(self):
@@ -44,7 +46,7 @@ class CutDeckView(GameView):
         if not self.game_info.is_dealer:
             self.draw_tips()
 
-        if self.can_transition():
+        if self.can_transition() and self.animator.play():
             self.make_transition()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -84,12 +86,6 @@ class CutDeckView(GameView):
                     #Update db
                     self.update_db( card = self.picked_card)
 
-                    #Play animation
-                    self.cut_deck_animation()
-
-    #TODO Implement Animation
-    def cut_deck_animation(self):
-        pass
 
     def can_transition(self):
         if self.picked_card is not None:
@@ -106,3 +102,7 @@ class CutDeckView(GameView):
     def update_db(self, card):
         if self.game_info.is_multiplayer:
             Multiplayer.send_cut(card = card)
+
+    def set_cut_deck(self, card):
+        self.picked_card = card
+        self.animator.card = card

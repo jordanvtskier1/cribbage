@@ -24,6 +24,7 @@ class WaitCribView(GameView):
 
         self.other_picks = []
         self.listener_done = False
+        self.tip_string = "Waiting for deck to be cut"
 
         self.crib_location = self.get_crib_location()
 
