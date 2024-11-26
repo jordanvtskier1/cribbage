@@ -20,7 +20,7 @@
 - ~~There is a bug when picking the same card. Add a reseting functionality~~
 
 ## Wait Deal
-- Would be nice if the dealer also saw the dealing animation without the wait message
+- ~~Would be nice if the dealer also saw the dealing animation without the wait message~~
 
 ## Multiplayer
 - Test all multiplayer functionalities

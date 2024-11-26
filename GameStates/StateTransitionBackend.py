@@ -56,7 +56,7 @@ class StateTransitionBackend:
             self.window.show_view(pick_card_view)
 
 
-    def pick_card_to_add_crib(self, game_info: GameInfo, card: Card, opponent_card: Card):
+    def pick_card_to_deal(self, game_info: GameInfo, card: Card, opponent_card: Card):
 
         from GameStates.ActiveViews.PickCardView import PickCardView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
@@ -72,23 +72,23 @@ class StateTransitionBackend:
             if card.getRankAsInt() > opponent_card.getRankAsInt():
                 game_info.is_dealer = False
 
-                # We wait until other player deals
-                view = WaitForDealView(game_info, state_transition=self)
-                self.window.show_view(view)
-
             elif card.getRankAsInt() < opponent_card.getRankAsInt():
                 game_info.is_dealer = True
                 game_info = Backend.deal_cards(game_info)
                 game_info.other_player.send_deal(game_info)
 
-                add_to_crib_view = AddToCribView(game_info, state_transition= self)
-                self.window.show_view(add_to_crib_view)
+            view = WaitForDealView(game_info, state_transition=self)
+            self.window.show_view(view)
 
     def wait_deal_to_add_crib(self, game_info: GameInfo):
         from GameStates.WaitViews.WaitCribView import WaitCribView
+        from GameStates.ActiveViews.AddToCribView import AddToCribView
 
-        add_to_crib_view = WaitCribView(game_info, state_transition=self)
-        self.window.show_view(add_to_crib_view)
+        if game_info.is_dealer:
+            next_view = AddToCribView(game_info, state_transition=self)
+        else:
+            next_view = WaitCribView(game_info, state_transition=self)
+        self.window.show_view(next_view)
 
 
     #       Cribbage to Cut transitions

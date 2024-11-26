@@ -47,8 +47,10 @@ class PickCardView(GameView):
 
         self.set_spread_deck()
 
+
     def is_showing_again(self):
         self.tip_string = "Both players picked the same card!! Pick again :0"
+
 
     def on_draw(self):
         """
@@ -65,9 +67,7 @@ class PickCardView(GameView):
         self.animate_cards()
 
         if self.can_transition():
-            self.transition.pick_card_to_add_crib(game_info=self.game_info,
-                                                  card=self.card_picked,
-                                                  opponent_card = self.other_card)
+            self.make_transition()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -125,11 +125,17 @@ class PickCardView(GameView):
                 return False
         return True
 
+    def make_transition(self):
+        self.transition.pick_card_to_deal(game_info=self.game_info,
+                                              card=self.card_picked,
+                                              opponent_card=self.other_card)
+
     def on_hide_view(self):
         if self.game_info.is_multiplayer:
             self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
 
         self.set_spread_deck()
+
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
