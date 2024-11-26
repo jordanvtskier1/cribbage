@@ -1,8 +1,8 @@
 # Things that are left to do
 
 ## Wait Play
--  Animation
-  - Have an array of end Position of animation
+-  ~~Animation~~ 
+  - ~~Have an array of end Position of animation~~ 
 - Add logic for when other player cannot play
   - Eg. All cards that are held are bigger than 31
 - Add animation for when other player cannot play

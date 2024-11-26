@@ -55,7 +55,7 @@ class Multiplayer(OtherPlayerLogic):
         'cut_card': card.getDict()
         })
 
-    #TODO: change so that we send hand and cards in play
+    @staticmethod
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
         game_info.player: {'played_card': card.getDict()},

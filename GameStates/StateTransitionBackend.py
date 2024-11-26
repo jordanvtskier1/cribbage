@@ -128,6 +128,7 @@ class StateTransitionBackend:
             view = AddToCribView(game_info, state_transition=self)
             self.window.show_view(view)
 
+
     def pick_crib_transition(self, game_info: GameInfo, cards):
         from GameStates.WaitCribView import WaitCribView
         from GameStates.CutDeckView import CutDeckView
@@ -152,12 +153,8 @@ class StateTransitionBackend:
 
         Backend.add_to_crib(game_info, cards)
 
-
         # opponent_cards = Firebase.get_crib_picks()
         opponent_cards = self.other_player.add_to_cribbage(game_info)
-
-
-
 
         if game_info.is_dealer:
             cut_deck_view = CutDeckView(game_info, state_transition= self)
@@ -219,7 +216,6 @@ class StateTransitionBackend:
         self.window.show_view(view)
             
 
-
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.PlayView import PlayView
 
@@ -230,9 +226,6 @@ class StateTransitionBackend:
         game_info.other_score += play_score
         game_info.is_turn = True
 
-        play_view = PlayView(game_info, state_transition= self)
-        self.window.show_view(play_view)
-
         if game_info.cards_in_play == MAX_PLAYABLE_CARDS:
             #To show score button ?
             view = None # For now
@@ -240,9 +233,6 @@ class StateTransitionBackend:
         else:
             view = PlayView(game_info, state_transition= self)
         self.window.show_view(view)
-
-
-
 
 
     def play_to_show_score(self, game_info: GameInfo):

@@ -10,9 +10,7 @@ from Adversary.CPU import CPU
 
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
-IN_PLAY_LOCATION = [335, 340]
-IN_PLAY_X_OFFSET = 40
-IN_PLAY_Y_OFFSET = 15
+
 #Make 8 once we are done with other player
 MAX_PLAYABLE_CARDS = 8
 
@@ -67,46 +65,43 @@ class WaitPlayView(GameView):
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_tips()
+
+        self.play_animation()
+
+        if self.can_transition():
+            self.make_transition()
+
         if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
             self.manager.draw()
 
 
-    def draw_cards_in_play(self):
-        initial_position_x = IN_PLAY_LOCATION[0]
-        initial_position_y = IN_PLAY_LOCATION[1]
-        y_offset = IN_PLAY_Y_OFFSET
-        x_offset = 0
-        # We have no way of knowing who played what so cards are placed in an alternating up and down manner
-        if self.game_info.is_dealer:
-             y_offset *= -1
-        for card in self.game_info.cards_in_play:
-            card.setPosition([initial_position_x + x_offset, initial_position_y + y_offset])
-            card.draw()
-            x_offset += IN_PLAY_X_OFFSET
-            y_offset *= -1
 
     def on_hide_view(self):
         self.manager.disable()
 
-    # TODO add logic for when other player cant play
-    def can_transition(self):
-        if (self.listener_done
-            and not
-            self.picked_card.is_animating):
-            return True
-        return False
-
 
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
-
-        #TODO Need to calculate this!
-        end_position = [500, 500]
-
-        if self.picked_card.is_animating:
+        if self.picked_card is not None and self.picked_card.is_animating:
+            end_position = self.next_in_play_position(opponent=True)
             self.picked_card.get_dealt_animation(end_position= end_position)
+
 
     def card_was_played(self, card):
         self.listener_done = True
         self.picked_card = card
         self.picked_card.is_animating = True
+
+
+    # TODO add logic for when other player cant play
+    def can_transition(self):
+        if (self.listener_done
+                and
+                self.picked_card is not None
+                and not
+                self.picked_card.is_animating):
+            return True
+        return False
+
+    def make_transition(self):
+        self.transition.wait_to_play(game_info = self.game_info, card = self.picked_card)

@@ -1,5 +1,6 @@
 import arcade
 
+from Adversary.Multiplayer import Multiplayer
 from GameStates.GameInfo import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
@@ -23,7 +24,6 @@ class PlayView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
-        self.db_ref = state_transition.database_ref
         self.has_played = False
         self.picked_card = None
 
@@ -55,11 +55,11 @@ class PlayView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_cards_in_play()
+
         if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
             self.manager.draw()
 
-        if self.can_play_animation():
-            self.card_animation(card = self.picked_card)
+        self.play_animation()
 
         if self.can_transition():
             self.make_transition()
@@ -79,41 +79,27 @@ class PlayView(GameView):
 
             # Play card animation
             if card is not None:
-                self.has_played = True
-                self.picked_card = card
+                self.play_card(card)
 
-
-            # Write to database
+            # Write to database (we might want to write none?)
             self.update_db(card)
-
 
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            self.db_ref.update({
-                self.game_info.player : {'played_card': card.getDict()},
-            })
+            Multiplayer.send_play(game_info= self.game_info, card = card)
 
-    def can_play_animation(self):
-        return self.has_played and self.picked_card is not None
 
-    def card_animation(self, card):
-        pass
+    def play_animation(self):
+        if self.picked_card is not None and self.picked_card.is_animating:
+            end_position = self.next_in_play_position(opponent=False)
+            self.picked_card.get_dealt_animation(end_position=end_position)
 
-    def draw_cards_in_play(self):
-        initialPositionX = IN_PLAY_LOCATION[0]
-        initialPositionY = IN_PLAY_LOCATION[1]
-        y_offset = IN_PLAY_Y_OFFSET
-        x_offset = 0
-        # We have no way of knowing who played what so cards are placed in an alternating up and down manner
-        if self.game_info.is_dealer:
-             y_offset *= -1
-        for card in self.game_info.cards_in_play:
-            card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
-            card.setPosition([initialPositionX + x_offset, initialPositionY + y_offset])
-            card.draw()
-            x_offset += IN_PLAY_X_OFFSET
-            y_offset *= -1
+
+    def play_card(self, card):
+        self.has_played = True
+        self.picked_card = card
+        self.picked_card.is_animating = True
 
 
     #TODO Figure out when to do show_score
@@ -127,8 +113,10 @@ class PlayView(GameView):
                 return True
         return False
 
+
     def make_transition(self):
-        self.transition.play_to_show_score(game_info=self.game_info)
+        self.transition.play_to_wait(game_info=self.game_info, card= self.picked_card)
+
 
     def on_hide_view(self):
         self.manager.disable()
