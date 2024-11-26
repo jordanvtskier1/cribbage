@@ -65,6 +65,7 @@ class StateTransitionBackend:
         # means that both players picked same card, return to pick card view
         if card.getRankAsInt() == opponent_card.getRankAsInt():
             view = PickCardView(game_info, state_transition=self)
+            view.is_showing_again()
             self.window.show_view(view)
 
         else:

@@ -47,6 +47,9 @@ class PickCardView(GameView):
 
         self.set_spread_deck()
 
+    def is_showing_again(self):
+        self.tip_string = "Both players picked the same card!! Pick again :0"
+
     def on_draw(self):
         """
         The on_draw method draws the components of the game every frame
