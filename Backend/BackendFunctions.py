@@ -14,6 +14,8 @@ class Backend:
     def set_up_next_round(game_info:GameInfo):
         game_info.reset()
         game_info.is_dealer = not game_info.is_dealer
+        if game_info.is_dealer:
+            Backend.create_deck(game_info)
 
     @staticmethod
     def create_deck(game_info: GameInfo):

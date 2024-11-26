@@ -6,15 +6,14 @@ from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 from GUI.CardSpriteResolver import CardSpriteResolver
 import arcade.gui
-
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 IN_PLAY_LOCATION = [335, 340]
 IN_PLAY_X_OFFSET = 40
 IN_PLAY_Y_OFFSET = 15
 
-CALCULATE_SCORE_Y = -200
-CALCULATE_SCORE_X = -75
+SCREEN_WIDTH = 1000
+CALCULATE_SCORE_POSITION = [(SCREEN_WIDTH // 3), 60]
 
 class PlayView(GameView):
 
@@ -37,9 +36,9 @@ class PlayView(GameView):
 
         self.manager.add(
             arcade.gui.UIAnchorWidget(
-                child=quit_button,
-                align_y = CALCULATE_SCORE_Y,
-                align_x = CALCULATE_SCORE_X)
+                child = quit_button,
+                align_x = CALCULATE_SCORE_POSITION[0],
+                align_y = CALCULATE_SCORE_POSITION[1])
         )
 
 

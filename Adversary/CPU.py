@@ -91,7 +91,7 @@ class CPU(OtherPlayerLogic):
 
     @staticmethod
     def listen_to_play_async(view):
-        time.sleep(2)
+        time.sleep(1)
         played_card = CPU.play_card(game_info=view.game_info)
         view.card_was_played(card=played_card)
 

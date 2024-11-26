@@ -28,3 +28,7 @@
 
 ## Cut Deck
 - Implement deck cutting animation
+- Needs a tip string
+
+## Wait cut
+- needs a tip string 

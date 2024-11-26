@@ -20,6 +20,7 @@ WAITING_STRING = "Waiting . . ."
 SHUFFLING_STRING = "Shuffling . . ."
 DEALING_STRING = "You are the Dealer!"
 
+MESSAGE_BOX_POSITION = [-175, -250]
 
 class WaitForDealView(GameView):
     """Class representing the adding cards to the crib portion of the game"""
@@ -29,9 +30,7 @@ class WaitForDealView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
-
         self.listener_done = False
-        self.tip_string = "Choose a two cards to add to the crib"
 
         # Setup add to crib button
         self.manager = arcade.gui.UIManager()
@@ -50,8 +49,8 @@ class WaitForDealView(GameView):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 child=self.message_box,
-                align_x = -250,
-                align_y = -250)
+                align_x = MESSAGE_BOX_POSITION[0],
+                align_y = MESSAGE_BOX_POSITION[1])
         )
         
         self.waiting_deck = Card(position= self.WAITING_DECK_POSITION)

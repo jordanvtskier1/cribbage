@@ -28,7 +28,7 @@ class ShowScoreView(GameView):
                 "\n Player 2 Score is: " + str(self.game_info.other_score)
             ),
             callback= message_box_behavior,
-            buttons=["Ok"]
+            buttons=["Next round!"]
         )
 
         self.v_box.add(message_box)

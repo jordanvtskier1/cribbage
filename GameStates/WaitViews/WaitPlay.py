@@ -7,12 +7,13 @@ from GUI.CardSpriteResolver import CardSpriteResolver
 import arcade.gui
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
-
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 
 CALCULATE_SCORE_Y = -200
-CALCULATE_SCORE_X = -75
+CALCULATE_SCORE_X = -50
+SCREEN_WIDTH = 1000
+CALCULATE_SCORE_POSITION = [(SCREEN_WIDTH // 3), 60]
 
 class WaitPlayView(GameView):
 
@@ -31,8 +32,8 @@ class WaitPlayView(GameView):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 child=score_button,
-                align_y = CALCULATE_SCORE_Y,
-                align_x = CALCULATE_SCORE_X)
+                align_y = CALCULATE_SCORE_POSITION[1],
+                align_x = CALCULATE_SCORE_POSITION[0])
         )
         
         self.tip_string = "Wait for opponent's play . . ."
