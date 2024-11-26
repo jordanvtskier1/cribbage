@@ -67,7 +67,6 @@ class PickCardView(GameView):
                                                   opponent_card = self.other_card)
 
 
-
     def on_mouse_press(self, x, y, button, modifiers):
         """
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
@@ -100,9 +99,12 @@ class PickCardView(GameView):
     def animate_other_card(self):
         self.other_card.start_shake(duration=self.ANIMATION_DURATION,
                                     end_position=self.OTHER_CARD_END_POSITION)
+
+
     def animate_our_card(self):
         self.card_picked.start_shake(duration=self.ANIMATION_DURATION,
                                      end_position=self.OUR_CARD_END_POSITION)
+
 
     def animate_cards(self):
         for card in [self.card_picked, self.other_card]:
@@ -124,8 +126,8 @@ class PickCardView(GameView):
         if self.game_info.is_multiplayer:
             self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
 
-    def update_db(self, card):
-        if not self.game_info.is_multiplayer:
-            return
+        self.set_spread_deck()
 
-        self.other_player.send_pick_card(self.game_info, card)
+    def update_db(self, card):
+        if self.game_info.is_multiplayer:
+            self.other_player.send_pick_card(self.game_info, card)

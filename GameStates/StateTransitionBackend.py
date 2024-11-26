@@ -66,6 +66,7 @@ class StateTransitionBackend:
         if card.getRankAsInt() == opponent_card.getRankAsInt():
             view = PickCardView(game_info, state_transition=self)
             self.window.show_view(view)
+
         else:
             if card.getRankAsInt() > opponent_card.getRankAsInt():
                 game_info.is_dealer = False

@@ -17,7 +17,7 @@
 - Implement running count
 
 ## Pick Card
-- There is a bug when picking the same card. Add a reseting functionality
+- ~~There is a bug when picking the same card. Add a reseting functionality~~
 
 ## Wait Deal
 - Would be nice if the dealer also saw the dealing animation without the wait message
