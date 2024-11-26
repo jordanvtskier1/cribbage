@@ -160,6 +160,10 @@ class StateTransitionBackend:
 
             self.other_player.send_play(game_info, card)
 
+        if not game_info.can_play and not self.other_player.can_play():
+            game_info.cards_in_play = []  
+            game_info.is_turn = True  
+
         # TODO: create WaitView
         #wait_view = WaitView(game_info, state_transition= self)
         #self.window.show_view(wait_view)
@@ -172,9 +176,15 @@ class StateTransitionBackend:
 
         other_card = self.other_player.play_card(game_info)
         #TODO add backend logic for playing cards ? I dont know how it works
-        game_info.cards_in_play.append(other_card)
-        game_info.other_hand.remove(other_card)
-        game_info.is_turn = True
+
+        if other_card is None:
+                if not game_info.can_play:
+                    game_info.cards_in_play = []  
+                    game_info.is_turn = True  
+        else:
+            game_info.cards_in_play.append(other_card)
+            game_info.other_hand.remove(other_card)
+            game_info.is_turn = True 
 
         play_view = PlayView(game_info, state_transition= self)
         self.window.show_view(play_view)
