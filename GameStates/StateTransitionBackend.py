@@ -1,16 +1,9 @@
-from Adversary.OtherPlayerLogic import OtherPlayerLogic
 from GameStates.GameInfo import GameInfo
 from Backend.BackendFunctions import Backend
 from Card import Card
-from Connection.config import init
 from Adversary.CPU import CPU
 from Adversary.Multiplayer import Multiplayer
-import json
-import firebase_admin
-import threading
 import arcade
-import time
-
 
 MAX_PLAYABLE_CARDS = 8
 
@@ -21,7 +14,7 @@ class StateTransitionBackend:
         self.window = window
 
     def cpu_to_pick_card(self, game_info: GameInfo):
-        from GameStates.PickCardView import PickCardView
+        from GameStates.ActiveViews.PickCardView import PickCardView
 
         game_info.is_multiplayer = False
 
@@ -32,7 +25,7 @@ class StateTransitionBackend:
 
 
     def create_game_to_pick_card(self, game_info: GameInfo, game_name):
-        from GameStates.PickCardView import PickCardView
+        from GameStates.ActiveViews.PickCardView import PickCardView
 
         game_info.other_player = Multiplayer()
 
@@ -45,7 +38,7 @@ class StateTransitionBackend:
 
 
     def join_game_to_pick_card(self, game_info: GameInfo, game_name: str): 
-        from GameStates.PickCardView import PickCardView
+        from GameStates.ActiveViews.PickCardView import PickCardView
         from GameStates.MenuViews.JoinInputView import JoinInputView
         
         game_info.other_player = Multiplayer()
@@ -65,9 +58,9 @@ class StateTransitionBackend:
 
     def pick_card_to_add_crib(self, game_info: GameInfo, card: Card, opponent_card: Card):
 
-        from GameStates.PickCardView import PickCardView
-        from GameStates.WaitForDealView import WaitForDealView
-        from GameStates.AddToCribView import AddToCribView
+        from GameStates.ActiveViews.PickCardView import PickCardView
+        from GameStates.WaitViews.WaitForDealView import WaitForDealView
+        from GameStates.ActiveViews.AddToCribView import AddToCribView
 
         # means that both players picked same card, return to pick card view
         if card.getRankAsInt() == opponent_card.getRankAsInt():
@@ -90,7 +83,7 @@ class StateTransitionBackend:
                 self.window.show_view(add_to_crib_view)
 
     def wait_deal_to_add_crib(self, game_info: GameInfo):
-        from GameStates.WaitCribView import WaitCribView
+        from GameStates.WaitViews.WaitCribView import WaitCribView
 
         add_to_crib_view = WaitCribView(game_info, state_transition=self)
         self.window.show_view(add_to_crib_view)
@@ -109,8 +102,7 @@ class StateTransitionBackend:
     After, both will go to cut_deck
     """
     def wait_crib_transition(self, game_info: GameInfo, cards):
-        from GameStates.CutDeckView import CutDeckView
-        from GameStates.AddToCribView import AddToCribView
+        from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitCutDeck import WaitCutDeck
 
         Backend.add_to_crib(game_info, cards)
@@ -130,8 +122,8 @@ class StateTransitionBackend:
 
 
     def pick_crib_transition(self, game_info: GameInfo, cards):
-        from GameStates.WaitCribView import WaitCribView
-        from GameStates.CutDeckView import CutDeckView
+        from GameStates.WaitViews.WaitCribView import WaitCribView
+        from GameStates.ActiveViews.CutDeckView import CutDeckView
 
         Backend.add_to_crib(game_info, cards)
         Backend.remove_from_our_hand(game_info, cards)
@@ -148,7 +140,7 @@ class StateTransitionBackend:
 
 
     def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
-        from GameStates.CutDeckView import CutDeckView
+        from GameStates.ActiveViews.CutDeckView import CutDeckView
         # Backend logic goes here if any
 
         Backend.add_to_crib(game_info, cards)
@@ -166,7 +158,6 @@ class StateTransitionBackend:
 
 
     def cut_deck_to_play(self, game_info, card):
-        from GameStates.PlayView import PlayView
         #from GameStates.WaitView import WaitView
 
         game_info = Backend.cut_deck(game_info, card)
@@ -189,7 +180,7 @@ class StateTransitionBackend:
             
             
     def wait_for_cut_deck(self, game_info):
-        from GameStates.PlayView import PlayView
+        from GameStates.ActiveViews.PlayView import PlayView
 
         card = self.other_player.cut_deck(game_info)
         game_info = Backend.cut_deck(game_info, card)
@@ -198,7 +189,6 @@ class StateTransitionBackend:
 
 
     def play_to_wait(self, game_info: GameInfo, card: Card):
-        from GameStates.PlayView import PlayView
         from GameStates.WaitViews.WaitPlay import WaitPlayView
 
         game_info.cards_in_play.append(card)
@@ -217,7 +207,7 @@ class StateTransitionBackend:
             
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
-        from GameStates.PlayView import PlayView
+        from GameStates.ActiveViews.PlayView import PlayView
 
         game_info.cards_in_play.append(card)
         game_info.other_hand.remove(card)
@@ -236,7 +226,7 @@ class StateTransitionBackend:
 
 
     def play_to_show_score(self, game_info: GameInfo):
-        from GameStates.ShowScoreView import ShowScoreView
+        from GameStates.ActiveViews.ShowScoreView import ShowScoreView
         # Calculate hand score
         game_info = Backend.calculate_hand_score(game_info)
 
@@ -245,7 +235,7 @@ class StateTransitionBackend:
         self.window.show_view(ShowScoreView(game_info))
 
     def show_score_to_crib(self, game_info: GameInfo):
-        from GameStates.AddToCribView import AddToCribView
+        from GameStates.ActiveViews.AddToCribView import AddToCribView
 
         game_info.reset()
         Backend.create_deck(game_info)

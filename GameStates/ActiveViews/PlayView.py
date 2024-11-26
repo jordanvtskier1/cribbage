@@ -26,6 +26,7 @@ class PlayView(GameView):
 
         self.has_played = False
         self.picked_card = None
+        self.tip_string = "Click on the card you want to play"
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -55,6 +56,7 @@ class PlayView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_cards_in_play()
+        self.draw_tips()
 
         if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
             self.manager.draw()
