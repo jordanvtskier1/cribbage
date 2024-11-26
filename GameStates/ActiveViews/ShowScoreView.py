@@ -9,8 +9,8 @@ from GameStates.GameInfo import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 class ShowScoreView(GameView):
-    def __init__(self, game_info: GameInfo, state_transition_backend: StateTransitionBackend):
-        super().__init__(game_info, state_transition= state_transition_backend)
+    def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
+        super().__init__(game_info, state_transition= state_transition)
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.

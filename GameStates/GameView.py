@@ -46,6 +46,7 @@ class GameView(arcade.View):
 
 
 
+
     def on_draw(self):
         """
         The on_draw method draws the components of the game every frame
@@ -295,6 +296,9 @@ class GameView(arcade.View):
         y_offset = self.IN_PLAY_Y_OFFSET
         x_offset = len( self.game_info.cards_in_play) * self.IN_PLAY_X_OFFSET
 
-        if opponent:
+        if not opponent:
             y_offset *= -1
         return [initial_position_x + x_offset, initial_position_y + y_offset]
+
+    def all_cards_played(self):
+        return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1

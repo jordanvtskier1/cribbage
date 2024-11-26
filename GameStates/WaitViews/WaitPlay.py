@@ -11,10 +11,6 @@ from Adversary.CPU import CPU
 from GameStates.StateTransitionBackend import StateTransitionBackend
 
 
-#Make 8 once we are done with other player
-MAX_PLAYABLE_CARDS = 8
-
-
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -75
 
@@ -69,10 +65,11 @@ class WaitPlayView(GameView):
         self.play_animation()
 
         if self.can_transition():
-            self.make_transition()
+            if self.all_cards_played():
+                self.manager.draw()
+            else:
+                self.make_transition()
 
-        if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
-            self.manager.draw()
 
 
 
@@ -105,3 +102,5 @@ class WaitPlayView(GameView):
 
     def make_transition(self):
         self.transition.wait_to_play(game_info = self.game_info, card = self.picked_card)
+
+

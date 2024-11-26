@@ -200,11 +200,7 @@ class StateTransitionBackend:
         game_info.our_score += play_score
         game_info.is_turn = False
 
-        if game_info.cards_in_play == MAX_PLAYABLE_CARDS:
-            #To show score button ?
-            pass
-        else:
-            view = WaitPlayView(game_info, state_transition= self)
+        view = WaitPlayView(game_info, state_transition= self)
         self.window.show_view(view)
             
 
@@ -218,12 +214,7 @@ class StateTransitionBackend:
         game_info.other_score += play_score
         game_info.is_turn = True
 
-        if game_info.cards_in_play == MAX_PLAYABLE_CARDS:
-            #To show score button ?
-            view = None # For now
-            pass
-        else:
-            view = PlayView(game_info, state_transition= self)
+        view = PlayView(game_info, state_transition= self)
         self.window.show_view(view)
 
 
@@ -234,15 +225,15 @@ class StateTransitionBackend:
 
         # opponent_score = Firebase.getOppScore()
         # game_info.other_score = opponent_score
-        self.window.show_view(ShowScoreView(game_info))
+        self.window.show_view(ShowScoreView(game_info, state_transition = self))
 
     def show_score_to_crib(self, game_info: GameInfo):
         from GameStates.ActiveViews.AddToCribView import AddToCribView
+        from GameStates.WaitViews.WaitForDealView import WaitForDealView
 
-        game_info.reset()
-        Backend.create_deck(game_info)
-        Backend.deal_cards(game_info)
+        Backend.set_up_next_round(game_info = game_info)
 
-        self.window.show_view(AddToCribView(game_info, state_transition= self))
+        next_view = WaitForDealView(game_info, state_transition= self)
+        self.window.show_view(next_view)
 
 

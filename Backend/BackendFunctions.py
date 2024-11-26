@@ -9,6 +9,12 @@ class Backend:
     def __init__(self):
         pass
 
+
+    @staticmethod
+    def set_up_next_round(game_info:GameInfo):
+        game_info.reset()
+        game_info.is_dealer = not game_info.is_dealer
+
     @staticmethod
     def create_deck(game_info: GameInfo):
         SUITS = game_info.SUITS

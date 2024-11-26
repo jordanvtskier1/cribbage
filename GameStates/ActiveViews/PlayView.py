@@ -12,9 +12,6 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 IN_PLAY_LOCATION = [335, 340]
 IN_PLAY_X_OFFSET = 40
 IN_PLAY_Y_OFFSET = 15
-#Make 8 once we are done with other player
-MAX_PLAYABLE_CARDS = 8
-
 
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -75
@@ -58,13 +55,13 @@ class PlayView(GameView):
         self.draw_cards_in_play()
         self.draw_tips()
 
-        if len(self.game_info.cards_in_play) == MAX_PLAYABLE_CARDS:
-            self.manager.draw()
-
         self.play_animation()
 
         if self.can_transition():
-            self.make_transition()
+            if self.all_cards_played():
+                self.manager.draw()
+            else:
+                self.make_transition()
 
     # We assume it is always our turn
     def on_mouse_press(self, x, y, button, modifiers):
@@ -104,7 +101,6 @@ class PlayView(GameView):
         self.picked_card.is_animating = True
 
 
-    #TODO Figure out when to do show_score
     def can_transition(self):
         if (self.has_played
             and

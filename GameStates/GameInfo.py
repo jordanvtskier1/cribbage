@@ -7,6 +7,7 @@ class GameInfo:
     HAND = 4
     POINTS = 15
     MAX_TOTAL = 31
+    MAX_PLAYABLE_CARDS = 8
     SUITS = ["Clubs", "Worms", "Diamonds", "Hearts"]
     CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
@@ -38,7 +39,10 @@ class GameInfo:
 
     def reset(self):
         self.deck = []
+        self.crib = []
         self.cards_in_play = []
         self.our_hand = []
         self.other_hand = []
+
+        self.top_card = None
 
