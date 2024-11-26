@@ -9,7 +9,7 @@
   - In the online game they say "GO"
 
 ## Show Score
-- Should this be a view by itself?
+- Scoring is Not working at all
 
 ## Play View
 - Shade cards or something for those cards you cant play maybe?
@@ -29,6 +29,7 @@
 ## Cut Deck
 - Implement deck cutting animation
 - Needs a tip string
+- It looks broken. Does not matter what card you pick
 
 ## Wait cut
 - needs a tip string 
