@@ -31,8 +31,8 @@ class PickCardView(GameView):
         self.listener = None
         self.time_one = 0
 
-        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, 175]
-        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - 175]
+        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, 175]
+        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, self.SCREEN_HEIGHT - 175]
 
         self.set_spread_deck()
 
