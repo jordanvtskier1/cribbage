@@ -77,5 +77,4 @@ class PlayMenuView(arcade.View):
 
 
     def cpu_behavior(self):
-        self.state_transition.set_other_player( other_player_logic= CPU() )
-        self.state_transition.menu_to_pick_card(game_info=self.game_info)
+        self.state_transition.cpu_game_to_pick_card(game_info=self.game_info)
