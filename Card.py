@@ -236,6 +236,7 @@ class Card:
     def hide_card(self):
         self.is_hidden = True
 
+
     def turn_card(self):
         self.is_hidden = False
         #set card sprite to hidden

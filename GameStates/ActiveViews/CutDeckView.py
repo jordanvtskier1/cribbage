@@ -46,7 +46,8 @@ class CutDeckView(GameView):
         if not self.game_info.is_dealer:
             self.draw_tips()
 
-        if self.can_transition() and self.animator.play():
+        is_done_animating = self.animator.play()
+        if self.can_transition() and is_done_animating:
             self.make_transition()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -54,7 +55,8 @@ class CutDeckView(GameView):
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
         Clicking a card to cut the deck
         """
-
+        if self.picked_card is not None:
+            return
         # if self.game_info.is_turn and not self.game_info.is_dealer:
         # Get card object sprites
         card_sprites = arcade.SpriteList()
@@ -81,10 +83,7 @@ class CutDeckView(GameView):
                 time_two = time.time()
                 if time_two - self.time_one > 2:
                     # self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
-                    self.picked_card = self.cards_clicked[0]
-
-                    #Update db
-                    self.update_db( card = self.picked_card)
+                    self.set_cut_deck(self.cards_clicked[0])
 
 
     def can_transition(self):
@@ -106,3 +105,4 @@ class CutDeckView(GameView):
     def set_cut_deck(self, card):
         self.picked_card = card
         self.animator.card = card
+        self.update_db(card)

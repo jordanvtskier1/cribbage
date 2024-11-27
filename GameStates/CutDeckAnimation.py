@@ -52,6 +52,11 @@ class CutDeckAnimation:
 
         for deck_index in range(separator_index, len(self.deck)):
             self.deck[deck_index].move_card(end_position=left_end_pos)
+
+
+        for card in self.deck:
+            if card.is_animating:
+                return
         self.completed[1] = True
 
     def cut_animation_third(self):

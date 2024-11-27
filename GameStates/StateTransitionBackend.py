@@ -232,7 +232,6 @@ class StateTransitionBackend:
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
 
         Backend.set_up_next_round(game_info = game_info)
-        game_info = Backend.deal_cards(game_info)
         game_info.other_player.send_deal(game_info)
 
         next_view = WaitForDealView(game_info, state_transition= self)

@@ -25,7 +25,7 @@ class PlayView(GameView):
         self.tip_string = "Click on the card you want to play"
 
         self.manager = arcade.gui.UIManager()
-        self.manager.enable()
+        #self.manager.enable()
 
 
         # Make a calculate_score_button button
@@ -53,12 +53,14 @@ class PlayView(GameView):
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_tips()
+        self.draw_running_count()
 
         self.play_animation()
 
         if self.can_transition():
             if self.all_cards_played():
-                self.manager.draw()
+               self.manager.enable()
+               self.manager.draw()
             else:
                 self.make_transition()
 

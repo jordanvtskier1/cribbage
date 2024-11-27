@@ -43,6 +43,7 @@ class WaitCutDeck(GameView):
 
         self.clear()
 
+        self.draw_tips()
         self.draw_spread_deck()
         self.draw_scoreboard()
         self.draw_pegs()
@@ -50,11 +51,13 @@ class WaitCutDeck(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
+        self.draw_running_count()
 
         if not self.game_info.is_dealer:
             self.draw_tips()
 
-        if self.can_transition() and self.animator.play():
+        is_done_animating = self.animator.play()
+        if self.can_transition() and is_done_animating:
             self.make_transition()
 
 

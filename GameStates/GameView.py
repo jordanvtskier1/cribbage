@@ -276,7 +276,8 @@ class GameView(arcade.View):
         for card in self.game_info.deck:
             # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
-            card.draw()
+            if not card.is_animating:
+                card.draw()
 
     def draw_tips(self):
         """
@@ -293,16 +294,27 @@ class GameView(arcade.View):
 
 
     # Returns the next position of the card in play.
-    def next_in_play_position(self, opponent: bool):
+    def next_in_play_position(self, is_waiting: bool):
         initial_position_x = self.IN_PLAY_LOCATION[0]
         initial_position_y = self.IN_PLAY_LOCATION[1]
         y_offset = self.IN_PLAY_Y_OFFSET
         x_offset = len( self.game_info.cards_in_play) * self.IN_PLAY_X_OFFSET
 
-        if not opponent:
+        if not is_waiting:
             y_offset *= -1
         return [initial_position_x + x_offset, initial_position_y + y_offset]
 
+
+    def draw_running_count(self, is_waiting: bool ):
+        # We should make it cuter
+        y_offset = self.IN_PLAY_Y_OFFSET
+        if not is_waiting:
+            y_offset *= -1
+
+        card_position = self.next_in_play_position(is_waiting = is_waiting)
+        rectangle_position = [card_position[0], card_position[1] + 45 + y_offset]
+        arcade.draw_rectangle_filled(center_x= rectangle_position[0], center_y= rectangle_position[1], width = 30, height = 30,
+                                     color = arcade.color.ALABAMA_CRIMSON)
 
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
