@@ -175,7 +175,7 @@ class StateTransitionBackend:
     def wait_cut_to_wait_play(self, game_info: GameInfo, card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
         #TODO write logic
-        game_info.top_card = card
+        game_info = Backend.cut_deck(game_info, card)
 
         view = WaitPlayView( game_info= game_info, state_transition= self)
         self.window.show_view(view)

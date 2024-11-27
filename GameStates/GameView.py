@@ -43,6 +43,11 @@ class GameView(arcade.View):
         self.IN_PLAY_LOCATION = [335, 340]
         self.IN_PLAY_X_OFFSET = 40
         self.IN_PLAY_Y_OFFSET = 15
+        self.GUIDE_LOCATION = [(self.SCREEN_WIDTH // 2), self.SCREEN_WIDTH // 8]
+
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
 
 
 
@@ -71,7 +76,7 @@ class GameView(arcade.View):
         arcade.draw_rectangle_filled(self.DECK_LOCATION[0], self.DECK_LOCATION[1], 75, 125, arcade.color.BROWN)
         
         for card in self.game_info.deck:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            #card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition(self.DECK_LOCATION)
             card.draw()
     
@@ -190,7 +195,7 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.our_hand:
-
+            card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
             # Adjust cards position if it is clicked
             card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer,
                               self.YOUR_HAND_LOCATION[1] ])
@@ -204,21 +209,32 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.our_hand:
-            clicked_adjuster = 0
-            # Adjust cards position if it is clicked
-            if card in self.cards_clicked:
-                clicked_adjuster = 25
+            if card.is_animating:
+                # Adjust cards position if it is clicked
                 pos = card.getPosition()
-                card.setPosition([pos[0],
-                                  self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
+                if card in self.cards_clicked:
+                    clicked_adjuster = 25
+                    card.setPosition([pos[0],
+                                    pos[1]])
+                else:
+                    card.setPosition([pos[0],
+                                pos[1]])
+            else:   
+                clicked_adjuster = 0
+                # Adjust cards position if it is clicked
+                if card in self.cards_clicked:
+                    clicked_adjuster = 25
+                
+                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
+                card_spacer += 50
             card.draw()
 
     def set_other_hand(self):
         card_spacer = 0
 
         for card in self.game_info.other_hand:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            #card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += 50
 
@@ -245,7 +261,7 @@ class GameView(arcade.View):
         arcade.draw_text("Crib", self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0], (self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]) + 75, arcade.color.BLACK, 20)
         
         for card in self.game_info.crib:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            #card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([(self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0]) + card_spacer, self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]])
             card_spacer += 20
             card.draw()
@@ -262,7 +278,7 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.deck:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            #card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.setPosition([self.CENTER_CARD_LOCATION[0] - 100 + card_spacer, self.CENTER_CARD_LOCATION[1]])
 
@@ -273,9 +289,12 @@ class GameView(arcade.View):
         The draw_spread_deck method draws out the cards in the deck in a spread out fashion.
         """
         for card in self.game_info.deck:
-            # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.draw()
+
+    def draw_current_count(self):
+        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - 50, self.CENTER_CARD_LOCATION[1] + 20, 25, arcade.color.GRAY)
+        arcade.draw_text(self.game_info.current_count, self.CENTER_CARD_LOCATION[0] - 70, self.CENTER_CARD_LOCATION[1] + 7, arcade.color.BLACK, 25)
 
     def draw_tips(self):
         """
@@ -283,6 +302,12 @@ class GameView(arcade.View):
         """
         arcade.draw_rectangle_filled(self.YOUR_HAND_LOCATION[0] + 150, self.YOUR_HAND_LOCATION[1] + 100, 300, 30, arcade.color.LIGHT_GRAY)
         arcade.draw_text(self.tip_string, self.YOUR_HAND_LOCATION[0] + 5, self.YOUR_HAND_LOCATION[1] + 94, arcade.color.BLACK, 10)
+
+    def set_cards_in_play(self):
+        for card in self.game_info.cards_in_play:
+            pos = card.getPosition()
+            card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
+            card.setPosition([pos[0], pos[1]])
 
     def draw_cards_in_play(self):
         for card in self.game_info.cards_in_play:
@@ -302,3 +327,6 @@ class GameView(arcade.View):
 
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+    
+    def on_hide_view(self):
+        self.manager.disable()

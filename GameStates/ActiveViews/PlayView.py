@@ -24,22 +24,37 @@ class PlayView(GameView):
         self.picked_card = None
         self.tip_string = "Click on the card you want to play"
 
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
-
+        self.manager2 = arcade.gui.UIManager()
+        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         quit_button = GenericButton(behavior=calculate_score_behavior,
                                     text="Calculate Score",
                                     width=200)
 
-        self.manager.add(
+        self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child = quit_button,
                 align_x = CALCULATE_SCORE_POSITION[0],
                 align_y = CALCULATE_SCORE_POSITION[1])
         )
+
+    def on_show(self):
+        self.set_cards_in_play()
 
 
     def on_draw(self):
@@ -52,35 +67,37 @@ class PlayView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_cards_in_play()
-        self.draw_tips()
+        self.draw_current_count()
 
         self.play_animation()
+        self.manager.draw()
 
         if self.can_transition():
             if self.all_cards_played():
-                self.manager.draw()
+                self.manager2.draw()
             else:
                 self.make_transition()
 
     # We assume it is always our turn
     def on_mouse_press(self, x, y, button, modifiers):
-        clickable_sprites = arcade.SpriteList()
-        for card in self.game_info.our_hand:
-            clickable_sprites.append(card.sprite)
-        cards_pressed = arcade.get_sprites_at_point((x, y), clickable_sprites)
-        if len(cards_pressed) > 0:
+        if self.picked_card == None:
+            clickable_sprites = arcade.SpriteList()
+            for card in self.game_info.our_hand:
+                clickable_sprites.append(card.sprite)
+            cards_pressed = arcade.get_sprites_at_point((x, y), clickable_sprites)
+            if len(cards_pressed) > 0:
 
-            index = clickable_sprites.index(cards_pressed[-1])
-            card = self.game_info.our_hand[index]
+                index = clickable_sprites.index(cards_pressed[-1])
+                card = self.game_info.our_hand[index]
 
-            #Check if we can click this card, if not we give up on it
+                #Check if we can click this card, if not we give up on it
 
-            # Play card animation
-            if card is not None:
-                self.play_card(card)
+                # Play card animation
+                if card is not None:
+                    self.play_card(card)
 
-            # Write to database (we might want to write none?)
-            self.update_db(card)
+                # Write to database (we might want to write none?)
+                self.update_db(card)
 
 
     def update_db(self, card):
@@ -116,4 +133,4 @@ class PlayView(GameView):
 
 
     def on_hide_view(self):
-        self.manager.disable()
+        self.manager2.disable()
