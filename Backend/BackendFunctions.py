@@ -50,7 +50,10 @@ class Backend:
     @staticmethod
     def remove_from_other_hand(game_info: GameInfo, cards):
         for card in cards:
-            game_info.other_hand.remove(card)
+            for c in game_info.other_hand:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.other_hand.remove(c)
+                    break
 
     @staticmethod
     def cut_deck(game_info: GameInfo, card: Card):

@@ -230,8 +230,9 @@ class Multiplayer(OtherPlayerLogic):
                     )
 
                 # Play animation
-                view.animate_other_card()
+                #view.animate_other_card()
                 try:
+                    view.listener_done = True
                     listener.close()
                 except:
                     pass

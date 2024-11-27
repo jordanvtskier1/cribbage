@@ -140,7 +140,7 @@ class AddToCribView(GameView):
 
     def update_db(self, cards):
         if self.game_info.is_multiplayer:
-            self.other_player.add_to_cribbage(game_info, cards)
+            self.other_player.add_to_cribbage(self.game_info, cards)
             
 
     def can_transition(self):
