@@ -193,29 +193,45 @@ class StateTransitionBackend:
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
 
-        game_info.cards_in_play.append(card)
-        game_info.our_hand.remove(card)
+        if not Backend.can_play_card(game_info, card):
+            game_info.is_turn = False  
+            view = WaitPlayView(game_info, state_transition=self)
+            self.window.show_view(view)
+            return None
 
-        play_score = Backend.play_card(game_info, card)
-        game_info.our_score += play_score
-        game_info.is_turn = False
+        else:
+            game_info.cards_in_play.append(card)
+            game_info.our_hand.remove(card)
+            play_score = Backend.play_card(game_info, card)
+            game_info.our_score += play_score
+            game_info.is_turn = False
 
-        view = WaitPlayView(game_info, state_transition= self)
-        self.window.show_view(view)
+          #  game_info.other_player.send_play(game_info, card)
+
+        wait_play_view = WaitPlayView(game_info, state_transition=self)
+        self.window.show_view(wait_play_view)
+
             
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.ActiveViews.PlayView import PlayView
 
-        game_info.cards_in_play.append(card)
-        game_info.other_hand.remove(card)
+        if not Backend.can_play_card(game_info, card):
+            game_info.is_turn = True 
+            view = PlayView(game_info, state_transition=self)
+            self.window.show_view(view)
+            return None
+        else:
+            game_info.cards_in_play.append(card)
+            game_info.other_hand.remove(card)
+            play_score = Backend.play_card(game_info, card)
+            game_info.other_score += play_score
+            game_info.is_turn = True
+            
 
-        play_score = Backend.play_card(game_info, card)
-        game_info.other_score += play_score
-        game_info.is_turn = True
+        play_view = PlayView(game_info, state_transition=self)
+        self.window.show_view(play_view)
 
-        view = PlayView(game_info, state_transition= self)
-        self.window.show_view(view)
 
 
     def play_to_show_score(self, game_info: GameInfo):
