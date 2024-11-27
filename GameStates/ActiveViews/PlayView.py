@@ -85,7 +85,7 @@ class PlayView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            Multiplayer.send_play(game_info= self.game_info, card = card)
+            self.other_player.send_play(game_info= self.game_info, card = card)
 
 
     def play_animation(self):

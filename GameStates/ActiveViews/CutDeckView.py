@@ -74,7 +74,6 @@ class CutDeckView(GameView):
         if len(self.cards_clicked) > 0:
             if self.time_one < 0:
                 self.time_one = time.time()
-                print(self.time_one)
             else:
                 time_two = time.time()
                 if time_two - self.time_one > 2:
@@ -105,4 +104,4 @@ class CutDeckView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            Multiplayer.send_cut(card = card)
+            self.other_player.send_cut(card = card)

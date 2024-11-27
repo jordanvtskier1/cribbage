@@ -27,12 +27,8 @@ class WaitCutDeck(GameView):
         self.set_other_hand()
         self.set_our_hand()
         self.set_spread_deck()
-
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_to_cut(view=self)
-        else:
-            CPU.listen_to_cut(view=self)
-
+        
+        self.other_player.listen_to_cut(view = self)
 
     def on_draw(self):
         """

@@ -44,10 +44,7 @@ class WaitPlayView(GameView):
         self.set_our_hand()
         self.set_other_hand()
 
-        if self.game_info.is_multiplayer:
-            pass
-        else:
-            CPU.listen_to_play(view = self)
+        self.other_player.listen_to_play(view = self)
 
 
     def on_draw(self):

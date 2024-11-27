@@ -172,13 +172,21 @@ class StateTransitionBackend:
         # Delete later, temporary solution
         self.wait_to_play(game_info)
 
+
     def wait_cut_to_wait_play(self, game_info: GameInfo, card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
-        #TODO write logic
-        game_info.top_card = card
+        from GameStates.ActiveViews.PlayView import PlayView
 
-        view = WaitPlayView( game_info= game_info, state_transition= self)
-        self.window.show_view(view)
+        game_info = Backend.cut_deck(game_info, card)
+
+        if game_info.is_dealer:
+            # TODO: add point if cut card was a jack
+            view = WaitPlayView( game_info= game_info, state_transition= self)
+            self.window.show_view(view)
+        else:
+            view = PlayView(game_info= game_info, state_transition= self)
+            self.window.show_view(view)
+
             
             
     def wait_for_cut_deck(self, game_info):
@@ -208,7 +216,10 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.PlayView import PlayView
 
         game_info.cards_in_play.append(card)
-        game_info.other_hand.remove(card)
+        for c in game_info.other_hand:
+            if c.suit == card.suit and c.rank == card.rank:
+                game_info.other_hand.remove(c)
+                break
 
         play_score = Backend.play_card(game_info, card)
         game_info.other_score += play_score

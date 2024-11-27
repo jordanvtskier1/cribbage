@@ -58,7 +58,10 @@ class Backend:
     @staticmethod
     def cut_deck(game_info: GameInfo, card: Card):
         game_info.top_card = card
-        game_info.deck.remove(card)
+        for c in game_info.deck:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.deck.remove(c)
+                    break
         game_info.deck.append(card)
         return game_info
     
