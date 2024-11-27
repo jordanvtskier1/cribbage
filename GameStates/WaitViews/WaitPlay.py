@@ -56,6 +56,7 @@ class WaitPlayView(GameView):
     def on_show(self):
         self.set_our_hand()
         self.set_other_hand()
+        self.set_cards_in_play()
 
         if self.game_info.is_multiplayer:
             pass

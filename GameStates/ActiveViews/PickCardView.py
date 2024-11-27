@@ -6,6 +6,7 @@ import time
 import arcade
 
 from Adversary.Multiplayer import Multiplayer
+from GUI.CardSpriteResolver import CardSpriteResolver
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GameStates.StateTransitionBackend import StateTransitionBackend
@@ -95,6 +96,17 @@ class PickCardView(GameView):
         self.draw_score()
         self.animate_cards()
         self.manager.draw()
+        if self.card_picked != None and self.can_transition:
+            pos = self.card_picked.getPosition()
+            self.card_picked.setSprite(CardSpriteResolver.getSpriteFile(self.card_picked.getSuit(), self.card_picked.getRank()))
+            self.card_picked.setPosition([pos[0], pos[1]])
+            self.card_picked.draw()
+
+        if self.other_card != None and self.can_transition:
+            pos = self.other_card.getPosition()
+            self.other_card.setSprite(CardSpriteResolver.getSpriteFile(self.other_card.getSuit(), self.other_card.getRank()))
+            self.other_card.setPosition([pos[0], pos[1]])
+            self.other_card.draw()
 
         if self.can_transition():
             if self.time_one == 0:

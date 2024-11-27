@@ -53,6 +53,9 @@ class PlayView(GameView):
                 align_y = CALCULATE_SCORE_POSITION[1])
         )
 
+    def on_show(self):
+        self.set_cards_in_play()
+
 
     def on_draw(self):
         self.clear()
@@ -77,23 +80,24 @@ class PlayView(GameView):
 
     # We assume it is always our turn
     def on_mouse_press(self, x, y, button, modifiers):
-        clickable_sprites = arcade.SpriteList()
-        for card in self.game_info.our_hand:
-            clickable_sprites.append(card.sprite)
-        cards_pressed = arcade.get_sprites_at_point((x, y), clickable_sprites)
-        if len(cards_pressed) > 0:
+        if self.picked_card == None:
+            clickable_sprites = arcade.SpriteList()
+            for card in self.game_info.our_hand:
+                clickable_sprites.append(card.sprite)
+            cards_pressed = arcade.get_sprites_at_point((x, y), clickable_sprites)
+            if len(cards_pressed) > 0:
 
-            index = clickable_sprites.index(cards_pressed[-1])
-            card = self.game_info.our_hand[index]
+                index = clickable_sprites.index(cards_pressed[-1])
+                card = self.game_info.our_hand[index]
 
-            #Check if we can click this card, if not we give up on it
+                #Check if we can click this card, if not we give up on it
 
-            # Play card animation
-            if card is not None:
-                self.play_card(card)
+                # Play card animation
+                if card is not None:
+                    self.play_card(card)
 
-            # Write to database (we might want to write none?)
-            self.update_db(card)
+                # Write to database (we might want to write none?)
+                self.update_db(card)
 
 
     def update_db(self, card):
