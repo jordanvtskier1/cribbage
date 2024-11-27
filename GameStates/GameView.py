@@ -199,15 +199,51 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.our_hand:
-            clicked_adjuster = 0
-            # Adjust cards position if it is clicked
-            if card in self.cards_clicked:
-                clicked_adjuster = 25
+            if card.is_animating:
+                # Adjust cards position if it is clicked
                 pos = card.getPosition()
-                card.setPosition([pos[0],
-                                  self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
+                if card in self.cards_clicked:
+                    clicked_adjuster = 25
+                    card.setPosition([pos[0],
+                                    pos[1]])
+                else:
+                    card.setPosition([pos[0],
+                                pos[1]])
+            else:   
+                clicked_adjuster = 0
+                # Adjust cards position if it is clicked
+                if card in self.cards_clicked:
+                    clicked_adjuster = 25
+                
+                card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
+                card_spacer += 50
             card.draw()
+
+    # def set_our_hand(self):
+    #     card_spacer = 0
+
+    #     for card in self.game_info.our_hand:
+    #         # Adjust cards position if it is clicked
+    #         card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer,
+    #                               self.YOUR_HAND_LOCATION[1]])
+    #         card_spacer += 50
+
+    # def draw_our_hand(self):
+    #     """
+    #     The draw_your_hand method draws the cards in your hand.
+    #     """
+
+    #     for card in self.game_info.our_hand:
+    #         # card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
+    #         clicked_adjuster = 0
+    #         # Adjust cards position if it is clicked
+    #         if card in self.cards_clicked:
+    #             clicked_adjuster = 25
+    #         pos = card.getPosition()
+    #         card.setPosition([pos[0],
+    #                               self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
+    #         card.draw()
 
     def set_other_hand(self):
         card_spacer = 0

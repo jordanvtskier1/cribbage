@@ -123,7 +123,7 @@ class AddToCribView(GameView):
         Method to verify enough cards were selected for the crib.
         Calls transition if true and displays message if not.
         """
-        if len(self.cards_clicked) >= 2:
+        if len(self.cards_clicked) == 2:
             print("Cards Added To Crib: ")
             for card in self.cards_clicked:
                 print(" ", card.getSuit(), card.getRank())
