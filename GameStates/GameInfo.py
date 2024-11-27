@@ -21,6 +21,7 @@ class GameInfo:
         self.top_card = None
         self.our_hand = []
         self.other_hand = []
+        self.current_count = 0
         # self.our_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
         # self.other_hand = [Card("1",""),Card("2",""),Card("3",""),Card("4",""),Card("5",""),Card("6","")]
         # Integers of player scores

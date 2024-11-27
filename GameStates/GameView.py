@@ -43,6 +43,11 @@ class GameView(arcade.View):
         self.IN_PLAY_LOCATION = [335, 340]
         self.IN_PLAY_X_OFFSET = 40
         self.IN_PLAY_Y_OFFSET = 15
+        self.GUIDE_LOCATION = [(self.SCREEN_WIDTH // 2), self.SCREEN_WIDTH // 8]
+
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
 
 
 
@@ -225,31 +230,6 @@ class GameView(arcade.View):
                 card_spacer += 50
             card.draw()
 
-    # def set_our_hand(self):
-    #     card_spacer = 0
-
-    #     for card in self.game_info.our_hand:
-    #         # Adjust cards position if it is clicked
-    #         card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer,
-    #                               self.YOUR_HAND_LOCATION[1]])
-    #         card_spacer += 50
-
-    # def draw_our_hand(self):
-    #     """
-    #     The draw_your_hand method draws the cards in your hand.
-    #     """
-
-    #     for card in self.game_info.our_hand:
-    #         # card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
-    #         clicked_adjuster = 0
-    #         # Adjust cards position if it is clicked
-    #         if card in self.cards_clicked:
-    #             clicked_adjuster = 25
-    #         pos = card.getPosition()
-    #         card.setPosition([pos[0],
-    #                               self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
-    #         card.draw()
-
     def set_other_hand(self):
         card_spacer = 0
 
@@ -313,6 +293,10 @@ class GameView(arcade.View):
             # If a card is clicked change it's position
             card.draw()
 
+    def draw_current_count(self):
+        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - 50, self.CENTER_CARD_LOCATION[1] + 20, 25, arcade.color.GRAY)
+        arcade.draw_text(self.game_info.current_count, self.CENTER_CARD_LOCATION[0] - 70, self.CENTER_CARD_LOCATION[1] + 7, arcade.color.BLACK, 25)
+
     def draw_tips(self):
         """
         The draw_tips method draws the tips for the player to help them understand the game
@@ -338,3 +322,6 @@ class GameView(arcade.View):
 
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+    
+    def on_hide_view(self):
+        self.manager.disable()

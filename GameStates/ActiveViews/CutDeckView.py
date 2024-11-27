@@ -20,6 +20,19 @@ class CutDeckView(GameView):
         self.tip_string = "Pick a card to cut the deck"
         self.time_one = -1
         self.picked_card = None
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
 
     def on_show(self):
@@ -41,8 +54,7 @@ class CutDeckView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        if not self.game_info.is_dealer:
-            self.draw_tips()
+        self.manager.draw()
 
         if self.can_transition():
             self.make_transition()

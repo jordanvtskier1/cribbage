@@ -24,17 +24,29 @@ class PlayView(GameView):
         self.picked_card = None
         self.tip_string = "Click on the card you want to play"
 
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
-
+        self.manager2 = arcade.gui.UIManager()
+        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         quit_button = GenericButton(behavior=calculate_score_behavior,
                                     text="Calculate Score",
                                     width=200)
 
-        self.manager.add(
+        self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child = quit_button,
                 align_x = CALCULATE_SCORE_POSITION[0],
@@ -52,13 +64,14 @@ class PlayView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_cards_in_play()
-        self.draw_tips()
+        self.draw_current_count()
 
         self.play_animation()
+        self.manager.draw()
 
         if self.can_transition():
             if self.all_cards_played():
-                self.manager.draw()
+                self.manager2.draw()
             else:
                 self.make_transition()
 
@@ -116,4 +129,4 @@ class PlayView(GameView):
 
 
     def on_hide_view(self):
-        self.manager.disable()
+        self.manager2.disable()
