@@ -29,6 +29,20 @@ class WaitCribView(GameView):
 
         self.tip_string = "Wait for other player's crib picks"
 
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
+
 
     def on_show(self):
         self.set_our_hand()
@@ -41,14 +55,13 @@ class WaitCribView(GameView):
         """
 
         self.clear()
-        self.draw_deck()
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        self.draw_tips()
+        self.manager.draw()
 
         # Animate other cards
         if len(self.other_picks) >= 2:

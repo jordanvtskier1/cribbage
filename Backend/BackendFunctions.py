@@ -135,6 +135,7 @@ class Backend:
     def play_card(game_info: GameInfo, card: Card):
         play_score = 0
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+        game_info.current_count = card_sum
         #fifteen
         if card_sum == 15:
             play_score += 2

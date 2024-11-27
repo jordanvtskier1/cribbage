@@ -6,6 +6,7 @@ import time
 import arcade
 
 from Adversary.Multiplayer import Multiplayer
+from GUI.CardSpriteResolver import CardSpriteResolver
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GameStates.StateTransitionBackend import StateTransitionBackend
@@ -29,11 +30,27 @@ class PickCardView(GameView):
         self.card_dict = {}
         self.other_card = None
         self.listener = None
+        self.time_one = 0
 
-        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, 175]
-        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - 175]
+        self.OUR_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, 175]
+        self.OTHER_CARD_END_POSITION = [self.SCREEN_WIDTH // 4, self.SCREEN_HEIGHT - 175]
 
         self.set_spread_deck()
+
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
+
 
 
     def on_show(self):
@@ -49,7 +66,21 @@ class PickCardView(GameView):
 
 
     def is_showing_again(self):
-        self.tip_string = "Both players picked the same card!! Pick again :0"
+        self.tip_string = "Both players picked the same card! Pick again"
+        self.manager.remove(self.tip_message)
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
 
     def on_draw(self):
@@ -63,11 +94,26 @@ class PickCardView(GameView):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
-        self.draw_tips()
         self.animate_cards()
+        self.manager.draw()
+        if self.card_picked != None and self.can_transition:
+            pos = self.card_picked.getPosition()
+            self.card_picked.setSprite(CardSpriteResolver.getSpriteFile(self.card_picked.getSuit(), self.card_picked.getRank()))
+            self.card_picked.setPosition([pos[0], pos[1]])
+            self.card_picked.draw()
+
+        if self.other_card != None and self.can_transition:
+            pos = self.other_card.getPosition()
+            self.other_card.setSprite(CardSpriteResolver.getSpriteFile(self.other_card.getSuit(), self.other_card.getRank()))
+            self.other_card.setPosition([pos[0], pos[1]])
+            self.other_card.draw()
 
         if self.can_transition():
-            self.make_transition()
+            if self.time_one == 0:
+                self.time_one = time.time()
+            time_two = time.time()
+            if time_two - self.time_one >= 2:
+                self.make_transition()
 
 
     def on_mouse_press(self, x, y, button, modifiers):

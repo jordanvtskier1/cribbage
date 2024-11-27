@@ -132,7 +132,7 @@ class Card:
 
 
     def shake_card(self):
-        SHAKE_VALUE = 20
+        SHAKE_VALUE = 3
 
         if self.animation_time % 2:
             self.sprite.center_x += randint(-SHAKE_VALUE, SHAKE_VALUE)

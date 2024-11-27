@@ -25,11 +25,22 @@ class AddToCribView(GameView):
         self.crib_location = self.get_crib_location()
 
         self.cards_to_crib = []
-        self.tip_string = "Choose a two cards to add to the crib"
+        self.tip_string = "Choose two cards to add to the crib"
 
         # Setup add to crib button
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
         add_crib_behavior = lambda : self.add_crib_check()
         crib_button = GenericButton(behavior=add_crib_behavior,
@@ -54,7 +65,6 @@ class AddToCribView(GameView):
         """
 
         self.clear()
-        self.draw_deck()
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
@@ -62,7 +72,6 @@ class AddToCribView(GameView):
         self.draw_other_hand()
         self.draw_crib()
         self.manager.draw()
-        self.draw_tips()
 
         # Animate other cards
         if self.added_to_crib:
@@ -107,11 +116,23 @@ class AddToCribView(GameView):
             # Modify tip string to help user know what to do next
             match len(self.cards_clicked):
                     case 0:
-                        self.tip_string = "Choose a two cards to add to the crib"
+                        self.tip_string = "Choose two cards to add to the crib"
                     case 1:
                         self.tip_string = "Choose another card to add to the crib"
                     case 2:
                         self.tip_string = "Click add to crib to add your cards to the crib"
+            self.manager.remove(self.tip_message)
+            self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+            self.manager.add(self.tip_message)
 
 
     def on_hide_view(self):
@@ -123,7 +144,7 @@ class AddToCribView(GameView):
         Method to verify enough cards were selected for the crib.
         Calls transition if true and displays message if not.
         """
-        if len(self.cards_clicked) >= 2:
+        if len(self.cards_clicked) == 2:
             print("Cards Added To Crib: ")
             for card in self.cards_clicked:
                 print(" ", card.getSuit(), card.getRank())
