@@ -4,6 +4,7 @@
 
 
 import arcade
+from pyglet.font.win32 import StringFormatFlagsDisplayFormatControl
 
 from Backend_test import game_info
 from GUI.Window import TRUE_CENTER
@@ -15,8 +16,11 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 from Card import Card
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
+WAITING_STRING = "Waiting . . ."
+SHUFFLING_STRING = "Shuffling . . ."
+DEALING_STRING = "You are the Dealer!"
 
-
+MESSAGE_BOX_POSITION = [-175, -250]
 
 class WaitForDealView(GameView):
     """Class representing the adding cards to the crib portion of the game"""
@@ -26,18 +30,17 @@ class WaitForDealView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
-
         self.listener_done = False
-        self.tip_string = "Choose a two cards to add to the crib"
 
         # Setup add to crib button
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
-        waiting_box = arcade.gui.UILabel(
-            text="Waiting . . .",
+        message = self.resolve_tip_string()
+        self.message_box = arcade.gui.UILabel(
+            text=message,
             text_color=arcade.color.DARK_RED,
-            width=350,
+            width=500,
             height=40,
             font_size=24,
             font_name="Kenney Future")
@@ -45,18 +48,24 @@ class WaitForDealView(GameView):
 
         self.manager.add(
             arcade.gui.UIAnchorWidget(
-                child=waiting_box,
-                align_x = -250,
-                align_y = -250)
+                child=self.message_box,
+                align_x = MESSAGE_BOX_POSITION[0],
+                align_y = MESSAGE_BOX_POSITION[1])
         )
         
         self.waiting_deck = Card(position= self.WAITING_DECK_POSITION)
+        self.min_wait = 120
 
     def on_show(self):
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_to_deal(view = self)
-        else: 
-            CPU.listen_to_deal(view = self)
+        if not self.game_info.is_dealer:
+            self.other_player.listen_to_deal(view = self)
+
+    def resolve_tip_string(self):
+        if self.game_info.is_dealer:
+            return SHUFFLING_STRING
+        else:
+            return WAITING_STRING
+
 
 
     def on_draw(self):
@@ -65,9 +74,10 @@ class WaitForDealView(GameView):
         """
         self.clear()
         self.manager.draw()
-        if not self.listener_done:
+
+        if not self.done_dealing():
             self.waiting_animation()
-        if self.listener_done:
+        else:
             self.dealing_animation()
             if self.can_transition():
                 self.transition.wait_deal_to_add_crib(game_info = self.game_info)
@@ -79,6 +89,23 @@ class WaitForDealView(GameView):
     def waiting_animation(self):
         self.waiting_deck.spin_once()
         self.waiting_deck.draw()
+
+    def done_dealing(self):
+        if self.game_info.is_dealer:
+            #Pretend to be dealing for some time
+            if self.min_wait <= 0:
+                return True
+            self.min_wait -= 1
+            if self.min_wait == 0:
+                self.change_dealing_message()
+            return False
+        else:
+            return self.listener_done
+
+    def change_dealing_message(self):
+        #self.manager.remove(self.message_box)
+        self.message_box.text = DEALING_STRING
+        #self.manager.add(self.message_box)
 
     def dealing_animation(self):
 

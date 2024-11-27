@@ -3,6 +3,8 @@
 # Final Project: Cribbage Game
 
 import arcade
+
+from Adversary.Multiplayer import Multiplayer
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
@@ -17,6 +19,7 @@ class CutDeckView(GameView):
 
         self.tip_string = "Pick a card to cut the deck"
         self.time_one = -1
+        self.picked_card = None
 
 
     def on_show(self):
@@ -40,7 +43,9 @@ class CutDeckView(GameView):
         self.draw_crib()
         if not self.game_info.is_dealer:
             self.draw_tips()
-    
+
+        if self.can_transition():
+            self.make_transition()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -73,4 +78,31 @@ class CutDeckView(GameView):
             else:
                 time_two = time.time()
                 if time_two - self.time_one > 2:
-                    self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
+                    # self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
+                    self.picked_card = self.cards_clicked[0]
+
+                    #Update db
+                    self.update_db( card = self.picked_card)
+
+                    #Play animation
+                    self.cut_deck_animation()
+
+    #TODO Implement Animation
+    def cut_deck_animation(self):
+        pass
+
+    def can_transition(self):
+        if self.picked_card is not None:
+            if not self.picked_card.is_animating:
+                return True
+        return False
+
+    def make_transition(self):
+        self.transition.wait_cut_to_wait_play(
+            game_info=self.game_info,
+            card = self.picked_card
+        )
+
+    def update_db(self, card):
+        if self.game_info.is_multiplayer:
+            Multiplayer.send_cut(card = card)

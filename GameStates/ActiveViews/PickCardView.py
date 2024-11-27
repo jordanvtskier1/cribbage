@@ -25,7 +25,6 @@ class PickCardView(GameView):
         super().__init__(game_info, state_transition)
 
         self.tip_string = "Choose a card to see who goes first"
-        self.db_ref = state_transition.database_ref
         self.card_picked = None
         self.card_dict = {}
         self.other_card = None
@@ -38,14 +37,20 @@ class PickCardView(GameView):
 
 
     def on_show(self):
-
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_pick_card(view = self)
-        else:
+        
+        self.other_player.pick_card(view = self)
+        #if self.game_info.is_multiplayer:
+            #Multiplayer.listen_pick_card(view = self)
+        #else:
             #Our CPU will act as a mock listener:
-            CPU.pick_card(view = self)
+            #CPU.pick_card(view = self)
 
         self.set_spread_deck()
+
+
+    def is_showing_again(self):
+        self.tip_string = "Both players picked the same card!! Pick again :0"
+
 
     def on_draw(self):
         """
@@ -62,10 +67,7 @@ class PickCardView(GameView):
         self.animate_cards()
 
         if self.can_transition():
-            self.transition.pick_card_to_add_crib(game_info=self.game_info,
-                                                  card=self.card_picked,
-                                                  opponent_card = self.other_card)
-
+            self.make_transition()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -100,9 +102,12 @@ class PickCardView(GameView):
     def animate_other_card(self):
         self.other_card.start_shake(duration=self.ANIMATION_DURATION,
                                     end_position=self.OTHER_CARD_END_POSITION)
+
+
     def animate_our_card(self):
         self.card_picked.start_shake(duration=self.ANIMATION_DURATION,
                                      end_position=self.OUR_CARD_END_POSITION)
+
 
     def animate_cards(self):
         for card in [self.card_picked, self.other_card]:
@@ -120,14 +125,18 @@ class PickCardView(GameView):
                 return False
         return True
 
+    def make_transition(self):
+        self.transition.pick_card_to_deal(game_info=self.game_info,
+                                              card=self.card_picked,
+                                              opponent_card=self.other_card)
+
     def on_hide_view(self):
-        self.db_ref.child(self.game_info.opponent + "/card_pick").delete()
+        if self.game_info.is_multiplayer:
+            self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
+
+        self.set_spread_deck()
+
 
     def update_db(self, card):
-        if not self.game_info.is_multiplayer:
-            return
-
-        query = {
-            self.game_info.player: {'card_pick': card.getDict()}
-        }
-        self.db_ref.update(query)
+        if self.game_info.is_multiplayer:
+            self.other_player.send_pick_card(self.game_info, card)

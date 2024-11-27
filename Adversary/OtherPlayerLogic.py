@@ -16,7 +16,8 @@ class OtherPlayerLogic:
     def add_to_cribbage(self, game_info: GameInfo):
         pass
 
-    def cut_deck(self, game_info: GameInfo):
+    @staticmethod
+    def cut_deck(game_info: GameInfo):
         pass
 
     def play_card(self, game_info: GameInfo):

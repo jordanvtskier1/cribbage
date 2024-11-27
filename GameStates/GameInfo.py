@@ -1,10 +1,13 @@
 from Card import Card
+from Adversary.OtherPlayerLogic import OtherPlayerLogic
+
 class GameInfo:
     MAX_PEGGING = 121
     DEAL = 6
     HAND = 4
     POINTS = 15
     MAX_TOTAL = 31
+    MAX_PLAYABLE_CARDS = 8
     SUITS = ["Clubs", "Worms", "Diamonds", "Hearts"]
     CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
@@ -32,10 +35,14 @@ class GameInfo:
         self.opponent = "player2"
         self.player = "player1"
         self.is_multiplayer = False
+        self.other_player = OtherPlayerLogic()
 
     def reset(self):
         self.deck = []
+        self.crib = []
         self.cards_in_play = []
         self.our_hand = []
         self.other_hand = []
+
+        self.top_card = None
 

@@ -11,7 +11,6 @@ from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GUI.CardSpriteResolver import CardSpriteResolver
 
-
 class GameView(arcade.View):
     """Class representing the general view of the game"""
 
@@ -27,8 +26,9 @@ class GameView(arcade.View):
         self.cards_clicked = []
 
         self.game_info = game_info
+        self.other_player = game_info.other_player
         self.transition = state_transition
-
+        
         # Constants for positioning
         self.SCREEN_WIDTH = 1000
         self.SCREEN_HEIGHT = 650  
@@ -40,6 +40,11 @@ class GameView(arcade.View):
         self.CENTER_CARD_LOCATION = [(self.SCREEN_WIDTH // 4) + 50, self.SCREEN_HEIGHT / 2]
         self.BOARD_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT / 2]
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH // 8), self.SCREEN_HEIGHT // 18]
+        self.IN_PLAY_LOCATION = [335, 340]
+        self.IN_PLAY_X_OFFSET = 40
+        self.IN_PLAY_Y_OFFSET = 15
+
+
 
 
     def on_draw(self):
@@ -315,3 +320,21 @@ class GameView(arcade.View):
         arcade.draw_rectangle_filled(self.YOUR_HAND_LOCATION[0] + 150, self.YOUR_HAND_LOCATION[1] + 100, 300, 30, arcade.color.LIGHT_GRAY)
         arcade.draw_text(self.tip_string, self.YOUR_HAND_LOCATION[0] + 5, self.YOUR_HAND_LOCATION[1] + 94, arcade.color.BLACK, 10)
 
+    def draw_cards_in_play(self):
+        for card in self.game_info.cards_in_play:
+            if not card.is_animating:
+                card.draw()
+
+    # Returns the next position of the card in play.
+    def next_in_play_position(self, opponent: bool):
+        initial_position_x = self.IN_PLAY_LOCATION[0]
+        initial_position_y = self.IN_PLAY_LOCATION[1]
+        y_offset = self.IN_PLAY_Y_OFFSET
+        x_offset = len( self.game_info.cards_in_play) * self.IN_PLAY_X_OFFSET
+
+        if not opponent:
+            y_offset *= -1
+        return [initial_position_x + x_offset, initial_position_y + y_offset]
+
+    def all_cards_played(self):
+        return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1

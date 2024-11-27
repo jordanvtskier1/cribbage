@@ -9,6 +9,14 @@ class Backend:
     def __init__(self):
         pass
 
+
+    @staticmethod
+    def set_up_next_round(game_info:GameInfo):
+        game_info.reset()
+        game_info.is_dealer = not game_info.is_dealer
+        if game_info.is_dealer:
+            Backend.create_deck(game_info)
+
     @staticmethod
     def create_deck(game_info: GameInfo):
         SUITS = game_info.SUITS
@@ -219,7 +227,13 @@ class Backend:
         return game_info
 
     
+    @staticmethod
+    def can_play_card(game_info: GameInfo, card):
 
+        max_in_play_sum = 31
+
+        card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+        return card.getValue() + card_sum <= max_in_play_sum
 
 
 
