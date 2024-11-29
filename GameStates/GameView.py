@@ -5,6 +5,7 @@ Final Project: Cribbage Game
 """
 
 import arcade
+from pyglet.libs.win32.constants import BACKUP_EA_DATA
 
 from GUI.Window import CRIB_LOCATION2, CRIB_LOCATION1
 from GameStates import GameInfo
@@ -335,14 +336,22 @@ class GameView(arcade.View):
             card.draw()
 
     def draw_current_count(self):
+        from Backend.BackendFunctions import Backend
         RECTANGLE_ADJUSTER_X = 50
         RECTANGLE_ADJUSTER_Y = 20
         TEXT_ADJUSTER_X = 70
         TEXT_ADJUSTER_Y = 7
         CIRCLE_RADIUS = 25
         TEXT_SIZE = 25
-        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - RECTANGLE_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + RECTANGLE_ADJUSTER_Y, CIRCLE_RADIUS, arcade.color.GRAY)
-        arcade.draw_text(self.game_info.current_count, self.CENTER_CARD_LOCATION[0] - TEXT_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + TEXT_ADJUSTER_Y, arcade.color.BLACK, TEXT_SIZE)
+        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - RECTANGLE_ADJUSTER_X,
+                                  self.CENTER_CARD_LOCATION[1] + RECTANGLE_ADJUSTER_Y,
+                                  CIRCLE_RADIUS,
+                                  arcade.color.GRAY)
+        arcade.draw_text(Backend.get_in_play_count(game_info=self.game_info),
+                         self.CENTER_CARD_LOCATION[0] - TEXT_ADJUSTER_X,
+                         self.CENTER_CARD_LOCATION[1] + TEXT_ADJUSTER_Y,
+                         arcade.color.BLACK,
+                         TEXT_SIZE)
 
     def set_cards_in_play(self):
         for card in self.game_info.cards_in_play:
@@ -351,10 +360,11 @@ class GameView(arcade.View):
             card.setPosition([pos[0], pos[1]])
 
     def draw_cards_in_play(self):
+        if len(self.game_info.cards_in_play) == 0:
+            return
         for card in self.game_info.cards_in_play:
             if not card.is_animating:
                 card.draw()
-
 
 
     # Returns the next position of the card in play.
@@ -381,7 +391,9 @@ class GameView(arcade.View):
                                      color = arcade.color.ALABAMA_CRIMSON)
 
     def all_cards_played(self):
-        return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+
+        return self.game_info.count_cards_played() == self.game_info.MAX_PLAYABLE_CARDS - 1
 
     def on_hide_view(self):
         self.manager.disable()
+

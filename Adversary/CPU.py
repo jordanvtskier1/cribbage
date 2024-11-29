@@ -110,8 +110,7 @@ class CPU(OtherPlayerLogic):
         ]
 
         if not playable_cards:
-            game_info.cards_in_play = []  
-            return None
+            return Card.create_empty_card()
 
         print(play_total)
   

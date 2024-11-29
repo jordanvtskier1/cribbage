@@ -3,12 +3,18 @@ from GameStates.GameInfo import GameInfo
 import random
 from itertools import combinations
 
+MAX_IN_PLAY_COUNT = 31
 
 class Backend:
 
     def __init__(self):
         pass
 
+
+    @staticmethod
+    def set_up_game(game_info: GameInfo):
+        Backend.set_up_next_round(game_info)
+        Backend.deal_cards(game_info)
 
     @staticmethod
     def set_up_next_round(game_info:GameInfo):
@@ -134,8 +140,7 @@ class Backend:
     @staticmethod
     def play_card(game_info: GameInfo, card: Card):
         play_score = 0
-        card_sum = sum(card.getValue() for card in game_info.cards_in_play)
-        game_info.current_count = card_sum
+        card_sum = Backend.get_in_play_count(game_info)
         #fifteen
         if card_sum == 15:
             play_score += 2
@@ -239,10 +244,38 @@ class Backend:
 
         max_in_play_sum = 31
 
+        return card.getValue() + Backend.get_in_play_count(game_info) <= max_in_play_sum
+
+
+    @staticmethod
+    def get_in_play_count(game_info: GameInfo):
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
-        return card.getValue() + card_sum <= max_in_play_sum
+        return card_sum
+
+    @staticmethod
+    def can_someone_play(game_info: GameInfo):
+        return Backend.can_opp_play(game_info) or Backend.can_we_play(game_info)
+
+    @staticmethod
+    def can_we_play(game_info: GameInfo):
+        in_play_count = Backend.get_in_play_count(game_info)
+        for card in game_info.our_hand:
+            if card.getValue() + in_play_count <= MAX_IN_PLAY_COUNT:
+                return True
+        return False
 
 
+    @staticmethod
+    def can_opp_play(game_info: GameInfo):
+        in_play_count = Backend.get_in_play_count(game_info)
+        for card in game_info.other_hand:
+            if card.getValue() + in_play_count <= MAX_IN_PLAY_COUNT:
+                return True
+        return False
 
+    @staticmethod
+    def start_new_in_play_count(game_info: GameInfo):
 
-
+        game_info.cards_played.append(game_info.cards_in_play)
+        game_info.cards_in_play = []
+        game_info.current_count = 0

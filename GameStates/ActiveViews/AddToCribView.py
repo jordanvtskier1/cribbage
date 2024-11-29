@@ -5,15 +5,12 @@
 
 import arcade
 
-from Backend_test import game_info
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
-from Card import Card
-from Adversary.Multiplayer import Multiplayer
-from Adversary.CPU import CPU
+
 
 class AddToCribView(GameView):
     """Class representing the adding cards to the crib portion of the game"""

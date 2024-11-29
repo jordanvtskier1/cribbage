@@ -8,7 +8,8 @@ import arcade.gui
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
 from GameStates.StateTransitionBackend import StateTransitionBackend
-
+from Animations.PassAnimation import PassAnimation
+from Animations.Animation import Animation
 
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -50
@@ -52,6 +53,8 @@ class WaitPlayView(GameView):
         self.listener_done = False
         self.picked_card = None
 
+        self.animator = PassAnimation()
+
     def on_show(self):
         self.set_our_hand()
         self.set_other_hand()
@@ -76,6 +79,7 @@ class WaitPlayView(GameView):
 
         self.play_animation()
 
+
         if self.can_transition():
             if self.all_cards_played():
                 self.manager2.enable()
@@ -84,14 +88,14 @@ class WaitPlayView(GameView):
                 self.make_transition()
 
 
-
-
     def on_hide_view(self):
         self.manager2.disable()
 
 
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
+        self.animator.play()
+
         if self.picked_card is not None and self.picked_card.is_animating:
             end_position = self.next_in_play_position(  is_waiting = True)
             self.picked_card.get_dealt_animation(end_position= end_position)
@@ -100,16 +104,29 @@ class WaitPlayView(GameView):
     def card_was_played(self, card):
         self.listener_done = True
         self.picked_card = card
-        self.picked_card.is_animating = True
+
+        # Other player could play
+        if not card.is_empty_card():
+            self.picked_card.is_animating = True
+        # They sent nothing
+        else:
+            # Update message
+            self.tip_string = "Opponent can't play"
+            # Play animation
+            self.animator.start()
+            # Make transition ?
+            pass
 
 
-    # TODO add logic for when other player cant play
     def can_transition(self):
         if (self.listener_done
                 and
                 self.picked_card is not None
                 and not
-                self.picked_card.is_animating):
+                self.picked_card.is_animating
+                and
+                self.animator.completed
+        ):
             return True
         return False
 

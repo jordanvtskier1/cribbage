@@ -1,23 +1,37 @@
-class CutDeckAnimation:
-    SCREEN_WIDTH = 1000
-    SCREEN_HEIGHT = 650
-    CENTER_CARD_LOCATION = [(SCREEN_WIDTH // 4) + 50, SCREEN_HEIGHT / 2]
-    DECK_LOCATION = [50, SCREEN_HEIGHT / 2]
+from Animations.Animation import Animation
+from Animations.AnimationStep import AnimationStep
+class CutDeckAnimation (Animation):
 
     def __init__(self , deck, card):
-        self.completed = [ False, False, False]
-        self.animations = [ self.cut_deck_animation_first, self.cut_deck_animation_second, self.cut_animation_third]
+        super().__init__()
+
+        self.completed = False
         self.deck = deck
         self.card = card
 
+        self.animation_steps = [
+            AnimationStep(
+                duration=999,
+                behavior= self.cut_deck_animation_first,
+            ),
+            AnimationStep(
+                duration=999,
+                behavior=self.cut_deck_animation_second,
+            ),
+            AnimationStep(
+                duration=999,
+                behavior=self.cut_deck_animation_third,
+            )
+        ]
+
     def play(self):
-        if self.card is None:
-            return False
-        for i in range(len(self.animations)):
-            if not self.completed[i]:
-                self.animations[i]()
-                return False
-        return True
+        if self.completed or self.card is None:
+            return
+        for animation_step in self.animation_steps:
+            if not animation_step.completed:
+                animation_step.play()
+                return
+        self.completed = True
 
 
     def get_last_pos_spread_deck(self):
@@ -42,8 +56,8 @@ class CutDeckAnimation:
 
         for card in self.deck:
             if card.is_animating:
-                return
-        self.completed[0] = True
+                return False
+        return True
 
     def cut_deck_animation_second(self):
 
@@ -56,11 +70,11 @@ class CutDeckAnimation:
 
         for card in self.deck:
             if card.is_animating:
-                return
-        self.completed[1] = True
+                return False
+        return True
 
-    def cut_animation_third(self):
+    def cut_deck_animation_third(self):
         for card in self.deck:
             if card is not self.card:
                 card.hide_card()
-        self.completed[2] = True
+        return True

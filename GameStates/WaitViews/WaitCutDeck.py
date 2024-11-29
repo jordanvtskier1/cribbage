@@ -6,10 +6,7 @@ import arcade
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
-from GameStates.CutDeckAnimation import CutDeckAnimation
-from Adversary.Multiplayer import Multiplayer
-from Adversary.CPU import CPU
-import time
+from Animations.CutDeckAnimation import CutDeckAnimation
 
 
 class WaitCutDeck(GameView):
@@ -62,8 +59,9 @@ class WaitCutDeck(GameView):
         self.draw_other_hand()
         self.draw_crib()
         self.manager.draw()
+        self.animator.play()
 
-        is_done_animating = self.animator.play()
+        is_done_animating = self.animator.completed
         if self.can_transition() and is_done_animating:
             self.make_transition()
 

@@ -22,8 +22,9 @@ class Card:
         self.setRank(rank)
         # Not required by constructor so that back end can make all cards
         # Then front end can use setters to add sprites and locations
-        self.setSprite(CardSpriteResolver.getSpriteFile(suit, value = rank))
-        self.setPosition(position)
+        if len(suit) > 0:
+            self.setSprite(CardSpriteResolver.getSpriteFile(suit, value = rank))
+            self.setPosition(position)
 
         self.is_animating = False
         self.is_hidden = False
@@ -240,3 +241,10 @@ class Card:
     def turn_card(self):
         self.is_hidden = False
         #set card sprite to hidden
+
+    @staticmethod
+    def create_empty_card():
+        return Card(suit = "", rank = "")
+
+    def is_empty_card(self):
+        return len(self.suit) == 0

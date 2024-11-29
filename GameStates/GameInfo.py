@@ -18,6 +18,8 @@ class GameInfo:
         self.crib = []
         self.has_crib = False
         self.cards_in_play = []
+        #Once we go over 31, we store cards in play here
+        self.cards_played = []
         self.top_card = None
         self.our_hand = []
         self.other_hand = []
@@ -46,4 +48,11 @@ class GameInfo:
         self.other_hand = []
 
         self.top_card = None
+
+    def count_cards_played(self):
+        sum = 0
+        for set in self.cards_played:
+            sum += len(set)
+        sum += len(self.cards_in_play)
+        return sum
 

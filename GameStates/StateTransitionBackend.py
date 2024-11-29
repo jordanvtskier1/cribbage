@@ -187,8 +187,7 @@ class StateTransitionBackend:
             view = PlayView(game_info= game_info, state_transition= self)
             self.window.show_view(view)
 
-            
-            
+
     def wait_for_cut_deck(self, game_info):
         from GameStates.ActiveViews.PlayView import PlayView
 
@@ -201,18 +200,14 @@ class StateTransitionBackend:
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
 
-        if not Backend.can_play_card(game_info, card):
-            game_info.is_turn = False  
-            view = WaitPlayView(game_info, state_transition=self)
-            self.window.show_view(view)
-            return None
-
-        else:
+        if not card.is_empty_card():
             game_info.cards_in_play.append(card)
             game_info.our_hand.remove(card)
             play_score = Backend.play_card(game_info, card)
             game_info.our_score += play_score
-            game_info.is_turn = False
+
+        if not Backend.can_someone_play(game_info):
+            Backend.start_new_in_play_count(game_info)
 
           #  game_info.other_player.send_play(game_info, card)
 
@@ -223,16 +218,19 @@ class StateTransitionBackend:
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.ActiveViews.PlayView import PlayView
+        if not card.is_empty_card():
 
-        game_info.cards_in_play.append(card)
-        for c in game_info.other_hand:
-            if c.suit == card.suit and c.rank == card.rank:
-                game_info.other_hand.remove(c)
-                break
+            game_info.cards_in_play.append(card)
+            for c in game_info.other_hand:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.other_hand.remove(c)
+                    break
 
-        play_score = Backend.play_card(game_info, card)
-        game_info.other_score += play_score
-        game_info.is_turn = True
+            play_score = Backend.play_card(game_info, card)
+            game_info.other_score += play_score
+
+        if not Backend.can_someone_play(game_info):
+            Backend.start_new_in_play_count(game_info)
 
         view = PlayView(game_info, state_transition= self)
         self.window.show_view(view)
