@@ -206,7 +206,11 @@ class StateTransitionBackend:
 
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
-
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         
         play_score = Backend.play_card(game_info, card)
