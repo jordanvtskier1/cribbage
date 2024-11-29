@@ -240,13 +240,13 @@ class StateTransitionBackend:
         if not Backend.can_someone_play(game_info):
             Backend.start_new_in_play_count(game_info)
 
-        game_is_over = Backend.check_game_over(game_info)
-        if game_is_over:
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
             view = EndGameView(game_info, state_transition=self)
             self.window.show_view(view)
         else:
-            view = PlayView(game_info, state_transition= self)
-            self.window.show_view(view)
+            wait_play_view = WaitPlayView(game_info, state_transition=self)
+            self.window.show_view(wait_play_view)
 
         # Where should this go ?
         # # No cards we can play
