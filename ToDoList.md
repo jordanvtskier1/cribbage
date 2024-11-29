@@ -27,9 +27,8 @@
 - Move update_db back to Multiplayer
 
 ## Cut Deck
-- Implement deck cutting animation
-- Needs a tip string
+- ~~Implement deck cutting animation~~
 - It looks broken. Does not matter what card you pick
 
 ## Wait cut
-- needs a tip string 
+- ~~needs a tip string~~ 

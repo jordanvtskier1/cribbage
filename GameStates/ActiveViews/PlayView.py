@@ -13,7 +13,7 @@ IN_PLAY_X_OFFSET = 40
 IN_PLAY_Y_OFFSET = 15
 
 SCREEN_WIDTH = 1000
-CALCULATE_SCORE_POSITION = [(SCREEN_WIDTH // 3), 60]
+
 
 class PlayView(GameView):
 
@@ -37,9 +37,10 @@ class PlayView(GameView):
         self.manager.add(
             self.tip_message
         )
+        self.manager = arcade.gui.UIManager()
+
 
         self.manager2 = arcade.gui.UIManager()
-        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         quit_button = GenericButton(behavior=calculate_score_behavior,
@@ -49,8 +50,8 @@ class PlayView(GameView):
         self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child = quit_button,
-                align_x = CALCULATE_SCORE_POSITION[0],
-                align_y = CALCULATE_SCORE_POSITION[1])
+                align_x = -50,
+                align_y = -250)
         )
 
     def on_show(self):
@@ -74,6 +75,7 @@ class PlayView(GameView):
 
         if self.can_transition():
             if self.all_cards_played():
+                self.manager2.enable()
                 self.manager2.draw()
             else:
                 self.make_transition()
@@ -102,12 +104,12 @@ class PlayView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            self.other_player.send_play(game_info= self.game_info, card = card)
+            Multiplayer.send_play(game_info= self.game_info, card = card)
 
 
     def play_animation(self):
         if self.picked_card is not None and self.picked_card.is_animating:
-            end_position = self.next_in_play_position(opponent=False)
+            end_position = self.next_in_play_position(is_waiting =False)
             self.picked_card.get_dealt_animation(end_position=end_position)
 
 

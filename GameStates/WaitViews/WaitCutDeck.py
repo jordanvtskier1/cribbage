@@ -6,6 +6,7 @@ import arcade
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
+from GameStates.CutDeckAnimation import CutDeckAnimation
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
 import time
@@ -36,13 +37,15 @@ class WaitCutDeck(GameView):
 
         self.picked_card = None
         self.listener_done = False
+        self.animator = CutDeckAnimation(deck= self.game_info.deck, card = None)
 
     def on_show(self):
         self.set_other_hand()
         self.set_our_hand()
         self.set_spread_deck()
-        
+
         self.other_player.listen_to_cut(view = self)
+
 
     def on_draw(self):
         """
@@ -60,7 +63,8 @@ class WaitCutDeck(GameView):
         self.draw_crib()
         self.manager.draw()
 
-        if self.can_transition():
+        is_done_animating = self.animator.play()
+        if self.can_transition() and is_done_animating:
             self.make_transition()
 
 
@@ -75,3 +79,7 @@ class WaitCutDeck(GameView):
             game_info=self.game_info,
             card = self.picked_card
         )
+
+    def set_cut_deck(self, card):
+        self.picked_card = card
+        self.animator.card = card

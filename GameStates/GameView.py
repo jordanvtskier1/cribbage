@@ -29,7 +29,7 @@ class GameView(arcade.View):
         self.other_player = game_info.other_player
         self.transition = state_transition
         
-        # Constants for positioning 
+        # Constants for positioning
         TENTH = 1/10
         HALF = 1/2
         FOURTH = 1/4
@@ -112,6 +112,7 @@ class GameView(arcade.View):
         """
         The draw_pegs method draws the pegs for the cribbage board.
         """
+                
         # TODO: Find better implementation method
         if self.game_info.our_score == 0:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
@@ -121,25 +122,25 @@ class GameView(arcade.View):
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 193 + 9.37 * self.game_info.our_score, 5, arcade.color.TAN)
         elif self.game_info.our_score <= 38:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 72 + 12 * (self.game_info.our_score - 36), self.BOARD_LOCATION[1] + 155 + 17.5 * (self.game_info.our_score - 36), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 40:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 48 + 18 * (self.game_info.our_score - 38), self.BOARD_LOCATION[1] + 190 + 10 * (self.game_info.our_score - 38), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 43:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 10 + 18 * (self.game_info.our_score - 41), self.BOARD_LOCATION[1] + 210 - 10 * (self.game_info.our_score - 41), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 45:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 48 + 12 * (self.game_info.our_score - 43), self.BOARD_LOCATION[1] + 190 - 17.5 * (self.game_info.our_score - 43), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 80:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 6, arcade.color.BLACK)
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 69, self.BOARD_LOCATION[1] + 146 - 9.42 * (self.game_info.our_score - 45), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 83:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 70 - 22 * (self.game_info.our_score - 81), self.BOARD_LOCATION[1] - 205 - 16 * (self.game_info.our_score - 81), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 85:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 6, arcade.color.BLACK)
-            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 5, arcade.color.TAN) 
+            arcade.draw_circle_filled(self.BOARD_LOCATION[0] + 26 - 22 * (self.game_info.our_score - 83), self.BOARD_LOCATION[1] - 237 + 16 * (self.game_info.our_score - 83), 5, arcade.color.TAN)
         elif self.game_info.our_score <= 120:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 6, arcade.color.BLACK)
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 16, self.BOARD_LOCATION[1] - 194 + 9.42 * (self.game_info.our_score - 85), 5, arcade.color.TAN)
@@ -231,6 +232,7 @@ class GameView(arcade.View):
                               self.YOUR_HAND_LOCATION[1] ])
             card_spacer += CARD_SPACER_INCREMENT
 
+
     def draw_our_hand(self):
         """
         The draw_your_hand method draws the cards in your hand.
@@ -250,16 +252,17 @@ class GameView(arcade.View):
                 else:
                     card.setPosition([pos[0],
                                 pos[1]])
-            else:   
+            else:
                 clicked_adjuster = 0
                 # Adjust cards position if it is clicked
                 if card in self.cards_clicked:
                     clicked_adjuster = CLICKED_ADJUSTER_INCREMENT
-                
+
                 card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
 
                 card_spacer += CARD_SPACER_INCREMENT
             card.draw()
+
 
     def set_other_hand(self):
         CARD_SPACER_INCREMENT = 50
@@ -269,6 +272,7 @@ class GameView(arcade.View):
             #card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += CARD_SPACER_INCREMENT
+
 
     def draw_other_hand(self):
         """
@@ -291,13 +295,14 @@ class GameView(arcade.View):
         card_spacer = 0
 
         is_dealer = self.game_info.is_dealer
+
         # Draw crib label and spot at different locations based on who is dealer
         arcade.draw_rectangle_filled((self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0]) + RECTANGLE_ADJUSTER, self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1], RECTANGLE_WIDTH, RECTANGLE_HEIGHT,
                                         arcade.color.GRAY)
         arcade.draw_text("Crib", self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0], (self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]) + TEXT_ADJUSTER, arcade.color.BLACK, TEXT_SIZE)
         
         for card in self.game_info.crib:
-            #card.setSprite("./Sprites/Cards/card-back.png")
+            # card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([(self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0]) + card_spacer, self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]])
             card_spacer += CARD_SPACER_INCREMENT
             card.draw()
@@ -314,7 +319,7 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.deck:
-            #card.setSprite("./Sprites/Cards/card-back.png")
+            # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.setPosition([self.CENTER_CARD_LOCATION[0] - CENTER_CARD_ADJUSTER + card_spacer, self.CENTER_CARD_LOCATION[1]])
 
@@ -325,6 +330,7 @@ class GameView(arcade.View):
         The draw_spread_deck method draws out the cards in the deck in a spread out fashion.
         """
         for card in self.game_info.deck:
+            # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.draw()
 
@@ -349,19 +355,33 @@ class GameView(arcade.View):
             if not card.is_animating:
                 card.draw()
 
+
+
     # Returns the next position of the card in play.
-    def next_in_play_position(self, opponent: bool):
+    def next_in_play_position(self, is_waiting: bool):
         initial_position_x = self.IN_PLAY_LOCATION[0]
         initial_position_y = self.IN_PLAY_LOCATION[1]
         y_offset = self.IN_PLAY_Y_OFFSET
         x_offset = len( self.game_info.cards_in_play) * self.IN_PLAY_X_OFFSET
 
-        if not opponent:
+        if not is_waiting:
             y_offset *= -1
         return [initial_position_x + x_offset, initial_position_y + y_offset]
 
+
+    def draw_running_count(self, is_waiting: bool ):
+        # We should make it cuter
+        y_offset = self.IN_PLAY_Y_OFFSET
+        if not is_waiting:
+            y_offset *= -1
+
+        card_position = self.next_in_play_position(is_waiting = is_waiting)
+        rectangle_position = [card_position[0], card_position[1] + 45 + y_offset]
+        arcade.draw_rectangle_filled(center_x= rectangle_position[0], center_y= rectangle_position[1], width = 30, height = 30,
+                                     color = arcade.color.ALABAMA_CRIMSON)
+
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
-    
+
     def on_hide_view(self):
         self.manager.disable()
