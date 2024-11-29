@@ -20,13 +20,13 @@ class ShowScoreView(GameView):
         self.v_box = arcade.gui.UIBoxLayout()
 
         message_box_behavior = lambda x : self.transition.show_score_to_crib(self.game_info)
+        crib_string = "Your" if self.game_info.is_dealer else "Opponent's"
         message_box = arcade.gui.UIMessageBox(
             width=300,
-            height=200,
-            message_text=(
-                "Your score is: " + str(self.game_info.our_score) +
-                "\n Player 2 Score is: " + str(self.game_info.other_score)
-            ),
+            height=300,
+            message_text=("Your Hand Score is: " + str(self.game_info.our_hand_score) + "\nOpponent's Hand Score is: " + str(self.game_info.other_hand_score) 
+                          + "\n" + crib_string + " Crib Score is: " + str(self.game_info.crib_score) 
+                          + "\n\nYour Overall Score is: " + str(self.game_info.our_score) + "\nOpponent's Overall Score is: " + str(self.game_info.other_score)),
             callback= message_box_behavior,
             buttons=["Next round!"]
         )

@@ -320,6 +320,8 @@ class StateTransitionBackend:
         else:
             game_info.other_score += crib_score
 
+        game_info.crib_score = crib_score
+
         # opponent_score = Firebase.getOppScore()
         # game_info.other_score = opponent_score
         self.window.show_view(ShowScoreView(game_info, state_transition = self))
