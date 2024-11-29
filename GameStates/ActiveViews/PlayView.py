@@ -7,6 +7,7 @@ from GUI.Buttons.GenericButton import GenericButton
 from GUI.CardSpriteResolver import CardSpriteResolver
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
+from Backend.BackendFunctions import Backend
 
 IN_PLAY_LOCATION = [335, 340]
 IN_PLAY_X_OFFSET = 40
@@ -94,11 +95,13 @@ class PlayView(GameView):
                 #Check if we can click this card, if not we give up on it
 
                 # Play card animation
-                if card is not None:
+                if card is not None and Backend.can_play_card(self.game_info, card):
                     self.play_card(card)
 
-                # Write to database (we might want to write none?)
-                self.update_db(card)
+                    # Write to database (we might want to write none?)
+                    self.update_db(card)
+                elif not Backend.can_play_card(self.game_info, card):
+                    self.tip_message = "You can't play this card as it would make the board value exceed 31."
 
 
     def update_db(self, card):

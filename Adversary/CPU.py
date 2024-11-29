@@ -40,11 +40,12 @@ class CPU(OtherPlayerLogic):
     @staticmethod
     def listen_to_deal_async(view):
         time.sleep(3)
-        game_info = Backend.deal_cards(view.game_info)
+        Backend.create_deck(view.game_info)
+        view.game_info = Backend.deal_cards(view.game_info)
         view.listener_done = True
 
-    @staticmethod
-    def send_deal(game_info: GameInfo):
+    
+    def send_deal(self, game_info: GameInfo):
         pass
 
     @staticmethod
@@ -110,7 +111,6 @@ class CPU(OtherPlayerLogic):
         ]
 
         if not playable_cards:
-            game_info.cards_in_play = []  
             return None
 
         print(play_total)

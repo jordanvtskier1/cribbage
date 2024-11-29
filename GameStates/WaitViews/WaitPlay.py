@@ -8,7 +8,7 @@ import arcade.gui
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
 from GameStates.StateTransitionBackend import StateTransitionBackend
-
+import time
 
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -50
@@ -33,6 +33,8 @@ class WaitPlayView(GameView):
                 align_x = -50,
                 align_y = -250)
         )
+
+        
         
         self.tip_string = "Wait for opponent's play . . ."
 
@@ -80,6 +82,8 @@ class WaitPlayView(GameView):
             if self.all_cards_played():
                 self.manager2.enable()
                 self.manager2.draw()
+            elif self.picked_card is None: # opponent cannot play
+                self.opponent_cannot_play()
             else:
                 self.make_transition()
 
@@ -95,25 +99,46 @@ class WaitPlayView(GameView):
         if self.picked_card is not None and self.picked_card.is_animating:
             end_position = self.next_in_play_position(  is_waiting = True)
             self.picked_card.get_dealt_animation(end_position= end_position)
+        elif self.picked_card is None and self.listener_done:
+            self.cannot_play_message = arcade.gui.UILayout(
+                    x=self.GUIDE_LOCATION[0],
+                    y=self.GUIDE_LOCATION[1],
+                children = [arcade.gui.UIMessageBox(
+                    width=400,
+                    height=35,
+                    message_text = "Opponent cannot play a card",
+                    buttons=[]
+                )]
+                )
+            self.manager.add(
+                self.cannot_play_message
+            )
 
 
     def card_was_played(self, card):
-        self.listener_done = True
         self.picked_card = card
-        self.picked_card.is_animating = True
+        self.listener_done = True
+        if card is not None:
+            self.picked_card.is_animating = True
 
 
     # TODO add logic for when other player cant play
     def can_transition(self):
-        if (self.listener_done
-                and
-                self.picked_card is not None
-                and not
-                self.picked_card.is_animating):
-            return True
+        if self.listener_done:
+            if self.picked_card is not None:
+                if not self.picked_card.is_animating:
+                    return True
+            else:
+                return True
         return False
 
     def make_transition(self):
         self.transition.wait_to_play(game_info = self.game_info, card = self.picked_card)
+
+    def opponent_cannot_play(self):
+        self.transition.opponent_cannot_play(game_info = self.game_info)
+
+        
+        
 
 
