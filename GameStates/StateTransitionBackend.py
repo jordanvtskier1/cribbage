@@ -208,8 +208,8 @@ class StateTransitionBackend:
             Backend.start_new_in_play_count(game_info)
 
         #  game_info.other_player.send_play(game_info, card)
-        game_is_over = Backend.check_game_over(game_info)
-        if game_is_over:
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
             view = EndGameView(game_info, state_transition=self)
             self.window.show_view(view)
         else:
