@@ -4,7 +4,6 @@
 
 import arcade
 from GameStates import GameInfo
-from GameStates.CutDeckAnimation import CutDeckAnimation
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 from Adversary.Multiplayer import Multiplayer
@@ -21,6 +20,20 @@ class WaitCutDeck(GameView):
         self.tip_string = "Wait for your opponent to cut the deck..."
         self.time_one = -1
 
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
+
         self.picked_card = None
         self.listener_done = False
         self.animator = CutDeckAnimation(deck= self.game_info.deck, card = None)
@@ -30,10 +43,7 @@ class WaitCutDeck(GameView):
         self.set_our_hand()
         self.set_spread_deck()
 
-        if self.game_info.is_multiplayer:
-            Multiplayer.listen_to_cut(view=self)
-        else:
-            CPU.listen_to_cut(view=self)
+        self.other_player.listen_to_cut(view = self)
 
 
     def on_draw(self):
@@ -43,7 +53,6 @@ class WaitCutDeck(GameView):
 
         self.clear()
 
-        self.draw_tips()
         self.draw_spread_deck()
         self.draw_scoreboard()
         self.draw_pegs()
@@ -51,10 +60,7 @@ class WaitCutDeck(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        self.draw_running_count()
-
-        if not self.game_info.is_dealer:
-            self.draw_tips()
+        self.manager.draw()
 
         is_done_animating = self.animator.play()
         if self.can_transition() and is_done_animating:

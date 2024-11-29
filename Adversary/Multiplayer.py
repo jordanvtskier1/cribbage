@@ -55,7 +55,7 @@ class Multiplayer(OtherPlayerLogic):
         'cut_card': card.getDict()
         })
 
-    @staticmethod
+    
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
         game_info.player: {'played_card': card.getDict()},
@@ -194,6 +194,23 @@ class Multiplayer(OtherPlayerLogic):
                     pass
 
         listener = self.database_ref.listen(on_deal_change)
+    
+    def listen_to_play(self, view):
+        def get_played_card(event):
+            print(event.data)  # new data at /reference/event.path. None if deleted
+
+            if event.data != '' and event.data is not None:
+                played_card = Card( event.data["suit"], event.data["rank"] )
+
+                view.card_was_played(card=played_card)
+                # Delete from database so we don't read it again next turn
+                self.database_ref.child(view.game_info.opponent + "/played_card").delete()
+                try:
+                    listener.close()
+                except:
+                    pass
+
+        listener = self.database_ref.child(view.game_info.opponent + "/played_card").listen(get_played_card)
 
 
     @staticmethod
@@ -230,15 +247,16 @@ class Multiplayer(OtherPlayerLogic):
                     )
 
                 # Play animation
-                view.animate_other_card()
+                #view.animate_other_card()
                 try:
+                    view.listener_done = True
                     listener.close()
                 except:
                     pass
         listener = self.database_ref.child(view.game_info.opponent + "/crib_picks").listen(get_crib_picks)
 
-    @staticmethod
-    def listen_to_cut(view):
+
+    def listen_to_cut(self, view):
         path = "cut_card"
 
         # Callback function to capture data change
@@ -261,5 +279,5 @@ class Multiplayer(OtherPlayerLogic):
                 except:
                     pass
 
-        listener = view.db_ref.child(path).listen(listen_to_event)
+        listener = self.database_ref.child(path).listen(listen_to_event)
 

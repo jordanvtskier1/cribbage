@@ -50,12 +50,18 @@ class Backend:
     @staticmethod
     def remove_from_other_hand(game_info: GameInfo, cards):
         for card in cards:
-            game_info.other_hand.remove(card)
+            for c in game_info.other_hand:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.other_hand.remove(c)
+                    break
 
     @staticmethod
     def cut_deck(game_info: GameInfo, card: Card):
         game_info.top_card = card
-        game_info.deck.remove(card)
+        for c in game_info.deck:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.deck.remove(c)
+                    break
         game_info.deck.append(card)
         return game_info
     
@@ -129,6 +135,7 @@ class Backend:
     def play_card(game_info: GameInfo, card: Card):
         play_score = 0
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
+        game_info.current_count = card_sum
         #fifteen
         if card_sum == 15:
             play_score += 2

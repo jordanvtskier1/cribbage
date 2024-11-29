@@ -102,19 +102,25 @@ class CPU(OtherPlayerLogic):
     @staticmethod
     def play_card(game_info: GameInfo):
 
-        pick_range = list( range( len(game_info.other_hand)))
+        play_total = sum(card.getValue() for card in game_info.cards_in_play)
 
-        # Try picks until one works
-        while len(pick_range) > 0:
-            card_index = random.choice( pick_range )
-            card = game_info.other_hand[card_index]
+        playable_cards = [
+            card for card in game_info.other_hand
+            if play_total + card.getValue() <= game_info.MAX_TOTAL
+        ]
 
-            return card
+        if not playable_cards:
+            game_info.cards_in_play = []  
+            return None
+
+        print(play_total)
+  
+        return random.choice(playable_cards)
 
             # TODO Uncomment once we the play limit bug is fixed
-            # if Backend.can_play_card(game_info, card):
-            #     return card
-            #
+            #if Backend.can_play_card(game_info, card):
+             #    return card
+            
             # # We cant pick that index
             # pick_range.remove( card_index )
-        return None
+       # return None

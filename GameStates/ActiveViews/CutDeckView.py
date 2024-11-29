@@ -22,6 +22,19 @@ class CutDeckView(GameView):
         self.time_one = -1
         self.picked_card = None
         self.animator = CutDeckAnimation(deck = self.game_info.deck, card = None)
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
 
 
     def on_show(self):
@@ -43,8 +56,7 @@ class CutDeckView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_crib()
-        if not self.game_info.is_dealer:
-            self.draw_tips()
+        self.manager.draw()
 
         is_done_animating = self.animator.play()
         if self.can_transition() and is_done_animating:
@@ -85,6 +97,12 @@ class CutDeckView(GameView):
                     # self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
                     self.set_cut_deck(self.cards_clicked[0])
 
+                    #Play animation
+                    self.cut_deck_animation()
+
+    #TODO Implement Animation
+    def cut_deck_animation(self):
+        pass
 
     def can_transition(self):
         if self.picked_card is not None:

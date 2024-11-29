@@ -20,16 +20,15 @@ class WaitPlayView(GameView):
     def __init__(self, game_info: GameInfo, state_transition: StateTransitionBackend):
         super().__init__(game_info, state_transition)
 
-        self.manager = arcade.gui.UIManager()
-        #self.manager.enable()
-
+        self.manager2 = arcade.gui.UIManager()
+        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         score_button = GenericButton(behavior=calculate_score_behavior,
                                     text="Calculate Score",
                                     width=200)
 
-        self.manager.add(
+        self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child=score_button,
                 align_x = -50,
@@ -37,17 +36,29 @@ class WaitPlayView(GameView):
         )
         
         self.tip_string = "Wait for opponent's play . . ."
+
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=400,
+                height=35,
+                message_text = self.tip_string,
+                buttons=[]
+            )]
+            )
+        self.manager.add(
+            self.tip_message
+        )
         self.listener_done = False
         self.picked_card = None
 
     def on_show(self):
         self.set_our_hand()
         self.set_other_hand()
+        self.set_cards_in_play()
 
-        if self.game_info.is_multiplayer:
-            pass
-        else:
-            CPU.listen_to_play(view = self)
+        self.other_player.listen_to_play(view = self)
 
 
     def on_draw(self):
@@ -61,14 +72,15 @@ class WaitPlayView(GameView):
         self.draw_our_hand()
         self.draw_other_hand()
         self.draw_cards_in_play()
-        self.draw_tips()
+        self.draw_current_count()
+        self.manager.draw()
 
         self.play_animation()
 
         if self.can_transition():
             if self.all_cards_played():
-                self.manager.enable()
-                self.manager.draw()
+                self.manager2.enable()
+                self.manager2.draw()
             else:
                 self.make_transition()
 
@@ -76,7 +88,7 @@ class WaitPlayView(GameView):
 
 
     def on_hide_view(self):
-        self.manager.disable()
+        self.manager2.disable()
 
 
     # We need to either show a message that a card could not be played or put the card in the center
