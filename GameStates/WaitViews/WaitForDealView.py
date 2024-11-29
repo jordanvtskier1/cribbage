@@ -73,7 +73,7 @@ class WaitForDealView(GameView):
         else:
             self.dealing_animation()
             if self.can_transition():
-                self.transition.wait_deal_to_add_crib(game_info=self.game_info)
+                self.make_transition()
 
     def on_hide_view(self):
         self.manager.disable()
@@ -123,3 +123,6 @@ class WaitForDealView(GameView):
             if card.is_animating:
                 return False
         return True
+
+    def make_transition(self):
+        self.transition.wait_deal_to_add_crib(game_info=self.game_info)
