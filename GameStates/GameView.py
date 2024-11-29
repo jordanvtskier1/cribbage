@@ -22,7 +22,7 @@ class GameView(arcade.View):
 
         self.tip_string = ""
 
-        # Represents cards clicked by user
+        # Cards the user has clicked
         self.cards_clicked = []
 
         self.game_info = game_info
@@ -36,8 +36,10 @@ class GameView(arcade.View):
         THIRD = 1/3
         EIGHTH = 1/8
         TWENTIETH = 1/20
+        # Screen Dimensions
         self.SCREEN_WIDTH = 1000
         self.SCREEN_HEIGHT = 650
+        # Positions of game elements
         self.DECK_LOCATION = [self.SCREEN_WIDTH * TWENTIETH, self.SCREEN_HEIGHT * HALF]
         self.CRIB_LOCATION1 = [self.SCREEN_WIDTH * TWENTIETH, (self.SCREEN_HEIGHT - self.SCREEN_HEIGHT * FOURTH) + self.SCREEN_HEIGHT * TENTH]
         self.CRIB_LOCATION2 = [self.SCREEN_WIDTH * TWENTIETH, (self.SCREEN_HEIGHT * FOURTH) - self.SCREEN_HEIGHT * TENTH]
@@ -51,11 +53,9 @@ class GameView(arcade.View):
         self.IN_PLAY_X_OFFSET = 40
         self.IN_PLAY_Y_OFFSET = 15
 
+        # By default create a manager object
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
-
-
-
 
 
     def on_draw(self):
@@ -69,7 +69,6 @@ class GameView(arcade.View):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
-        self.draw_tips()
 
 
     def draw_deck(self):
@@ -102,6 +101,7 @@ class GameView(arcade.View):
         OUTER_RECTANGLE_HEIGHT = 500
         arcade.draw_rectangle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1], OUTER_RECTANGLE_WIDTH, OUTER_RECTANGLE_HEIGHT, arcade.color.BLACK)
         
+        # Cribbage board
         score_board = arcade.Sprite("./Sprites/cribbage-board.png", 0.5)
         score_board.center_x = self.BOARD_LOCATION[0]
         score_board.center_y = self.BOARD_LOCATION[1]
@@ -113,7 +113,7 @@ class GameView(arcade.View):
         The draw_pegs method draws the pegs for the cribbage board.
         """
                 
-        # TODO: Find better implementation method
+        # Peg locations
         if self.game_info.our_score == 0:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 70, self.BOARD_LOCATION[1] - 205, 5, arcade.color.TAN)
@@ -148,6 +148,7 @@ class GameView(arcade.View):
             arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 6, arcade.color.BLACK)
             arcade.draw_circle_filled(self.BOARD_LOCATION[0], self.BOARD_LOCATION[1] + 155, 5, arcade.color.TAN)
         
+        # Opponent peg locations
         if self.game_info.other_score == 0:
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 6, arcade.color.BLACK)
             arcade.draw_circle_filled(self.BOARD_LOCATION[0] - 40, self.BOARD_LOCATION[1] - 205, 5, arcade.color.TAN)
@@ -207,12 +208,12 @@ class GameView(arcade.View):
         arcade.draw_circle_filled(self.SCORE_LOCATION[0] - CIRCLE_ADJUSTER_X, self.SCORE_LOCATION[1] - CIRCLE_ADJUSTER_Y, OUTER_CIRCLE_RADIUS, arcade.color.BLACK)
         arcade.draw_circle_filled(self.SCORE_LOCATION[0] - CIRCLE_ADJUSTER_X, self.SCORE_LOCATION[1] - CIRCLE_ADJUSTER_Y, INNER_CIRCLE_RADIUS, arcade.color.BLUE)
         
+        # Draw player names
         TEXT_ADJUSTER_ONE_X = 47
         TEXT_ADJUSTER_TWO_X = 57
         TEXT_ADJUSTER_ONE_Y = 7
         TEXT_ADJUSTER_TWO_Y = 23
         TEXT_SIZE = 15
-        # Draw player names
         arcade.draw_text(self.game_info.player, self.SCORE_LOCATION[0] - TEXT_ADJUSTER_ONE_X, self.SCORE_LOCATION[1] + TEXT_ADJUSTER_ONE_Y, arcade.color.BLACK, TEXT_SIZE)
         arcade.draw_text(self.game_info.opponent, self.SCORE_LOCATION[0] - TEXT_ADJUSTER_ONE_X, self.SCORE_LOCATION[1] - TEXT_ADJUSTER_TWO_Y, arcade.color.BLACK, TEXT_SIZE)
         
@@ -222,6 +223,8 @@ class GameView(arcade.View):
 
 
     def set_our_hand(self):
+
+        # Set player hand on first loading of view
         CARD_SPACER_INCREMENT = 50
         card_spacer = 0
 
@@ -237,6 +240,8 @@ class GameView(arcade.View):
         """
         The draw_your_hand method draws the cards in your hand.
         """
+
+        # Update player hand when changes occur
         CARD_SPACER_INCREMENT = 50
         CLICKED_ADJUSTER_INCREMENT = 25
         card_spacer = 0
@@ -259,12 +264,12 @@ class GameView(arcade.View):
                     clicked_adjuster = CLICKED_ADJUSTER_INCREMENT
 
                 card.setPosition([self.YOUR_HAND_LOCATION[0] + card_spacer, self.YOUR_HAND_LOCATION[1] + clicked_adjuster])
-
                 card_spacer += CARD_SPACER_INCREMENT
             card.draw()
 
 
     def set_other_hand(self):
+        # Set opponents hand on first loading of screen
         CARD_SPACER_INCREMENT = 50
         card_spacer = 0
 
@@ -278,6 +283,7 @@ class GameView(arcade.View):
         """
         The draw_opps_hand method draws the cards in your opps hand.
         """
+        # Update opponents hand
         for card in self.game_info.other_hand:
             card.draw()
 
@@ -313,6 +319,7 @@ class GameView(arcade.View):
             return CRIB_LOCATION2
         return CRIB_LOCATION1
 
+
     def set_spread_deck(self):
         CARD_OFFSET = 10
         CENTER_CARD_ADJUSTER = 100
@@ -325,6 +332,7 @@ class GameView(arcade.View):
 
             card_spacer += CARD_OFFSET
 
+
     def draw_spread_deck(self):
         """
         The draw_spread_deck method draws out the cards in the deck in a spread out fashion.
@@ -334,7 +342,9 @@ class GameView(arcade.View):
             # If a card is clicked change it's position
             card.draw()
 
+
     def draw_current_count(self):
+        # Draw the card total points for cards in play
         RECTANGLE_ADJUSTER_X = 50
         RECTANGLE_ADJUSTER_Y = 20
         TEXT_ADJUSTER_X = 70
@@ -344,17 +354,18 @@ class GameView(arcade.View):
         arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - RECTANGLE_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + RECTANGLE_ADJUSTER_Y, CIRCLE_RADIUS, arcade.color.GRAY)
         arcade.draw_text(self.game_info.current_count, self.CENTER_CARD_LOCATION[0] - TEXT_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + TEXT_ADJUSTER_Y, arcade.color.BLACK, TEXT_SIZE)
 
+
     def set_cards_in_play(self):
         for card in self.game_info.cards_in_play:
             pos = card.getPosition()
             card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
             card.setPosition([pos[0], pos[1]])
 
+
     def draw_cards_in_play(self):
         for card in self.game_info.cards_in_play:
             if not card.is_animating:
                 card.draw()
-
 
 
     # Returns the next position of the card in play.
@@ -380,8 +391,10 @@ class GameView(arcade.View):
         arcade.draw_rectangle_filled(center_x= rectangle_position[0], center_y= rectangle_position[1], width = 30, height = 30,
                                      color = arcade.color.ALABAMA_CRIMSON)
 
+
     def all_cards_played(self):
         return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+
 
     def on_hide_view(self):
         self.manager.disable()

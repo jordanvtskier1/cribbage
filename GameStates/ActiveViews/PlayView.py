@@ -37,7 +37,6 @@ class PlayView(GameView):
         self.manager.add(
             self.tip_message
         )
-        self.manager = arcade.gui.UIManager()
 
 
         self.manager2 = arcade.gui.UIManager()
