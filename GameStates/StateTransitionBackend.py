@@ -245,7 +245,7 @@ class StateTransitionBackend:
             view = EndGameView(game_info, state_transition=self)
             self.window.show_view(view)
         else:
-            wait_play_view = WaitPlayView(game_info, state_transition=self)
+            wait_play_view = PlayView(game_info, state_transition=self)
             self.window.show_view(wait_play_view)
 
         # Where should this go ?
