@@ -240,8 +240,8 @@ class StateTransitionBackend:
         if not Backend.can_someone_play(game_info):
             Backend.start_new_in_play_count(game_info)
 
-        game_info = Backend.check_game_over(game_info)
-        if game_info.our_win == True or game_info.other_win == True:
+        game_is_over =  Backend.check_game_over(game_info)
+        if game_is_over:
             view = EndGameView(game_info, state_transition=self)
             self.window.show_view(view)
         else:
