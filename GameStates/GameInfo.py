@@ -34,13 +34,14 @@ class GameInfo:
         self.other_hand_score = 0
         # Booleans for determining the State of Game
         self.our_win = False
+        self.play_string = ""
         self.other_win = False
         self.crib_hidden = True
         self.is_dealer = False
         self.is_turn = True
         self.can_play = False
-        self.opponent = "player2"
-        self.player = "player1"
+        self.opponent = "Opponent"
+        self.player = "You"
         self.is_multiplayer = False
         self.other_player = OtherPlayerLogic()
 
@@ -52,6 +53,7 @@ class GameInfo:
         self.our_hand = []
         self.other_hand = []
         self.current_count = 0
+        self.play_string = ""
 
         self.top_card = None
 

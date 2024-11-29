@@ -49,6 +49,7 @@ class GameView(arcade.View):
         self.BOARD_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH * EIGHTH), self.SCREEN_HEIGHT * HALF]
         self.SCORE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH * EIGHTH), self.SCREEN_HEIGHT * TWENTIETH]
         self.GUIDE_LOCATION = [(self.SCREEN_WIDTH * HALF), self.SCREEN_WIDTH * EIGHTH]
+        self.POINT_MESSAGE_LOCATION = [self.SCREEN_WIDTH - (self.SCREEN_WIDTH * THIRD), self.SCREEN_HEIGHT * THIRD]
         self.IN_PLAY_LOCATION = [335, 340]
         self.IN_PLAY_X_OFFSET = 40
         self.IN_PLAY_Y_OFFSET = 15

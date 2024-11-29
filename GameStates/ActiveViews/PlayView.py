@@ -57,6 +57,22 @@ class PlayView(GameView):
                 align_y = BUTTON_ALIGN[1])
         )
 
+        self.manager3 = arcade.gui.UIManager()
+        self.point_message = arcade.gui.UILayout(
+                x=self.POINT_MESSAGE_LOCATION[0],
+                y=self.POINT_MESSAGE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=125,
+                height=35,
+                message_text = self.game_info.play_string,
+                buttons=[]
+            )]
+            )
+        self.manager3.add(
+            self.point_message
+        )
+        
+
         self.we_can_play = self.check_can_we_play()
 
     def on_show(self):
@@ -80,6 +96,9 @@ class PlayView(GameView):
 
         self.play_animation()
         self.manager.draw()
+
+        if self.game_info.play_string != "":
+            self.manager3.draw()
 
         if self.can_transition():
             if self.all_cards_played() or not self.we_can_play:
@@ -109,7 +128,20 @@ class PlayView(GameView):
                     # Write to database (we might want to write none?)
                     self.update_db(card)
                 elif not Backend.can_play_card(self.game_info, card):
-                    self.tip_message = "You can't play this card as it would make the board value exceed 31."
+                    self.tip_string = "Card would exceed board value of 31"
+                    self.manager.remove(self.tip_message)
+                    self.tip_message = arcade.gui.UILayout(
+                        x=self.GUIDE_LOCATION[0],
+                        y=self.GUIDE_LOCATION[1],
+                        children = [arcade.gui.UIMessageBox(
+                            width=400,
+                            height=35,
+                            message_text = self.tip_string,
+                            buttons=[]
+                    )]
+                    )
+                    self.manager.add(self.tip_message)
+                    
 
 
     def update_db(self, card):
@@ -150,6 +182,7 @@ class PlayView(GameView):
 
     def on_hide_view(self):
         self.manager2.disable()
+        self.manager3.disable()
 
     def check_can_we_play(self):
         return Backend.can_we_play(self.game_info)

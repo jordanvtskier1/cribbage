@@ -55,6 +55,21 @@ class WaitPlayView(GameView):
         self.listener_done = False
         self.picked_card = None
 
+        self.manager3 = arcade.gui.UIManager()
+        self.point_message = arcade.gui.UILayout(
+                x=self.POINT_MESSAGE_LOCATION[0],
+                y=self.POINT_MESSAGE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=125,
+                height=35,
+                message_text = self.game_info.play_string,
+                buttons=[]
+            )]
+            )
+        self.manager3.add(
+            self.point_message
+        )
+
         self.animator = PassAnimation()
 
     def on_show(self):
@@ -78,6 +93,9 @@ class WaitPlayView(GameView):
         self.draw_current_count()
         self.manager.draw()
 
+        if self.game_info.play_string != "":
+            self.manager3.draw()
+
         self.play_animation()
 
         if self.can_transition():
@@ -89,6 +107,7 @@ class WaitPlayView(GameView):
 
     def on_hide_view(self):
         self.manager2.disable()
+        self.manager3.disable()
 
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
