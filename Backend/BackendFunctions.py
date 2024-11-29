@@ -155,7 +155,6 @@ class Backend:
         if card_sum + card.getValue() == 31:
             play_score += 2
             game_info.play_string += "+2 for 31\n"
-
         # Pair, triple, and quad
         if len(game_info.cards_in_play) >= 1 and game_info.cards_in_play[-1].getRank() == card.getRank():
             # Triple
