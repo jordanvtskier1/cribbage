@@ -82,7 +82,7 @@ class WaitPlayView(GameView):
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
         if self.picked_card is not None and self.picked_card.is_animating:
-            end_position = self.next_in_play_position(opponent=True)
+            end_position = self.next_in_play_position(  is_waiting = True)
             self.picked_card.get_dealt_animation(end_position= end_position)
 
 

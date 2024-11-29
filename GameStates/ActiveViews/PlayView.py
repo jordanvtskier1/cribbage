@@ -53,7 +53,7 @@ class PlayView(GameView):
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_tips()
-        self.draw_running_count()
+        #self.draw_running_count(is_waiting= False)
 
         self.play_animation()
 
@@ -92,7 +92,7 @@ class PlayView(GameView):
 
     def play_animation(self):
         if self.picked_card is not None and self.picked_card.is_animating:
-            end_position = self.next_in_play_position(opponent=False)
+            end_position = self.next_in_play_position(is_waiting =False)
             self.picked_card.get_dealt_animation(end_position=end_position)
 
 
