@@ -3,6 +3,8 @@ from GameStates.GameInfo import GameInfo
 import random
 from itertools import combinations
 
+MAX_IN_PLAY_COUNT = 31
+
 
 class Backend:
 
@@ -10,16 +12,20 @@ class Backend:
         pass
 
     @staticmethod
-    def check_game_over(game_info:GameInfo):
+    def check_game_over(game_info: GameInfo):
         if game_info.our_score >= 121:
             game_info.our_win = True
         if game_info.other_score >= 121:
             game_info.other_win = True
         return game_info
 
+    @staticmethod
+    def set_up_game(game_info: GameInfo):
+        Backend.set_up_next_round(game_info)
+        Backend.deal_cards(game_info)
 
     @staticmethod
-    def set_up_next_round(game_info:GameInfo):
+    def set_up_next_round(game_info: GameInfo):
         game_info.reset()
         game_info.is_dealer = not game_info.is_dealer
         if game_info.is_dealer:
@@ -29,14 +35,12 @@ class Backend:
     def create_deck(game_info: GameInfo):
         SUITS = game_info.SUITS
         CARD_VALUES = game_info.CARD_VALUES
-        game_info.deck = []
-        for suit in SUITS: 
-            for value in CARD_VALUES: 
+        for suit in SUITS:
+            for value in CARD_VALUES:
                 game_info.deck.append(Card(suit, value))
         random.shuffle(game_info.deck)
         return game_info
-    
-    
+
     @staticmethod
     def deal_cards(game_info: GameInfo):
         DEAL = game_info.DEAL
@@ -44,7 +48,7 @@ class Backend:
             game_info.our_hand.append(game_info.deck.pop(0))
             game_info.other_hand.append(game_info.deck.pop(0))
         return game_info
-    
+
     @staticmethod
     def add_to_crib(game_info: GameInfo, cards: list[Card]):
         for card in cards:
@@ -68,12 +72,12 @@ class Backend:
     def cut_deck(game_info: GameInfo, card: Card):
         game_info.top_card = card
         for c in game_info.deck:
-                if c.suit == card.suit and c.rank == card.rank:
-                    game_info.deck.remove(c)
-                    break
+            if c.suit == card.suit and c.rank == card.rank:
+                game_info.deck.remove(c)
+                break
         game_info.deck.append(card)
         return game_info
-    
+
     @staticmethod
     def calculate_hand_score(game_info: GameInfo, hand):
 
@@ -87,22 +91,20 @@ class Backend:
         if Card(top_card.getSuit(), "J") in hand:
             hand_score += 1
 
-
         # fifteen
         for r in range(2, 6):  # 2 to 5 card combinations
             for combo in combinations(complete_hand, r):
                 if sum(card.getValue() for card in combo) == 15:
                     hand_score += 2
 
-
         # counts of cards in hand
         rank_duplicates = {}
         for card in complete_hand:
             try:
-                #item exists in dict, increment count by 1
+                # item exists in dict, increment count by 1
                 rank_duplicates[card.getRank()] += 1
             except KeyError:
-                #item does not exist in list, make count = 1
+                # item does not exist in list, make count = 1
                 rank_duplicates[card.getRank()] = 1
 
         # pairs, 3-of-kind, 4-of-kind
@@ -122,33 +124,30 @@ class Backend:
                 if list(combo) == list(range(combo[0], combo[0] + r)):
                     hand_score += r  # Runs score the number of cards in them
 
-        
-        #flush
+        # flush
         suit_duplicates = {}
         for card in hand:
             try:
-                #item exists in dict, increment count by 1
+                # item exists in dict, increment count by 1
                 suit_duplicates[card.getSuit()] += 1
             except KeyError:
-                #item does not exist in list, make count = 1
+                # item does not exist in list, make count = 1
                 suit_duplicates[card.getSuit()] = 1
-        
+
         for key, value in suit_duplicates.items():
             if value == 4:
                 hand_score += 4
                 if key == game_info.top_card.getSuit():
                     hand_score += 1
 
-       
         return hand_score
 
     @staticmethod
     def play_card(game_info: GameInfo, card: Card):
         play_score = 0
-        card_sum = sum(card.getValue() for card in game_info.cards_in_play)
-        game_info.current_count = card_sum + card.getValue()
+        card_sum = Backend.get_in_play_count(game_info)
         game_info.play_string = ""
-        #fifteen
+        # fifteen
         if card_sum + card.getValue() == 15:
             play_score += 2
             game_info.play_string += "+2 for 15\n"
@@ -157,7 +156,7 @@ class Backend:
             play_score += 2
             game_info.play_string += "+2 for 31\n"
 
-         # Pair, triple, and quad
+        # Pair, triple, and quad
         if len(game_info.cards_in_play) >= 1 and game_info.cards_in_play[-1].getRank() == card.getRank():
             # Triple
             if len(game_info.cards_in_play) >= 2 and game_info.cards_in_play[-2].getRank() == card.getRank():
@@ -180,7 +179,7 @@ class Backend:
                 run_length += 1
             else:
                 run_length = 1  # Reset if sequence is broken
-            
+
             if run_length >= 3:
                 play_score += run_length  # Add score for the run length
                 game_info.play_string += f"+{run_length} for Run\n"
@@ -200,22 +199,20 @@ class Backend:
         if Card(top_card.getSuit(), "J") in game_info.crib:
             crib_score += 1
 
-
         # fifteen
         for r in range(2, 6):  # 2 to 5 card combinations
             for combo in combinations(complete_crib, r):
                 if sum(card.getValue() for card in combo) == 15:
                     crib_score += 2
 
-
         # counts of cards in hand
         rank_duplicates = {}
         for card in complete_crib:
             try:
-                #item exists in dict, increment count by 1
+                # item exists in dict, increment count by 1
                 rank_duplicates[card.getRank()] += 1
             except KeyError:
-                #item does not exist in list, make count = 1
+                # item does not exist in list, make count = 1
                 rank_duplicates[card.getRank()] = 1
 
         # pairs, 3-of-kind, 4-of-kind
@@ -235,35 +232,58 @@ class Backend:
                 if list(combo) == list(range(combo[0], combo[0] + r)):
                     crib_score += r  # Runs score the number of cards in them
 
-        
-        #flush of 5
+        # flush of 5
         suit_duplicates = {}
         for card in game_info.crib:
             try:
-                #item exists in dict, increment count by 1
+                # item exists in dict, increment count by 1
                 suit_duplicates[card.getSuit()] += 1
             except KeyError:
-                #item does not exist in list, make count = 1
+                # item does not exist in list, make count = 1
                 suit_duplicates[card.getSuit()] = 1
-        
+
         for key, value in suit_duplicates.items():
             if value == 4:
                 if key == game_info.top_card.getSuit():
                     crib_score += 5
 
-       
         return crib_score
 
-    
     @staticmethod
     def can_play_card(game_info: GameInfo, card):
 
         max_in_play_sum = 31
 
+        return card.getValue() + Backend.get_in_play_count(game_info) <= max_in_play_sum
+
+    @staticmethod
+    def get_in_play_count(game_info: GameInfo):
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
-        return card.getValue() + card_sum <= max_in_play_sum
+        return card_sum
 
+    @staticmethod
+    def can_someone_play(game_info: GameInfo):
+        return Backend.can_opp_play(game_info) or Backend.can_we_play(game_info)
 
+    @staticmethod
+    def can_we_play(game_info: GameInfo):
+        in_play_count = Backend.get_in_play_count(game_info)
+        for card in game_info.our_hand:
+            if card.getValue() + in_play_count <= MAX_IN_PLAY_COUNT:
+                return True
+        return False
 
+    @staticmethod
+    def can_opp_play(game_info: GameInfo):
+        in_play_count = Backend.get_in_play_count(game_info)
+        for card in game_info.other_hand:
+            if card.getValue() + in_play_count <= MAX_IN_PLAY_COUNT:
+                return True
+        return False
 
+    @staticmethod
+    def start_new_in_play_count(game_info: GameInfo):
 
+        game_info.cards_played.append(game_info.cards_in_play)
+        game_info.cards_in_play = []
+        game_info.current_count = 0

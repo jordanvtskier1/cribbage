@@ -6,7 +6,7 @@ import arcade
 
 from Adversary.Multiplayer import Multiplayer
 from GameStates import GameInfo
-from GameStates.CutDeckAnimation import CutDeckAnimation
+from Animations.CutDeckAnimation import CutDeckAnimation
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 import time
@@ -57,8 +57,9 @@ class CutDeckView(GameView):
         self.draw_other_hand()
         self.draw_crib()
         self.manager.draw()
+        self.animator.play()
 
-        is_done_animating = self.animator.play()
+        is_done_animating = self.animator.completed
         if self.can_transition() and is_done_animating:
             self.make_transition()
 
@@ -97,12 +98,6 @@ class CutDeckView(GameView):
                     # self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
                     self.set_cut_deck(self.cards_clicked[0])
 
-                    #Play animation
-                    self.cut_deck_animation()
-
-    #TODO Implement Animation
-    def cut_deck_animation(self):
-        pass
 
     def can_transition(self):
         if self.picked_card is not None:

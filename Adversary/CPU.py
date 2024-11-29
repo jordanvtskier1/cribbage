@@ -8,6 +8,7 @@ from Backend.BackendFunctions import Backend
 from threading import Thread
 import time
 
+
 class CPU(OtherPlayerLogic):
     def __init__(self):
         super().__init__()
@@ -44,7 +45,6 @@ class CPU(OtherPlayerLogic):
         view.game_info = Backend.deal_cards(view.game_info)
         view.listener_done = True
 
-    
     def send_deal(self, game_info: GameInfo):
         pass
 
@@ -59,7 +59,7 @@ class CPU(OtherPlayerLogic):
         other_hand = view.game_info.other_hand
         card_indexes = random.sample(range(len(other_hand)), 2)
 
-        cards = [ other_hand[ card_indexes[0]], other_hand[ card_indexes[1]]]
+        cards = [other_hand[card_indexes[0]], other_hand[card_indexes[1]]]
         view.other_picks = cards
 
         view.listener_done = True
@@ -69,19 +69,18 @@ class CPU(OtherPlayerLogic):
         t = Thread(target=CPU.listen_to_cut_async, args=[view])
         t.start()
 
-
     @staticmethod
     def listen_to_cut_async(view):
         time.sleep(2)
-        card = CPU.cut_deck( game_info = view.game_info )
-        view.set_cut_deck(card = card)
+        card = CPU.cut_deck(game_info=view.game_info)
+        view.set_cut_deck(card=card)
 
     @staticmethod
     def cut_deck(game_info: GameInfo):
         # Randomly select a card from the deck
         deck_size = len(game_info.deck)
         card_index = random.randint(0, deck_size - 1)
-        cut_card = game_info.deck[card_index]  
+        cut_card = game_info.deck[card_index]
 
         return cut_card
 
@@ -100,6 +99,7 @@ class CPU(OtherPlayerLogic):
     We should only play a card if the count would go under 31.
     Otherwise we return no cards
     """
+
     @staticmethod
     def play_card(game_info: GameInfo):
 
@@ -110,17 +110,20 @@ class CPU(OtherPlayerLogic):
             if play_total + card.getValue() <= game_info.MAX_TOTAL
         ]
 
-        if not playable_cards:
-            return None
+        if len(playable_cards) == 0:
+            return Card.create_empty_card()
 
         print(play_total)
-  
-        return random.choice(playable_cards)
 
-            # TODO Uncomment once we the play limit bug is fixed
-            #if Backend.can_play_card(game_info, card):
-             #    return card
-            
-            # # We cant pick that index
-            # pick_range.remove( card_index )
-       # return None
+        choice = random.choice(playable_cards)
+        if choice is None:
+            print("error!")
+        return choice
+
+        # TODO Uncomment once we the play limit bug is fixed
+        # if Backend.can_play_card(game_info, card):
+        #    return card
+
+        # # We cant pick that index
+        # pick_range.remove( card_index )
+    # return None

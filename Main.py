@@ -12,6 +12,7 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Bug Cribbage"
+MUSIC_FILE = "the_city_streets.wav"
 
 
 def main():
@@ -23,6 +24,9 @@ def main():
 
     menu = MainMenuView(game_info=game_info, state_transition=state_transition)
     window.show_view(menu)
+
+    music = arcade.load_sound(MUSIC_FILE)
+    arcade.play_sound(music, looping=True)
 
     # Run the Window
     arcade.run()
