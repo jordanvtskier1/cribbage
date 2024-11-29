@@ -6,6 +6,7 @@ import arcade
 from GameStates import GameInfo
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
+from GameStates.CutDeckAnimation import CutDeckAnimation
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
 import time

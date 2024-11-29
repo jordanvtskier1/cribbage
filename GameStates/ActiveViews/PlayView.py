@@ -41,7 +41,6 @@ class PlayView(GameView):
 
 
         self.manager2 = arcade.gui.UIManager()
-        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         quit_button = GenericButton(behavior=calculate_score_behavior,

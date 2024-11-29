@@ -21,7 +21,6 @@ class WaitPlayView(GameView):
         super().__init__(game_info, state_transition)
 
         self.manager2 = arcade.gui.UIManager()
-        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         score_button = GenericButton(behavior=calculate_score_behavior,
