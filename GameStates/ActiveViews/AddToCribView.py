@@ -5,15 +5,12 @@
 
 import arcade
 
-from Backend_test import game_info
 from GameStates import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
-from Card import Card
-from Adversary.Multiplayer import Multiplayer
-from Adversary.CPU import CPU
+
 
 class AddToCribView(GameView):
     """Class representing the adding cards to the crib portion of the game"""
@@ -29,20 +26,20 @@ class AddToCribView(GameView):
 
         # Setup add to crib button
         self.tip_message = arcade.gui.UILayout(
-                x=self.GUIDE_LOCATION[0],
-                y=self.GUIDE_LOCATION[1],
-            children = [arcade.gui.UIMessageBox(
+            x=self.GUIDE_LOCATION[0],
+            y=self.GUIDE_LOCATION[1],
+            children=[arcade.gui.UIMessageBox(
                 width=400,
                 height=35,
-                message_text = self.tip_string,
+                message_text=self.tip_string,
                 buttons=[]
             )]
-            )
+        )
         self.manager.add(
             self.tip_message
         )
 
-        add_crib_behavior = lambda : self.add_crib_check()
+        add_crib_behavior = lambda: self.add_crib_check()
         crib_button = GenericButton(behavior=add_crib_behavior,
                                     text="Add to Crib",
                                     width=150,
@@ -51,8 +48,8 @@ class AddToCribView(GameView):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 child=crib_button,
-                align_x = -250,
-                align_y = -250)
+                align_x=-250,
+                align_y=-250)
         )
 
     def on_show(self):
@@ -80,7 +77,6 @@ class AddToCribView(GameView):
         if self.can_transition():
             self.make_transition()
 
-
     def on_mouse_press(self, x, y, button, modifiers):
         """
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
@@ -88,7 +84,7 @@ class AddToCribView(GameView):
         Clicking the crib button adds the cards to the crib.
         """
 
-        #if self.game_info.is_turn:
+        # if self.game_info.is_turn:
         # Get card object sprites
         card_sprites = arcade.SpriteList()
         for card in self.game_info.our_hand:
@@ -115,29 +111,27 @@ class AddToCribView(GameView):
 
             # Modify tip string to help user know what to do next
             match len(self.cards_clicked):
-                    case 0:
-                        self.tip_string = "Choose two cards to add to the crib"
-                    case 1:
-                        self.tip_string = "Choose another card to add to the crib"
-                    case 2:
-                        self.tip_string = "Click add to crib to add your cards to the crib"
+                case 0:
+                    self.tip_string = "Choose two cards to add to the crib"
+                case 1:
+                    self.tip_string = "Choose another card to add to the crib"
+                case 2:
+                    self.tip_string = "Click add to crib to add your cards to the crib"
             self.manager.remove(self.tip_message)
             self.tip_message = arcade.gui.UILayout(
                 x=self.GUIDE_LOCATION[0],
                 y=self.GUIDE_LOCATION[1],
-            children = [arcade.gui.UIMessageBox(
-                width=400,
-                height=35,
-                message_text = self.tip_string,
-                buttons=[]
-            )]
+                children=[arcade.gui.UIMessageBox(
+                    width=400,
+                    height=35,
+                    message_text=self.tip_string,
+                    buttons=[]
+                )]
             )
             self.manager.add(self.tip_message)
 
-
     def on_hide_view(self):
         self.manager.disable()
-
 
     def add_crib_check(self):
         """
@@ -153,16 +147,14 @@ class AddToCribView(GameView):
             self.added_to_crib = True
             self.cards_to_crib = self.cards_clicked
             self.cards_clicked = []
-            self.update_db(cards= self.cards_to_crib)
+            self.update_db(cards=self.cards_to_crib)
 
-        else: 
+        else:
             print("Not enough Cards picked")
-
 
     def update_db(self, cards):
         if self.game_info.is_multiplayer:
             self.other_player.add_to_cribbage(self.game_info, cards)
-            
 
     def can_transition(self):
         if len(self.cards_to_crib) == 2:
@@ -174,12 +166,12 @@ class AddToCribView(GameView):
 
     def make_transition(self):
         self.transition.pick_crib_transition(
-            cards= self.cards_to_crib,
+            cards=self.cards_to_crib,
             game_info=self.game_info
         )
 
     #                   Animations
-    #===================================================#
+    # ===================================================#
     def card_animation(self, cards):
         for card in cards:
-            card.get_dealt_animation(end_position= self.crib_location)
+            card.get_dealt_animation(end_position=self.crib_location)

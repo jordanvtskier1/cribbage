@@ -11,19 +11,21 @@ from pyglet.resource import animation
 
 DEFAULT_ANIMATION_DURATION = 120
 
+
 class Card:
 
-#============================================================#
-# Constructor
+    # ============================================================#
+    # Constructor
 
-    def __init__(self, suit = "Worms", rank = "A", position=[500, 500]):
+    def __init__(self, suit="Worms", rank="A", position=[500, 500]):
         from GUI.CardSpriteResolver import CardSpriteResolver
         self.setSuit(suit)
         self.setRank(rank)
         # Not required by constructor so that back end can make all cards
         # Then front end can use setters to add sprites and locations
-        self.setSprite(CardSpriteResolver.getSpriteFile(suit, value = rank))
-        self.setPosition(position)
+        if len(suit) > 0:
+            self.setSprite(CardSpriteResolver.getSpriteFile(suit, value=rank))
+            self.setPosition(position)
 
         self.is_animating = False
         self.is_hidden = False
@@ -34,8 +36,9 @@ class Card:
         self.dy = 0
         self.speed_x = 0
         self.speed_y = 0
-#============================================================#
-# Setters
+
+    # ============================================================#
+    # Setters
 
     def setSuit(self, suit):
         self.suit = suit
@@ -50,15 +53,15 @@ class Card:
         self.sprite.center_x = position[0]
         self.sprite.center_y = position[1]
 
-#============================================================#
-# Getters
+    # ============================================================#
+    # Getters
 
     def getSuit(self):
         return self.suit
-    
+
     def getRank(self):
         return self.rank
-    
+
     def getValue(self):
         if self.rank == "A":
             return 1
@@ -66,7 +69,7 @@ class Card:
             return 10
         else:
             return self.rank
-        
+
     def getRankAsInt(self):
         if self.rank == "A":
             return 1
@@ -78,31 +81,31 @@ class Card:
             return 13
         else:
             return self.rank
-    
+
     def getSprite(self):
         return self.sprite
 
     def getPosition(self):
         return [self.sprite.center_x, self.sprite.center_y]
-    
+
     def getDict(self):
         return {"suit": self.suit, "rank": self.rank}
-    
-#============================================================#
-# Drawing
+
+    # ============================================================#
+    # Drawing
 
     def draw(self):
         if not self.is_hidden:
             self.sprite.draw()
-    
-#============================================================#
-# To String
+
+    # ============================================================#
+    # To String
 
     def __str__(self):
         return "{} of {}".format(self.rank, self.suit)
 
-#============================================================#
-# Comparison
+    # ============================================================#
+    # Comparison
     def __gt__(self, card):
         return self.getRankAsInt() > card.getRankAsInt()
 
@@ -111,12 +114,12 @@ class Card:
     # Any card with the same value/Rank as Int is affected not just the one card object desired.
     # def __eq__(self, card):
     #     return self.getRankAsInt() == card.getRankAsInt()
-    
+
     def isSameValue(self, card):
         return self.getRankAsInt() == card.getRankAsInt()
 
-#============================================================#
-# Card animations
+    # ============================================================#
+    # Card animations
     def start_shake(self, duration, end_position):
         self.is_animating = True
         self.animation_time = duration
@@ -132,7 +135,6 @@ class Card:
         self.sprite.center_x = self.end_animation_position[0]
         self.sprite.center_y = self.end_animation_position[1]
 
-
     def shake_card(self):
         SHAKE_VALUE = 3
 
@@ -140,7 +142,7 @@ class Card:
             self.sprite.center_x += randint(-SHAKE_VALUE, SHAKE_VALUE)
             self.sprite.center_y += randint(-SHAKE_VALUE, SHAKE_VALUE)
         else:
-            self.setPosition( self.original_position)
+            self.setPosition(self.original_position)
         self.animation_time -= 1
 
         self.draw()
@@ -163,7 +165,7 @@ class Card:
             self.draw()
             return False
         else:
-            #To say we are done
+            # To say we are done
             self.stop_spin()
             return True
 
@@ -183,13 +185,12 @@ class Card:
         distance_y = (end_position[1] - current_position[1])
 
         if self.dx == 0 or self.dy == 0:
-            self.dx =  distance_x / DEFAULT_ANIMATION_DURATION
-            self.dy =  distance_y / DEFAULT_ANIMATION_DURATION
-
+            self.dx = distance_x / DEFAULT_ANIMATION_DURATION
+            self.dy = distance_y / DEFAULT_ANIMATION_DURATION
 
         if abs(distance_x) >= error_tolerance or abs(distance_y) >= error_tolerance:
             self.spin_once_fast()
-            self.setPosition([current_position[0] + self.dx , current_position[1] + self.dy])
+            self.setPosition([current_position[0] + self.dx, current_position[1] + self.dy])
         elif not self.can_stop_spinning():
             self.spin_once()
         else:
@@ -208,7 +209,7 @@ class Card:
 
     def move_card(self, end_position):
         error_tolerance = 0.5
-        duration = DEFAULT_ANIMATION_DURATION/2
+        duration = DEFAULT_ANIMATION_DURATION / 2
 
         self.is_animating = True
         self.end_animation_position = end_position
@@ -231,12 +232,18 @@ class Card:
 
     def reveal_card(self):
         self.is_hidden = False
-        #set card sprite to revealed
+        # set card sprite to revealed
 
     def hide_card(self):
         self.is_hidden = True
 
-
     def turn_card(self):
         self.is_hidden = False
-        #set card sprite to hidden
+        # set card sprite to hidden
+
+    @staticmethod
+    def create_empty_card():
+        return Card(suit="", rank="")
+
+    def is_empty_card(self):
+        return len(self.suit) == 0

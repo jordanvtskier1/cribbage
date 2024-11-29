@@ -344,6 +344,7 @@ class GameView(arcade.View):
 
 
     def draw_current_count(self):
+        from Backend.BackendFunctions import Backend
         # Draw the card total points for cards in play
         RECTANGLE_ADJUSTER_X = 50
         RECTANGLE_ADJUSTER_Y = 20
@@ -351,8 +352,13 @@ class GameView(arcade.View):
         TEXT_ADJUSTER_Y = 7
         CIRCLE_RADIUS = 25
         TEXT_SIZE = 25
-        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - RECTANGLE_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + RECTANGLE_ADJUSTER_Y, CIRCLE_RADIUS, arcade.color.GRAY)
-        arcade.draw_text(self.game_info.current_count, self.CENTER_CARD_LOCATION[0] - TEXT_ADJUSTER_X, self.CENTER_CARD_LOCATION[1] + TEXT_ADJUSTER_Y, arcade.color.BLACK, TEXT_SIZE)
+        arcade.draw_circle_filled(self.CENTER_CARD_LOCATION[0] - RECTANGLE_ADJUSTER_X,
+                                  self.CENTER_CARD_LOCATION[1] + RECTANGLE_ADJUSTER_Y,
+                                  CIRCLE_RADIUS, arcade.color.GRAY)
+        arcade.draw_text(Backend.get_in_play_count(self.game_info),
+                         self.CENTER_CARD_LOCATION[0] - TEXT_ADJUSTER_X,
+                         self.CENTER_CARD_LOCATION[1] + TEXT_ADJUSTER_Y,
+                         arcade.color.BLACK, TEXT_SIZE)
 
 
     def set_cards_in_play(self):
@@ -392,8 +398,13 @@ class GameView(arcade.View):
                                      color = arcade.color.ALABAMA_CRIMSON)
 
 
+    """
+    Should be true when all the cards EXCEPT ONE have been played.
+    It is called before adding the last card to the cards in play
+    """
     def all_cards_played(self):
-        return len(self.game_info.our_hand) == 0 and len(self.game_info.our_hand) == 0
+        cards_played = self.game_info.count_cards_played()
+        return cards_played == self.game_info.MAX_PLAYABLE_CARDS - 1
     
     def on_hide_view(self):
         self.manager.disable()

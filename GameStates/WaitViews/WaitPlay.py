@@ -8,12 +8,15 @@ import arcade.gui
 from Adversary.Multiplayer import Multiplayer
 from Adversary.CPU import CPU
 from GameStates.StateTransitionBackend import StateTransitionBackend
+from Animations.PassAnimation import PassAnimation
+from Animations.Animation import Animation
 import time
 
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -50
 SCREEN_WIDTH = 1000
 CALCULATE_SCORE_POSITION = [(SCREEN_WIDTH // 3), 60]
+
 
 class WaitPlayView(GameView):
 
@@ -22,49 +25,48 @@ class WaitPlayView(GameView):
 
         self.manager2 = arcade.gui.UIManager()
         # Make a calculate_score_button button
-        calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
+        calculate_score_behavior = lambda: self.transition.play_to_show_score(game_info=game_info)
         score_button = GenericButton(behavior=calculate_score_behavior,
-                                    text="Calculate Score",
-                                    width=200)
+                                     text="Calculate Score",
+                                     width=200)
 
         self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child=score_button,
-                align_x = -50,
-                align_y = -250)
+                align_x=-50,
+                align_y=-250)
         )
 
-        
-        
         self.tip_string = "Wait for opponent's play . . ."
 
         self.tip_message = arcade.gui.UILayout(
-                x=self.GUIDE_LOCATION[0],
-                y=self.GUIDE_LOCATION[1],
-            children = [arcade.gui.UIMessageBox(
+            x=self.GUIDE_LOCATION[0],
+            y=self.GUIDE_LOCATION[1],
+            children=[arcade.gui.UIMessageBox(
                 width=400,
                 height=35,
-                message_text = self.tip_string,
+                message_text=self.tip_string,
                 buttons=[]
             )]
-            )
+        )
         self.manager.add(
             self.tip_message
         )
         self.listener_done = False
         self.picked_card = None
 
+        self.animator = PassAnimation()
+
     def on_show(self):
         self.set_our_hand()
         self.set_other_hand()
         self.set_cards_in_play()
 
-        self.other_player.listen_to_play(view = self)
-
+        self.other_player.listen_to_play(view=self)
 
     def on_draw(self):
         self.clear()
-        
+
         self.draw_deck()
         self.draw_crib()
         self.draw_scoreboard()
@@ -82,63 +84,63 @@ class WaitPlayView(GameView):
             if self.all_cards_played():
                 self.manager2.enable()
                 self.manager2.draw()
-            elif self.picked_card is None: # opponent cannot play
-                self.opponent_cannot_play()
             else:
                 self.make_transition()
-
-
-
 
     def on_hide_view(self):
         self.manager2.disable()
 
-
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
-        if self.picked_card is not None and self.picked_card.is_animating:
-            end_position = self.next_in_play_position(  is_waiting = True)
-            self.picked_card.get_dealt_animation(end_position= end_position)
-        elif self.picked_card is None and self.listener_done:
-            self.cannot_play_message = arcade.gui.UILayout(
-                    x=self.GUIDE_LOCATION[0],
-                    y=self.GUIDE_LOCATION[1],
-                children = [arcade.gui.UIMessageBox(
-                    width=400,
-                    height=35,
-                    message_text = "Opponent cannot play a card",
-                    buttons=[]
-                )]
-                )
-            self.manager.add(
-                self.cannot_play_message
-            )
+        self.animator.play()
 
+        if self.picked_card is not None and self.picked_card.is_animating:
+            end_position = self.next_in_play_position(is_waiting=True)
+            self.picked_card.get_dealt_animation(end_position=end_position)
+        # elif self.picked_card is None and self.listener_done:
+        #     self.cannot_play_message = arcade.gui.UILayout(
+        #             x=self.GUIDE_LOCATION[0],
+        #             y=self.GUIDE_LOCATION[1],
+        #         children = [arcade.gui.UIMessageBox(
+        #             width=400,
+        #             height=35,
+        #             message_text = "Opponent cannot play a card",
+        #             buttons=[]
+        #         )]
+        #         )
+        #     self.manager.add(
+        #         self.cannot_play_message
+        #     )
 
     def card_was_played(self, card):
-        self.picked_card = card
         self.listener_done = True
-        if card is not None:
-            self.picked_card.is_animating = True
+        self.picked_card = card
 
+        # Other player could play
+        if not card.is_empty_card():
+            self.picked_card.is_animating = True
+        # They sent nothing
+        else:
+            # TODO Update the message working
+            self.tip_string = "Opponent can't play"
+            # Play animation
+            self.animator.start()
+            pass
 
     # TODO add logic for when other player cant play
     def can_transition(self):
-        if self.listener_done:
-            if self.picked_card is not None:
-                if not self.picked_card.is_animating:
-                    return True
-            else:
-                return True
+        if (self.listener_done
+                and
+                self.picked_card is not None
+                and not
+                self.picked_card.is_animating
+                and
+                self.animator.completed
+        ):
+            return True
         return False
 
     def make_transition(self):
-        self.transition.wait_to_play(game_info = self.game_info, card = self.picked_card)
-
-    def opponent_cannot_play(self):
-        self.transition.opponent_cannot_play(game_info = self.game_info)
-
-        
-        
+        self.transition.wait_to_play(game_info=self.game_info, card=self.picked_card)
 
 

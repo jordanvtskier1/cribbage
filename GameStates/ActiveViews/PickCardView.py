@@ -15,8 +15,7 @@ from Adversary.CPU import CPU
 from Adversary.Multiplayer import Multiplayer
 
 
-
-#card.setPosition([self.SCREEN_WIDTH // 4, 175 if self.game_info.is_turn else self.SCREEN_HEIGHT - 175])
+# card.setPosition([self.SCREEN_WIDTH // 4, 175 if self.game_info.is_turn else self.SCREEN_HEIGHT - 175])
 
 class PickCardView(GameView):
     """Class representing the picking card portion of the game"""
@@ -38,50 +37,46 @@ class PickCardView(GameView):
         self.set_spread_deck()
 
         self.tip_message = arcade.gui.UILayout(
-                x=self.GUIDE_LOCATION[0],
-                y=self.GUIDE_LOCATION[1],
-            children = [arcade.gui.UIMessageBox(
+            x=self.GUIDE_LOCATION[0],
+            y=self.GUIDE_LOCATION[1],
+            children=[arcade.gui.UIMessageBox(
                 width=400,
                 height=35,
-                message_text = self.tip_string,
+                message_text=self.tip_string,
                 buttons=[]
             )]
-            )
+        )
         self.manager.add(
             self.tip_message
         )
 
-
-
     def on_show(self):
-        
-        self.other_player.pick_card(view = self)
-        #if self.game_info.is_multiplayer:
-            #Multiplayer.listen_pick_card(view = self)
-        #else:
-            #Our CPU will act as a mock listener:
-            #CPU.pick_card(view = self)
+
+        self.other_player.pick_card(view=self)
+        # if self.game_info.is_multiplayer:
+        # Multiplayer.listen_pick_card(view = self)
+        # else:
+        # Our CPU will act as a mock listener:
+        # CPU.pick_card(view = self)
 
         self.set_spread_deck()
-
 
     def is_showing_again(self):
         self.tip_string = "Both players picked the same card! Pick again"
         self.manager.remove(self.tip_message)
         self.tip_message = arcade.gui.UILayout(
-                x=self.GUIDE_LOCATION[0],
-                y=self.GUIDE_LOCATION[1],
-            children = [arcade.gui.UIMessageBox(
+            x=self.GUIDE_LOCATION[0],
+            y=self.GUIDE_LOCATION[1],
+            children=[arcade.gui.UIMessageBox(
                 width=400,
                 height=35,
-                message_text = self.tip_string,
+                message_text=self.tip_string,
                 buttons=[]
             )]
-            )
+        )
         self.manager.add(
             self.tip_message
         )
-
 
     def on_draw(self):
         """
@@ -98,13 +93,15 @@ class PickCardView(GameView):
         self.manager.draw()
         if self.card_picked != None and self.can_transition:
             pos = self.card_picked.getPosition()
-            self.card_picked.setSprite(CardSpriteResolver.getSpriteFile(self.card_picked.getSuit(), self.card_picked.getRank()))
+            self.card_picked.setSprite(
+                CardSpriteResolver.getSpriteFile(self.card_picked.getSuit(), self.card_picked.getRank()))
             self.card_picked.setPosition([pos[0], pos[1]])
             self.card_picked.draw()
 
         if self.other_card != None and self.can_transition:
             pos = self.other_card.getPosition()
-            self.other_card.setSprite(CardSpriteResolver.getSpriteFile(self.other_card.getSuit(), self.other_card.getRank()))
+            self.other_card.setSprite(
+                CardSpriteResolver.getSpriteFile(self.other_card.getSuit(), self.other_card.getRank()))
             self.other_card.setPosition([pos[0], pos[1]])
             self.other_card.draw()
 
@@ -114,7 +111,6 @@ class PickCardView(GameView):
             time_two = time.time()
             if time_two - self.time_one >= 2:
                 self.make_transition()
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -139,21 +135,18 @@ class PickCardView(GameView):
             print("Card Picked: ", card.getSuit(), card.getRank())
             self.card_picked = card
 
-            #start animation
+            # start animation
             self.animate_our_card()
 
-            self.update_db(card= self.card_picked)
-
+            self.update_db(card=self.card_picked)
 
     def animate_other_card(self):
         self.other_card.start_shake(duration=self.ANIMATION_DURATION,
                                     end_position=self.OTHER_CARD_END_POSITION)
 
-
     def animate_our_card(self):
         self.card_picked.start_shake(duration=self.ANIMATION_DURATION,
                                      end_position=self.OUR_CARD_END_POSITION)
-
 
     def animate_cards(self):
         for card in [self.card_picked, self.other_card]:
@@ -161,7 +154,6 @@ class PickCardView(GameView):
                 continue
             if card.is_animating:
                 card.shake_card()
-
 
     def can_transition(self):
         for card in [self.card_picked, self.other_card]:
@@ -173,15 +165,14 @@ class PickCardView(GameView):
 
     def make_transition(self):
         self.transition.pick_card_to_deal(game_info=self.game_info,
-                                              card=self.card_picked,
-                                              opponent_card=self.other_card)
+                                          card=self.card_picked,
+                                          opponent_card=self.other_card)
 
     def on_hide_view(self):
         if self.game_info.is_multiplayer:
             self.other_player.database_ref.child(self.game_info.opponent + "/card_pick").delete()
 
         self.set_spread_deck()
-
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
