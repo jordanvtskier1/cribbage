@@ -15,11 +15,9 @@ class Backend:
     def check_game_over(game_info: GameInfo):
         if game_info.our_score >= 121:
             game_info.our_win = True
-            return True
         if game_info.other_score >= 121:
             game_info.other_win = True
-            return True
-        return False
+        return game_info
 
     @staticmethod
     def set_up_game(game_info: GameInfo):
