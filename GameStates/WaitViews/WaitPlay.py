@@ -11,6 +11,7 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 from Animations.PassAnimation import PassAnimation
 from Animations.Animation import Animation
 import time
+from Backend.BackendFunctions import Backend
 
 CALCULATE_SCORE_Y = -200
 CALCULATE_SCORE_X = -50
@@ -62,7 +63,7 @@ class WaitPlayView(GameView):
                 y=self.POINT_MESSAGE_LOCATION[1],
             children = [arcade.gui.UIMessageBox(
                 width=125,
-                height=35,
+                height=75,
                 message_text = self.game_info.play_string,
                 buttons=[]
             )]
@@ -72,6 +73,11 @@ class WaitPlayView(GameView):
         )
 
         self.animator = PassAnimation()
+
+        self.other_can_play = self.check_can_other_play()
+
+    def check_can_other_play(self):
+        return Backend.can_opp_play(self.game_info)
 
     def on_show(self):
         self.set_our_hand()
@@ -139,12 +145,12 @@ class WaitPlayView(GameView):
         # Other player could play
         if not card.is_empty_card():
             self.picked_card.is_animating = True
-        # They sent nothing
-        else:
-            # TODO Update the message working
-            self.tip_string = "Opponent could not play"
-            self.manager.remove(self.tip_message)
-            self.tip_message = arcade.gui.UILayout(
+        
+    
+    def other_cant_play(self):
+        self.tip_string = "Opponent could not play"
+        self.manager.remove(self.tip_message)
+        self.tip_message = arcade.gui.UILayout(
                 x=self.GUIDE_LOCATION[0],
                 y=self.GUIDE_LOCATION[1],
                 children=[arcade.gui.UIMessageBox(
@@ -154,13 +160,19 @@ class WaitPlayView(GameView):
                     buttons=[]
                 )]
             )
-            self.manager.add(self.tip_message)
+        self.manager.add(self.tip_message)
             # Play animation
-            self.animator.start()
-            pass
+        self.animator.start()
 
     # TODO add logic for when other player cant play
     def can_transition(self):
+        if not self.other_can_play:
+            if self.time_one == 0:
+                self.other_cant_play()
+                self.time_one = time.time()
+            time_two = time.time()
+            if time_two - self.time_one >= 2:
+                return True
         if (self.listener_done
                 and
                 self.picked_card is not None

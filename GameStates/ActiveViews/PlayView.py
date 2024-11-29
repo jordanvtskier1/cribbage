@@ -65,7 +65,7 @@ class PlayView(GameView):
                 y=self.POINT_MESSAGE_LOCATION[1],
             children = [arcade.gui.UIMessageBox(
                 width=125,
-                height=35,
+                height=75,
                 message_text = self.game_info.play_string,
                 buttons=[]
             )]
@@ -214,19 +214,19 @@ class PlayView(GameView):
             )
         self.manager.add(self.tip_message)
 
-        self.make_cant_play_button()
+    #     self.make_cant_play_button()
 
 
-    def make_cant_play_button(self):
-        self.manager2.clear()
+    # def make_cant_play_button(self):
+    #     self.manager2.clear()
 
-        behavior = lambda: self.make_transition()
-        button = GenericButton(behavior=behavior,
-                                    text="Pass turn",
-                                    width=200)
-        self.manager2.add(
-            arcade.gui.UIAnchorWidget(
-                child = button,
-                align_x = BUTTON_ALIGN[0],
-                align_y = BUTTON_ALIGN[1] - 30)
-        )
+    #     behavior = lambda: self.make_transition()
+    #     button = GenericButton(behavior=behavior,
+    #                                 text="Pass turn",
+    #                                 width=200)
+    #     self.manager2.add(
+    #         arcade.gui.UIAnchorWidget(
+    #             child = button,
+    #             align_x = BUTTON_ALIGN[0],
+    #             align_y = BUTTON_ALIGN[1] - 30)
+    #     )
