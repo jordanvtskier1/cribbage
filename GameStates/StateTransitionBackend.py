@@ -217,6 +217,8 @@ class StateTransitionBackend:
             self.window.show_view(wait_play_view)
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
+        from GameStates.WaitViews.WaitPlay import WaitPlayView
+        from GameStates.MenuViews.EndGameView import EndGameView
         from GameStates.ActiveViews.PlayView import PlayView
         if not card.is_empty_card():
             game_info.cards_in_play.append(card)
