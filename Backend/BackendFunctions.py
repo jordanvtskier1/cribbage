@@ -30,6 +30,7 @@ class Backend:
         game_info.is_dealer = not game_info.is_dealer
         if game_info.is_dealer:
             Backend.create_deck(game_info)
+            Backend.deal_cards(game_info)
 
     @staticmethod
     def create_deck(game_info: GameInfo):

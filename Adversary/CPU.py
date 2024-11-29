@@ -41,7 +41,7 @@ class CPU(OtherPlayerLogic):
     @staticmethod
     def listen_to_deal_async(view):
         time.sleep(3)
-        Backend.create_deck(view.game_info)
+        #Backend.create_deck(view.game_info)
         view.game_info = Backend.deal_cards(view.game_info)
         view.listener_done = True
 

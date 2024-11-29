@@ -283,6 +283,7 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
         from GameStates.MenuViews.EndGameView import EndGameView
+
         game_info = Backend.check_game_over(game_info)
         if game_info.our_win == True or game_info.other_win == True:
             view = EndGameView(game_info, state_transition=self)

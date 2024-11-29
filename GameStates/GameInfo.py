@@ -48,6 +48,7 @@ class GameInfo:
         self.deck = []
         self.crib = []
         self.cards_in_play = []
+        self.cards_played = []
         self.our_hand = []
         self.other_hand = []
         self.current_count = 0
