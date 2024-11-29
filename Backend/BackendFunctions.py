@@ -15,11 +15,9 @@ class Backend:
     def check_game_over(game_info: GameInfo):
         if game_info.our_score >= 121:
             game_info.our_win = True
-            return True
         if game_info.other_score >= 121:
             game_info.other_win = True
-            return True
-        return False
+        return game_info
 
     @staticmethod
     def set_up_game(game_info: GameInfo):
@@ -158,7 +156,6 @@ class Backend:
         if card_sum + card.getValue() == 31:
             play_score += 2
             game_info.play_string += "+2 for 31\n"
-
         # Pair, triple, and quad
         if len(game_info.cards_in_play) >= 1 and game_info.cards_in_play[-1].getRank() == card.getRank():
             # Triple
