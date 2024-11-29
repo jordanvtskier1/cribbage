@@ -336,7 +336,8 @@ class StateTransitionBackend:
         if game_info.our_win == True or game_info.other_win == True:
             view = EndGameView(game_info, state_transition=self)
             self.window.show_view(view)
-        else:            next_view = WaitForDealView(game_info, state_transition=self)
+        else:            
+            next_view = WaitForDealView(game_info, state_transition=self)
             self.window.show_view(next_view)
 
 
