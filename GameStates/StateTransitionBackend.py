@@ -239,49 +239,56 @@ class StateTransitionBackend:
         if not Backend.can_someone_play(game_info):
             Backend.start_new_in_play_count(game_info)
 
-        view = PlayView(game_info, state_transition=self)
-        self.window.show_view(view)
-        play_total = sum(card.getValue() for card in game_info.cards_in_play)
+        # view = PlayView(game_info, state_transition=self)
+        # self.window.show_view(view)
+        # play_total = sum(card.getValue() for card in game_info.cards_in_play)
 
-        if play_total == game_info.MAX_TOTAL:
-            game_info.other_score += 1
-            game_info.cards_in_play = []
-            game_info.current_count = 0
-            play_total = 0
+        # if play_total == game_info.MAX_TOTAL:
+        #     game_info.other_score += 1
+        #     game_info.cards_in_play = []
+        #     game_info.current_count = 0
+        #     play_total = 0
         
-        playable_cards = [
-            card for card in game_info.our_hand
-            if play_total + card.getValue() <= game_info.MAX_TOTAL
-        ]
+        # playable_cards = [
+        #     card for card in game_info.our_hand
+        #     if play_total + card.getValue() <= game_info.MAX_TOTAL
+        # ]
 
-        # No cards we can play
-        if not playable_cards:
-            #TODO: add logic if they have no cards
-            if len(game_info.other_hand) == 0:
-                if len(game_info.our_hand) == 0:
-                    self.play_to_show_score(game_info=game_info)
-                else:
-                    game_info.other_score += 1
-                    game_info.cards_in_play = []
-                    game_info.current_count = 0
-                    view = PlayView(game_info, state_transition= self)
-                    self.window.show_view(view)
-            else:
-                game_info = Backend.check_game_over(game_info)
-                if game_info.our_win == True or game_info.other_win == True:
-                    view = EndGameView(game_info, state_transition=self)
-                    self.window.show_view(view)
-                else:
-                    wait_play_view = WaitPlayView(game_info, state_transition=self)
-                    self.window.show_view(wait_play_view)
+        # # No cards we can play
+        # if not playable_cards:
+        #     #TODO: add logic if they have no cards
+        #     if len(game_info.other_hand) == 0:
+        #         if len(game_info.our_hand) == 0:
+        #             self.play_to_show_score(game_info=game_info)
+        #         else:
+        #             game_info.other_score += 1
+        #             game_info.cards_in_play = []
+        #             game_info.current_count = 0
+        #             view = PlayView(game_info, state_transition= self)
+        #             self.window.show_view(view)
+        #     else:
+        #         game_info = Backend.check_game_over(game_info)
+        #         if game_info.our_win == True or game_info.other_win == True:
+        #             view = EndGameView(game_info, state_transition=self)
+        #             self.window.show_view(view)
+        #         else:
+        #             wait_play_view = WaitPlayView(game_info, state_transition=self)
+        #             self.window.show_view(wait_play_view)
+        # else:
+        #     game_info = Backend.check_game_over(game_info)
+        #     if game_info.our_win == True or game_info.other_win == True:
+        #         view = EndGameView(game_info, state_transition=self)
+        #         self.window.show_view(view)
+        #     else:
+        #         view = PlayView(game_info, state_transition= self)
+        #         self.window.show_view(view)
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
         else:
-            game_info = Backend.check_game_over(game_info)
-            if game_info.our_win == True or game_info.other_win == True:
-                view = EndGameView(game_info, state_transition=self)
-                self.window.show_view(view)
-            else:
-                view = PlayView(game_info, state_transition= self)
-                self.window.show_view(view)
+            wait_play_view = PlayView(game_info, state_transition=self)
+            self.window.show_view(wait_play_view)
 
     def opponent_cannot_play(self, game_info: GameInfo):
         from GameStates.WaitViews.WaitPlay import WaitPlayView

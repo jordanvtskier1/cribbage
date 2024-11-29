@@ -6,6 +6,7 @@ from GameStates.GameInfo import GameInfo
 from GameStates.GameView import GameView
 from GUI.Buttons.GenericButton import GenericButton
 from GUI.CardSpriteResolver import CardSpriteResolver
+import time
 from Card import Card
 import arcade.gui
 from GameStates.StateTransitionBackend import StateTransitionBackend
@@ -27,6 +28,7 @@ class PlayView(GameView):
         self.has_played = False
         self.picked_card = None
         self.tip_string = "Click on the card you want to play"
+        self.time_one = 0
 
         self.tip_message = arcade.gui.UILayout(
                 x=self.GUIDE_LOCATION[0],
@@ -164,15 +166,18 @@ class PlayView(GameView):
 
     def can_transition(self):
         if not self.we_can_play:
-            return True
+            if self.time_one == 0:
+                self.time_one = time.time()
+            time_two = time.time()
+            if time_two - self.time_one >= 2:
+                return True
 
         if (self.has_played
             and
             self.picked_card is not None
             and
             self.picked_card.is_animating is False):
-
-                return True
+            return True
         return False
 
 
@@ -195,7 +200,18 @@ class PlayView(GameView):
         self.picked_card = empty_card
 
         self.tip_string = "You cant play any cards!"
-        self.tip_message.message_text = self.tip_string
+        self.manager.remove(self.tip_message)
+        self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+                children=[arcade.gui.UIMessageBox(
+                    width=400,
+                    height=35,
+                    message_text=self.tip_string,
+                    buttons=[]
+                )]
+            )
+        self.manager.add(self.tip_message)
 
         self.make_cant_play_button()
 

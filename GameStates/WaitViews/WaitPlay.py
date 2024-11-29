@@ -24,6 +24,7 @@ class WaitPlayView(GameView):
         super().__init__(game_info, state_transition)
 
         self.manager2 = arcade.gui.UIManager()
+        self.time_one = 0
         # Make a calculate_score_button button
         calculate_score_behavior = lambda: self.transition.play_to_show_score(game_info=game_info)
         score_button = GenericButton(behavior=calculate_score_behavior,
@@ -141,7 +142,19 @@ class WaitPlayView(GameView):
         # They sent nothing
         else:
             # TODO Update the message working
-            self.tip_string = "Opponent can't play"
+            self.tip_string = "Opponent could not play"
+            self.manager.remove(self.tip_message)
+            self.tip_message = arcade.gui.UILayout(
+                x=self.GUIDE_LOCATION[0],
+                y=self.GUIDE_LOCATION[1],
+                children=[arcade.gui.UIMessageBox(
+                    width=400,
+                    height=35,
+                    message_text=self.tip_string,
+                    buttons=[]
+                )]
+            )
+            self.manager.add(self.tip_message)
             # Play animation
             self.animator.start()
             pass
