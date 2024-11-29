@@ -207,10 +207,6 @@ class StateTransitionBackend:
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
         from GameStates.MenuViews.EndGameView import EndGameView
-        game_info = Backend.check_game_over(game_info)
-        if game_info.our_win == True or game_info.other_win == True:
-            view = EndGameView(game_info, state_transition=self)
-            self.window.show_view(view)
 
         
         play_score = Backend.play_card(game_info, card)
@@ -228,9 +224,13 @@ class StateTransitionBackend:
             card for card in game_info.other_hand
             if play_total + card.getValue() <= game_info.MAX_TOTAL
         ]
-
-        wait_play_view = WaitPlayView(game_info, state_transition=self)
-        self.window.show_view(wait_play_view)
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
+        else:
+            wait_play_view = WaitPlayView(game_info, state_transition=self)
+            self.window.show_view(wait_play_view)
 
             
 
@@ -238,10 +238,6 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.PlayView import PlayView
         from GameStates.MenuViews.EndGameView import EndGameView
         from GameStates.WaitViews.WaitPlay import WaitPlayView
-        game_info = Backend.check_game_over(game_info)
-        if game_info.our_win == True or game_info.other_win == True:
-            view = EndGameView(game_info, state_transition=self)
-            self.window.show_view(view)
 
         play_score = Backend.play_card(game_info, card)
         game_info.cards_in_play.append(card)
@@ -279,11 +275,21 @@ class StateTransitionBackend:
                     view = PlayView(game_info, state_transition= self)
                     self.window.show_view(view)
             else:
-                wait_play_view = WaitPlayView(game_info, state_transition=self)
-                self.window.show_view(wait_play_view)
+                game_info = Backend.check_game_over(game_info)
+                if game_info.our_win == True or game_info.other_win == True:
+                    view = EndGameView(game_info, state_transition=self)
+                    self.window.show_view(view)
+                else:
+                    wait_play_view = WaitPlayView(game_info, state_transition=self)
+                    self.window.show_view(wait_play_view)
         else:
-            view = PlayView(game_info, state_transition= self)
-            self.window.show_view(view)
+            game_info = Backend.check_game_over(game_info)
+            if game_info.our_win == True or game_info.other_win == True:
+                view = EndGameView(game_info, state_transition=self)
+                self.window.show_view(view)
+            else:
+                view = PlayView(game_info, state_transition= self)
+                self.window.show_view(view)
 
     def opponent_cannot_play(self, game_info: GameInfo):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
@@ -334,10 +340,6 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
         from GameStates.MenuViews.EndGameView import EndGameView
-        game_info = Backend.check_game_over(game_info)
-        if game_info.our_win == True or game_info.other_win == True:
-            view = EndGameView(game_info, state_transition=self)
-            self.window.show_view(view)
 
         game_info.is_dealer = not game_info.is_dealer 
         game_info.reset()
@@ -347,8 +349,12 @@ class StateTransitionBackend:
             game_info = Backend.deal_cards(game_info)
             game_info.other_player.send_deal(game_info)
 
-
-        view = WaitForDealView(game_info, state_transition=self)
-        self.window.show_view(view)
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
+        else:
+            view = WaitForDealView(game_info, state_transition=self)
+            self.window.show_view(view)
 
 

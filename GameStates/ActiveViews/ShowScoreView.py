@@ -44,8 +44,8 @@ class ShowScoreView(GameView):
     def on_draw(self):
         self.clear()
         self.manager.draw()
-        self.draw_pegs()
         self.draw_scoreboard()
+        self.draw_pegs()
         self.draw_score()
 
     def on_hide_view(self):

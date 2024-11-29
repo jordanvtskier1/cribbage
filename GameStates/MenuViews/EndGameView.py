@@ -27,7 +27,12 @@ class EndGameView(arcade.View):
 
         self.v_box = arcade.gui.UIBoxLayout()
         label = ""
-        if self.game_info.our_win == True:
+        if self.game_info.our_win == True and self.game_info.other_win == True:
+            if self.game_info.is_dealer == True:
+                label = f"Congrats {self.game_info.player} you won!"
+            else:
+                label = f"Better luck next time..."
+        elif self.game_info.our_win == True:
             label = f"Congrats {self.game_info.player} you won!"
         else:
             label = f"Better luck next time..."
@@ -37,7 +42,7 @@ class EndGameView(arcade.View):
         end_label = arcade.gui.UILabel(
             text=label,
             text_color=arcade.color.DARK_RED,
-            width=550,
+            width=600,
             height=40,
             font_size=24,
             font_name="Kenney Future")

@@ -54,6 +54,22 @@ class PlayView(GameView):
                 align_y = -250)
         )
 
+        self.manager3 = arcade.gui.UIManager()
+        self.point_message = arcade.gui.UILayout(
+                x=self.POINT_MESSAGE_LOCATION[0],
+                y=self.POINT_MESSAGE_LOCATION[1],
+            children = [arcade.gui.UIMessageBox(
+                width=125,
+                height=35,
+                message_text = self.game_info.play_string,
+                buttons=[]
+            )]
+            )
+        self.manager3.add(
+            self.point_message
+        )
+        
+
     def on_show(self):
         self.set_cards_in_play()
 
@@ -72,6 +88,9 @@ class PlayView(GameView):
 
         self.play_animation()
         self.manager.draw()
+
+        if self.game_info.play_string != "":
+            self.manager3.draw()
 
         if self.can_transition():
             if self.all_cards_played():
@@ -151,3 +170,4 @@ class PlayView(GameView):
 
     def on_hide_view(self):
         self.manager2.disable()
+        self.manager3.disable()

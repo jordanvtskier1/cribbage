@@ -14,7 +14,7 @@ class Backend:
         if game_info.our_score >= 121:
             game_info.our_win = True
         if game_info.other_score >= 121:
-            game_info.other_score = True
+            game_info.other_win = True
         return game_info
 
 
@@ -147,12 +147,15 @@ class Backend:
         play_score = 0
         card_sum = sum(card.getValue() for card in game_info.cards_in_play)
         game_info.current_count = card_sum + card.getValue()
+        game_info.play_string = ""
         #fifteen
         if card_sum + card.getValue() == 15:
             play_score += 2
+            game_info.play_string += "+2 for 15\n"
         #31
         if card_sum + card.getValue() == 31:
             play_score += 2
+            game_info.play_string += "+2 for 31\n"
 
          # Pair, triple, and quad
         if len(game_info.cards_in_play) >= 1 and game_info.cards_in_play[-1].getRank() == card.getRank():
@@ -161,10 +164,13 @@ class Backend:
                 # Quad
                 if len(game_info.cards_in_play) >= 3 and game_info.cards_in_play[-3].getRank() == card.getRank():
                     play_score += 12  # Quad score (quadruple, 4 cards)
+                    game_info.play_string += "+2 for Quad\n"
                 else:
                     play_score += 6  # Triple score
+                    game_info.play_string += "+2 for Triple\n"
             else:
                 play_score += 2  # Pair score
+                game_info.play_string += "+2 for Pair\n"
 
         # Run
         run_length = 1
@@ -177,6 +183,7 @@ class Backend:
             
             if run_length >= 3:
                 play_score += run_length  # Add score for the run length
+                game_info.play_string += f"+{run_length} for Run\n"
 
         return play_score
 
