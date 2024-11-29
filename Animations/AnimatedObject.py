@@ -4,7 +4,7 @@ import math
 DELTA_TIME = 1/60
 
 class AnimatedObject:
-    def __init__(self, source: str, scale: int):
+    def __init__(self, source: str, scale: float):
         self.scale = scale
         self.sprite = arcade.Sprite(source, scale=scale)
 

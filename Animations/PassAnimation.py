@@ -9,8 +9,8 @@ class PassAnimation(Animation):
         super().__init__()
 
 
-        self.sad_bee = AnimatedObject(source = SAD_BEE_SOURCE, scale = 1)
-        self.sad_bee.set_position( [200, 200])
+        self.sad_bee = AnimatedObject(source = SAD_BEE_SOURCE, scale = 0.25)
+        self.sad_bee.set_position( [500, 500])
         self.animation_steps = [
             AnimationStep(
                 duration = 90,
