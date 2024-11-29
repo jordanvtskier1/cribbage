@@ -200,6 +200,11 @@ class StateTransitionBackend:
 
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         if not Backend.can_play_card(game_info, card):
             game_info.is_turn = False  
@@ -223,6 +228,11 @@ class StateTransitionBackend:
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.ActiveViews.PlayView import PlayView
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         game_info.cards_in_play.append(card)
         for c in game_info.other_hand:
@@ -242,7 +252,6 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.ShowScoreView import ShowScoreView
         # Calculate hand score
         game_info = Backend.calculate_hand_score(game_info)
-
         # opponent_score = Firebase.getOppScore()
         # game_info.other_score = opponent_score
         self.window.show_view(ShowScoreView(game_info, state_transition = self))
@@ -250,6 +259,11 @@ class StateTransitionBackend:
     def show_score_to_crib(self, game_info: GameInfo):
         from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         Backend.set_up_next_round(game_info = game_info)
         game_info = Backend.deal_cards(game_info)

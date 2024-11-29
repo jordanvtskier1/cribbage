@@ -9,6 +9,14 @@ class Backend:
     def __init__(self):
         pass
 
+    @staticmethod
+    def check_game_over(game_info:GameInfo):
+        if game_info.our_score >= 121:
+            game_info.our_win = True
+        if game_info.other_score >= 121:
+            game_info.other_score = True
+        return game_info
+
 
     @staticmethod
     def set_up_next_round(game_info:GameInfo):

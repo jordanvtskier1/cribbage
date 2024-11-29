@@ -11,7 +11,7 @@ from GameStates.StateTransitionBackend import StateTransitionBackend
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Super Cool Cribbage"
+SCREEN_TITLE = "Bug Cribbage"
 
 
 def main():
