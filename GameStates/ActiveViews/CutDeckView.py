@@ -6,6 +6,7 @@ import arcade
 
 from Adversary.Multiplayer import Multiplayer
 from GameStates import GameInfo
+from GameStates.CutDeckAnimation import CutDeckAnimation
 from GameStates.StateTransitionBackend import StateTransitionBackend
 from GameStates.GameView import GameView
 import time
@@ -20,6 +21,7 @@ class CutDeckView(GameView):
         self.tip_string = "Pick a card to cut the deck"
         self.time_one = -1
         self.picked_card = None
+        self.animator = CutDeckAnimation(deck = self.game_info.deck, card = None)
         self.tip_message = arcade.gui.UILayout(
                 x=self.GUIDE_LOCATION[0],
                 y=self.GUIDE_LOCATION[1],
@@ -56,7 +58,8 @@ class CutDeckView(GameView):
         self.draw_crib()
         self.manager.draw()
 
-        if self.can_transition():
+        is_done_animating = self.animator.play()
+        if self.can_transition() and is_done_animating:
             self.make_transition()
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -64,7 +67,8 @@ class CutDeckView(GameView):
         The on_mouse_press method takes in mouse clicks and performs an action based on those clicks.
         Clicking a card to cut the deck
         """
-
+        if self.picked_card is not None:
+            return
         # if self.game_info.is_turn and not self.game_info.is_dealer:
         # Get card object sprites
         card_sprites = arcade.SpriteList()
@@ -86,14 +90,12 @@ class CutDeckView(GameView):
         if len(self.cards_clicked) > 0:
             if self.time_one < 0:
                 self.time_one = time.time()
+                print(self.time_one)
             else:
                 time_two = time.time()
                 if time_two - self.time_one > 2:
                     # self.transition.cut_deck_to_play(self.game_info, self.cards_clicked[0])
-                    self.picked_card = self.cards_clicked[0]
-
-                    #Update db
-                    self.update_db( card = self.picked_card)
+                    self.set_cut_deck(self.cards_clicked[0])
 
                     #Play animation
                     self.cut_deck_animation()
@@ -116,4 +118,9 @@ class CutDeckView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            self.other_player.send_cut(card = card)
+            Multiplayer.send_cut(card = card)
+
+    def set_cut_deck(self, card):
+        self.picked_card = card
+        self.animator.card = card
+        self.update_db(card)

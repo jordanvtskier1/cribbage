@@ -10,6 +10,22 @@ class Backend:
         pass
 
     @staticmethod
+    def check_game_over(game_info:GameInfo):
+        if game_info.our_score >= 121:
+            game_info.our_win = True
+        if game_info.other_score >= 121:
+            game_info.other_score = True
+        return game_info
+
+
+    @staticmethod
+    def set_up_next_round(game_info:GameInfo):
+        game_info.reset()
+        game_info.is_dealer = not game_info.is_dealer
+        if game_info.is_dealer:
+            Backend.create_deck(game_info)
+
+    @staticmethod
     def create_deck(game_info: GameInfo):
         SUITS = game_info.SUITS
         CARD_VALUES = game_info.CARD_VALUES

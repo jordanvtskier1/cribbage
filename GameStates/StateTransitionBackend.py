@@ -208,13 +208,7 @@ class StateTransitionBackend:
         from GameStates.WaitViews.WaitPlay import WaitPlayView
 
 
-        """if not Backend.can_play_card(game_info, card):
-            game_info.is_turn = False  
-            view = WaitPlayView(game_info, state_transition=self)
-            self.window.show_view(view)
-            return None
-
-        else:"""
+        
         play_score = Backend.play_card(game_info, card)
         game_info.cards_in_play.append(card)
         game_info.our_hand.remove(card)
@@ -238,7 +232,11 @@ class StateTransitionBackend:
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.ActiveViews.PlayView import PlayView
-        from GameStates.WaitViews.WaitPlay import WaitPlayView
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         play_score = Backend.play_card(game_info, card)
         game_info.cards_in_play.append(card)
@@ -328,6 +326,11 @@ class StateTransitionBackend:
     def show_score_to_crib(self, game_info: GameInfo):
         from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
+        from GameStates.MenuViews.EndGameView import EndGameView
+        game_info = Backend.check_game_over(game_info)
+        if game_info.our_win == True or game_info.other_win == True:
+            view = EndGameView(game_info, state_transition=self)
+            self.window.show_view(view)
 
         game_info.is_dealer = not game_info.is_dealer 
         game_info.reset()

@@ -31,6 +31,8 @@ class GameInfo:
         self.our_hand_score = 0
         self.other_hand_score = 0
         # Booleans for determining the State of Game
+        self.our_win = False
+        self.other_win = False
         self.crib_hidden = True
         self.is_dealer = False
         self.is_turn = True

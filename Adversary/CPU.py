@@ -73,8 +73,8 @@ class CPU(OtherPlayerLogic):
     @staticmethod
     def listen_to_cut_async(view):
         time.sleep(2)
-        view.picked_card = CPU.cut_deck( game_info = view.game_info )
-        view.listener_done = True
+        card = CPU.cut_deck( game_info = view.game_info )
+        view.set_cut_deck(card = card)
 
     @staticmethod
     def cut_deck(game_info: GameInfo):

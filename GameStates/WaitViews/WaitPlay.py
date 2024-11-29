@@ -21,7 +21,6 @@ class WaitPlayView(GameView):
         super().__init__(game_info, state_transition)
 
         self.manager2 = arcade.gui.UIManager()
-        self.manager2.enable()
         # Make a calculate_score_button button
         calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
         score_button = GenericButton(behavior=calculate_score_behavior,
@@ -31,8 +30,8 @@ class WaitPlayView(GameView):
         self.manager2.add(
             arcade.gui.UIAnchorWidget(
                 child=score_button,
-                align_y = CALCULATE_SCORE_POSITION[1],
-                align_x = CALCULATE_SCORE_POSITION[0])
+                align_x = -50,
+                align_y = -250)
         )
 
         
@@ -81,6 +80,7 @@ class WaitPlayView(GameView):
 
         if self.can_transition():
             if self.all_cards_played():
+                self.manager2.enable()
                 self.manager2.draw()
             elif self.picked_card is None: # opponent cannot play
                 self.opponent_cannot_play()
@@ -97,7 +97,7 @@ class WaitPlayView(GameView):
     # We need to either show a message that a card could not be played or put the card in the center
     def play_animation(self):
         if self.picked_card is not None and self.picked_card.is_animating:
-            end_position = self.next_in_play_position(opponent=True)
+            end_position = self.next_in_play_position(  is_waiting = True)
             self.picked_card.get_dealt_animation(end_position= end_position)
         elif self.picked_card is None and self.listener_done:
             self.cannot_play_message = arcade.gui.UILayout(
