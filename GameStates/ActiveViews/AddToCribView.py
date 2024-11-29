@@ -62,6 +62,7 @@ class AddToCribView(GameView):
         """
 
         self.clear()
+        self.draw_deck()
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
