@@ -361,7 +361,7 @@ class GameView(arcade.View):
         return [initial_position_x + x_offset, initial_position_y + y_offset]
 
     def all_cards_played(self):
-        return len(self.game_info.cards_in_play) == self.game_info.MAX_PLAYABLE_CARDS - 1
+        return len(self.game_info.our_hand) == 0 and len(self.game_info.our_hand) == 0
     
     def on_hide_view(self):
         self.manager.disable()

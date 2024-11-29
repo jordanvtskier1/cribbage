@@ -110,6 +110,7 @@ class StateTransitionBackend:
         Backend.add_to_crib(game_info, cards)
         Backend.remove_from_other_hand(game_info, cards)
 
+
         # We picked a card, waited, next cut deck
         if game_info.is_dealer:
             # Should actually go to wait cut
@@ -130,6 +131,7 @@ class StateTransitionBackend:
         Backend.add_to_crib(game_info, cards)
         Backend.remove_from_our_hand(game_info, cards)
 
+
         # We picked a card now we wait
         if game_info.is_dealer:
             view = WaitCribView(game_info, state_transition= self)
@@ -141,7 +143,7 @@ class StateTransitionBackend:
             self.window.show_view(view)
 
 
-    def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
+    """def add_crib_to_cut_deck(self, game_info: GameInfo, cards):
         from GameStates.ActiveViews.CutDeckView import CutDeckView
         # Backend logic goes here if any
 
@@ -156,10 +158,10 @@ class StateTransitionBackend:
         else:
             #wait_view = WaitCutDeckView(game_info, state_transition= self)
             #self.window.show_view(wait_view)
-            self.wait_for_cut_deck(game_info)
+            self.wait_for_cut_deck(game_info)"""
 
 
-    def cut_deck_to_play(self, game_info, card):
+    """def cut_deck_to_play(self, game_info, card):
         #from GameStates.WaitView import WaitView
 
         game_info = Backend.cut_deck(game_info, card)
@@ -170,7 +172,7 @@ class StateTransitionBackend:
         #wait_view = WaitView(game_info, state_transition= self)
         #self.window.show_view(wait_view)
         # Delete later, temporary solution
-        self.wait_to_play(game_info)
+        self.wait_to_play(game_info)"""
 
 
     def wait_cut_to_wait_play(self, game_info: GameInfo, card):
@@ -178,6 +180,10 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.PlayView import PlayView
 
         game_info = Backend.cut_deck(game_info, card)
+
+        game_info.our_hand_score = Backend.calculate_hand_score(game_info=game_info, hand=game_info.our_hand)
+        game_info.other_hand_score = Backend.calculate_hand_score(game_info=game_info, hand=game_info.other_hand)
+
 
         if game_info.is_dealer:
             # TODO: add point if cut card was a jack
@@ -201,20 +207,29 @@ class StateTransitionBackend:
     def play_to_wait(self, game_info: GameInfo, card: Card):
         from GameStates.WaitViews.WaitPlay import WaitPlayView
 
-        if not Backend.can_play_card(game_info, card):
+
+        """if not Backend.can_play_card(game_info, card):
             game_info.is_turn = False  
             view = WaitPlayView(game_info, state_transition=self)
             self.window.show_view(view)
             return None
 
-        else:
-            game_info.cards_in_play.append(card)
-            game_info.our_hand.remove(card)
-            play_score = Backend.play_card(game_info, card)
-            game_info.our_score += play_score
-            game_info.is_turn = False
+        else:"""
+        play_score = Backend.play_card(game_info, card)
+        game_info.cards_in_play.append(card)
+        game_info.our_hand.remove(card)
+        game_info.our_score += play_score
+        game_info.is_turn = False
 
-          #  game_info.other_player.send_play(game_info, card)
+        if game_info.current_count == game_info.MAX_TOTAL:
+             game_info.cards_in_play = []
+             game_info.current_count = 0
+
+        play_total = sum(card.getValue() for card in game_info.cards_in_play)
+        playable_cards = [
+            card for card in game_info.other_hand
+            if play_total + card.getValue() <= game_info.MAX_TOTAL
+        ]
 
         wait_play_view = WaitPlayView(game_info, state_transition=self)
         self.window.show_view(wait_play_view)
@@ -223,25 +238,88 @@ class StateTransitionBackend:
 
     def wait_to_play(self, game_info: GameInfo, card: Card):
         from GameStates.ActiveViews.PlayView import PlayView
+        from GameStates.WaitViews.WaitPlay import WaitPlayView
 
+        play_score = Backend.play_card(game_info, card)
         game_info.cards_in_play.append(card)
         for c in game_info.other_hand:
             if c.suit == card.suit and c.rank == card.rank:
                 game_info.other_hand.remove(c)
                 break
 
-        play_score = Backend.play_card(game_info, card)
         game_info.other_score += play_score
         game_info.is_turn = True
 
-        view = PlayView(game_info, state_transition= self)
-        self.window.show_view(view)
+        play_total = sum(card.getValue() for card in game_info.cards_in_play)
+
+        if play_total == game_info.MAX_TOTAL:
+            game_info.other_score += 1
+            game_info.cards_in_play = []
+            game_info.current_count = 0
+            play_total = 0
+        
+        playable_cards = [
+            card for card in game_info.our_hand
+            if play_total + card.getValue() <= game_info.MAX_TOTAL
+        ]
+
+        # No cards we can play
+        if not playable_cards:
+            #TODO: add logic if they have no cards
+            if len(game_info.other_hand) == 0:
+                if len(game_info.our_hand) == 0:
+                    self.play_to_show_score(game_info=game_info)
+                else:
+                    game_info.other_score += 1
+                    game_info.cards_in_play = []
+                    game_info.current_count = 0
+                    view = PlayView(game_info, state_transition= self)
+                    self.window.show_view(view)
+            else:
+                wait_play_view = WaitPlayView(game_info, state_transition=self)
+                self.window.show_view(wait_play_view)
+        else:
+            view = PlayView(game_info, state_transition= self)
+            self.window.show_view(view)
+
+    def opponent_cannot_play(self, game_info: GameInfo):
+        from GameStates.WaitViews.WaitPlay import WaitPlayView
+        from GameStates.ActiveViews.PlayView import PlayView
+
+        game_info.our_score += 1
+
+        play_total = sum(card.getValue() for card in game_info.cards_in_play)
+        playable_cards = [
+            card for card in game_info.our_hand
+            if play_total + card.getValue() <= game_info.MAX_TOTAL
+        ]
+
+        # cannot play any cards
+        if not playable_cards:
+            if len(game_info.other_hand) >= 1:
+                game_info.cards_in_play = []
+                game_info.current_count = 0
+                wait_play_view = WaitPlayView(game_info, state_transition=self)
+                self.window.show_view(wait_play_view)
+            elif len(game_info.our_hand) == 0:
+                self.play_to_show_score(game_info=game_info)
+        else:
+            view = PlayView(game_info, state_transition= self)
+            self.window.show_view(view)
+
 
 
     def play_to_show_score(self, game_info: GameInfo):
         from GameStates.ActiveViews.ShowScoreView import ShowScoreView
-        # Calculate hand score
-        game_info = Backend.calculate_hand_score(game_info)
+        # Get hand scores from before play
+        game_info.our_score += game_info.our_hand_score
+        game_info.other_score += game_info.other_hand_score
+
+        crib_score = Backend.calculate_crib_score(game_info)
+        if game_info.is_dealer:
+            game_info.our_score += crib_score
+        else:
+            game_info.other_score += crib_score
 
         # opponent_score = Firebase.getOppScore()
         # game_info.other_score = opponent_score
@@ -251,11 +329,16 @@ class StateTransitionBackend:
         from GameStates.ActiveViews.AddToCribView import AddToCribView
         from GameStates.WaitViews.WaitForDealView import WaitForDealView
 
-        Backend.set_up_next_round(game_info = game_info)
-        game_info = Backend.deal_cards(game_info)
-        game_info.other_player.send_deal(game_info)
+        game_info.is_dealer = not game_info.is_dealer 
+        game_info.reset()
 
-        next_view = WaitForDealView(game_info, state_transition= self)
-        self.window.show_view(next_view)
+        if game_info.is_dealer:
+            Backend.create_deck(game_info)
+            game_info = Backend.deal_cards(game_info)
+            game_info.other_player.send_deal(game_info)
+
+
+        view = WaitForDealView(game_info, state_transition=self)
+        self.window.show_view(view)
 
 
