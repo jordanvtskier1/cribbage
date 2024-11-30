@@ -29,7 +29,7 @@ class CPU(OtherPlayerLogic):
         card_index = random.randint(0, deck_size - 1)
         opponent_card = view.game_info.deck[card_index]
 
-        print(f"CPU picked card: {opponent_card}")
+        #print(f"CPU picked card: {opponent_card}")
         view.other_card = opponent_card
         view.animate_other_card()
 
@@ -114,11 +114,11 @@ class CPU(OtherPlayerLogic):
         if len(playable_cards) == 0:
             return Card.create_empty_card()
 
-        print(play_total)
+        #print(play_total)
 
         choice = random.choice(playable_cards)
-        if choice is None:
-            print("error!")
+        # if choice is None:
+        #     print("error!")
         return choice
 
         # TODO Uncomment once we the play limit bug is fixed
