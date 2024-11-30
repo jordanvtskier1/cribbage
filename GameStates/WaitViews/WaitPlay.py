@@ -26,8 +26,9 @@ class WaitPlayView(GameView):
 
         self.manager2 = arcade.gui.UIManager()
         self.time_one = 0
+        self.picked_card = None
         # Make a calculate_score_button button
-        calculate_score_behavior = lambda: self.transition.play_to_show_score(game_info=game_info)
+        calculate_score_behavior = lambda: self.transition.play_to_show_score(game_info=game_info); self.set_cards_in_play()
         score_button = GenericButton(behavior=calculate_score_behavior,
                                      text="Calculate Score",
                                      width=200)
@@ -83,6 +84,8 @@ class WaitPlayView(GameView):
         self.set_our_hand()
         self.set_other_hand()
         self.set_cards_in_play()
+        if not self.other_can_play and Backend.can_we_play(self.game_info):
+            self.other_cant_play()
 
         self.other_player.listen_to_play(view=self)
 
@@ -98,7 +101,6 @@ class WaitPlayView(GameView):
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_current_count()
-        self.manager.draw()
 
         if self.game_info.play_string != "":
             self.manager3.draw()
@@ -106,11 +108,14 @@ class WaitPlayView(GameView):
         self.play_animation()
 
         if self.can_transition():
-            if self.all_cards_played():
+            if not self.other_can_play and not Backend.can_we_play(self.game_info):
                 self.manager2.enable()
                 self.manager2.draw()
             else:
                 self.make_transition()
+                self.manager.draw()
+        else:
+            self.manager.draw()
 
     def on_hide_view(self):
         self.manager2.disable()
@@ -168,7 +173,6 @@ class WaitPlayView(GameView):
     def can_transition(self):
         if not self.other_can_play:
             if self.time_one == 0:
-                self.other_cant_play()
                 self.time_one = time.time()
             time_two = time.time()
             if time_two - self.time_one >= 2:

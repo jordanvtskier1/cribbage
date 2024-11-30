@@ -172,6 +172,7 @@ class Backend:
                 game_info.play_string += "+2 for Pair\n"
 
         # Run
+        add_run = False
         run_length = 1
         sorted_ranks = sorted(card.getRankAsInt() for card in game_info.cards_in_play[-5:])  # Last 5 cards
         for i in range(len(sorted_ranks) - 1):
@@ -182,7 +183,9 @@ class Backend:
 
             if run_length >= 3:
                 play_score += run_length  # Add score for the run length
-                game_info.play_string += f"+{run_length} for Run\n"
+                add_run = True
+        if add_run:
+            game_info.play_string += f"+{run_length} for Run\n"
 
         return play_score
 
