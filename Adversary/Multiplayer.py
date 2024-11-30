@@ -21,7 +21,7 @@ class Multiplayer(OtherPlayerLogic):
         def on_deal_change(event):
             nonlocal deal_dict
             if event.data:
-                print(f"Data: {event.data}")
+                # print(f"Data: {event.data}")
                 deal_dict = event.data
                 # Stop listening after the first change is captured
                 try:
@@ -54,6 +54,7 @@ class Multiplayer(OtherPlayerLogic):
         self.database_ref.update({
             'cut_card': card.getDict()
         })
+
 
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
@@ -109,9 +110,9 @@ class Multiplayer(OtherPlayerLogic):
         # Callback function to capture data change
         def on_card_pick_change(event):
             nonlocal card_dict
-            print(f"Data change detected at {event.path}")
+            # print(f"Data change detected at {event.path}")
             if event.data:
-                print(f"Data: {event.data}")
+                # print(f"Data: {event.data}")
                 card_dict = event.data
                 # Stop listening after the first change is captured
                 try:
@@ -125,7 +126,7 @@ class Multiplayer(OtherPlayerLogic):
             initial_data = self.database_ref.child(path).get()
 
         if initial_data is not None:
-            print(f"initial data: {initial_data}")
+            # print(f"initial data: {initial_data}")
             card_dict = initial_data
         else:
             listener = self.database_ref.child(path).listen(on_card_pick_change)
@@ -141,9 +142,9 @@ class Multiplayer(OtherPlayerLogic):
     # Listen for opponents card pick
     def pick_card(self, view):
         def get_picked_card(event):
-            print(event.event_type)  # can be 'put' or 'patch'
-            print(event.path)  # relative to the reference, it seems
-            print(event.data)  # new data at /reference/event.path. None if deleted
+            # print(event.event_type)  # can be 'put' or 'patch'
+            # print(event.path)  # relative to the reference, it seems
+            # print(event.data)  # new data at /reference/event.path. None if deleted
 
             if event.data != '' and event.data is not None:
                 view.other_card = Card(event.data["suit"], event.data["rank"])
@@ -172,7 +173,7 @@ class Multiplayer(OtherPlayerLogic):
         def on_deal_change(event):
             nonlocal deal_dict
             if event.data is not None:
-                print(f"Data: {event.data}")
+                # print(f"Data: {event.data}")
                 deal_dict = event.data
                 view.listener_done = True
 
@@ -188,7 +189,7 @@ class Multiplayer(OtherPlayerLogic):
 
     def listen_to_play(self, view):
         def get_played_card(event):
-            print(event.data)  # new data at /reference/event.path. None if deleted
+            # print(event.data)  # new data at /reference/event.path. None if deleted
 
             if event.data != '' and event.data is not None:
                 played_card = Card(event.data["suit"], event.data["rank"])
@@ -219,9 +220,9 @@ class Multiplayer(OtherPlayerLogic):
     def listen_to_cribbage(self, view):
 
         def get_crib_picks(event):
-            print(event.event_type)  # can be 'put' or 'patch'
-            print(event.path)  # relative to the reference, it seems
-            print(event.data)  # new data at /reference/event.path. None if deleted
+            # print(event.event_type)  # can be 'put' or 'patch'
+            # print(event.path)  # relative to the reference, it seems
+            # print(event.data)  # new data at /reference/event.path. None if deleted
 
             if event.data is not None:
                 cards = []
@@ -249,9 +250,9 @@ class Multiplayer(OtherPlayerLogic):
 
         # Callback function to capture data change
         def listen_to_event(event):
-            print(event.event_type)  # can be 'put' or 'patch'
-            print(event.path)  # relative to the reference, it seems
-            print(event.data)  # new data at /reference/event.path. None if deleted
+            # print(event.event_type)  # can be 'put' or 'patch'
+            # print(event.path)  # relative to the reference, it seems
+            # print(event.data)  # new data at /reference/event.path. None if deleted
 
             if event.data is not None:
                 picked_card = Card(

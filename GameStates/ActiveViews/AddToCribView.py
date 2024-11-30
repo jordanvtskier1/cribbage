@@ -103,12 +103,12 @@ class AddToCribView(GameView):
             if card not in self.cards_clicked:
                 if len(self.cards_clicked) <= 1:
                     self.cards_clicked.append(card)
-                    print("Card Picked: ", card.getSuit(), card.getRank())
-                else:
-                    print("Maximum Number of Cards Already Selected")
+                #     print("Card Picked: ", card.getSuit(), card.getRank())
+                # else:
+                #     print("Maximum Number of Cards Already Selected")
             else:
                 self.cards_clicked.remove(card)
-                print("Card Unpicked: ", card.getSuit(), card.getRank())
+                # print("Card Unpicked: ", card.getSuit(), card.getRank())
 
             # Modify tip string to help user know what to do next
             match len(self.cards_clicked):
@@ -140,9 +140,9 @@ class AddToCribView(GameView):
         Calls transition if true and displays message if not.
         """
         if len(self.cards_clicked) == 2:
-            print("Cards Added To Crib: ")
-            for card in self.cards_clicked:
-                print(" ", card.getSuit(), card.getRank())
+            # print("Cards Added To Crib: ")
+            # for card in self.cards_clicked:
+            #     print(" ", card.getSuit(), card.getRank())
             # Back end transition call
             # self.transition.add_crib_to_cut_deck(self.game_info, self.cards_clicked[0], self.cards_clicked[1])
             self.added_to_crib = True
@@ -150,8 +150,8 @@ class AddToCribView(GameView):
             self.cards_clicked = []
             self.update_db(cards=self.cards_to_crib)
 
-        else:
-            print("Not enough Cards picked")
+        # else:
+        #     print("Not enough Cards picked")
 
     def update_db(self, cards):
         if self.game_info.is_multiplayer:

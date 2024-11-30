@@ -79,6 +79,8 @@ class PlayView(GameView):
 
     def on_show(self):
         self.set_cards_in_play()
+        self.set_other_hand()
+        self.set_our_hand()
 
         if not self.we_can_play and Backend.can_opp_play(self.game_info):
             self.we_cant_play()
@@ -91,10 +93,11 @@ class PlayView(GameView):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
-        self.draw_our_hand()
+        self.draw_our_hand_no_set()
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_current_count()
+
 
         self.play_animation()
 
@@ -150,7 +153,7 @@ class PlayView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            Multiplayer.send_play(game_info= self.game_info, card = card)
+            self.other_player.send_play(game_info= self.game_info, card = card)
 
 
     def play_animation(self):

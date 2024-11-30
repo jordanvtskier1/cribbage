@@ -132,7 +132,7 @@ class PickCardView(GameView):
             card = self.game_info.deck[card_sprites.index(cards_pressed[-1])]
 
             # Display what happened to the terminal for testing purposes
-            print("Card Picked: ", card.getSuit(), card.getRank())
+            # print("Card Picked: ", card.getSuit(), card.getRank())
             self.card_picked = card
 
             # start animation

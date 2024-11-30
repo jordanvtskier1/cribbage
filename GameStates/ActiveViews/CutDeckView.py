@@ -85,13 +85,13 @@ class CutDeckView(GameView):
             if len(self.cards_clicked) == 0:
                 self.cards_clicked.append(card)
             # Display what happened to the terminal for testing purposes
-            print("Card Picked: ", card.getSuit(), card.getRank())
+            # print("Card Picked: ", card.getSuit(), card.getRank())
 
     def on_update(self, delta_time):
         if len(self.cards_clicked) > 0:
             if self.time_one < 0:
                 self.time_one = time.time()
-                print(self.time_one)
+                # print(self.time_one)
             else:
                 time_two = time.time()
                 if time_two - self.time_one > 2:
