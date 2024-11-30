@@ -65,7 +65,7 @@ class PlayView(GameView):
                 y=self.POINT_MESSAGE_LOCATION[1],
             children = [arcade.gui.UIMessageBox(
                 width=125,
-                height=35,
+                height=75,
                 message_text = self.game_info.play_string,
                 buttons=[]
             )]
@@ -167,6 +167,7 @@ class PlayView(GameView):
     def can_transition(self):
         if not self.we_can_play:
             if self.time_one == 0:
+                self.we_cant_play()
                 self.time_one = time.time()
             time_two = time.time()
             if time_two - self.time_one >= 2:
