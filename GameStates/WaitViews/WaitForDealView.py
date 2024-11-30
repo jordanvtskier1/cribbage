@@ -50,6 +50,7 @@ class WaitForDealView(GameView):
 
         self.waiting_deck = Card(position=self.WAITING_DECK_POSITION)
         self.min_wait = 120
+        self.set_check = False
 
     def on_show(self):
         if not self.game_info.is_dealer:
@@ -71,6 +72,12 @@ class WaitForDealView(GameView):
         if not self.done_dealing():
             self.waiting_animation()
         else:
+            if self.set_check == False:
+                for card in self.game_info.other_hand:
+                    card.setSprite("./Sprites/Cards/card-back.png")
+                for card in self.game_info.our_hand:
+                    card.setSprite("./Sprites/Cards/card-back.png")
+                self.set_check = True
             self.dealing_animation()
             if self.can_transition():
                 self.make_transition()

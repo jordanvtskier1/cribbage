@@ -47,7 +47,7 @@ class PlayView(GameView):
 
         self.manager2 = arcade.gui.UIManager()
         # Make a calculate_score_button button
-        calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info)
+        calculate_score_behavior = lambda : self.transition.play_to_show_score(game_info=game_info); self.set_cards_in_play()
         quit_button = GenericButton(behavior=calculate_score_behavior,
                                     text="Calculate Score",
                                     width=200)
@@ -80,7 +80,7 @@ class PlayView(GameView):
     def on_show(self):
         self.set_cards_in_play()
 
-        if not self.we_can_play:
+        if not self.we_can_play and Backend.can_opp_play(self.game_info):
             self.we_cant_play()
 
 
@@ -97,17 +97,19 @@ class PlayView(GameView):
         self.draw_current_count()
 
         self.play_animation()
-        self.manager.draw()
 
         if self.game_info.play_string != "":
             self.manager3.draw()
 
         if self.can_transition():
-            if self.all_cards_played() or not self.we_can_play:
+            if not self.we_can_play and not Backend.can_opp_play(self.game_info):
                 self.manager2.enable()
                 self.manager2.draw()
             else:
                 self.make_transition()
+                self.manager.draw()
+        else:
+            self.manager.draw()
 
     # We assume it is always our turn
     def on_mouse_press(self, x, y, button, modifiers):
@@ -166,12 +168,7 @@ class PlayView(GameView):
 
     def can_transition(self):
         if not self.we_can_play:
-            if self.time_one == 0:
-                self.we_cant_play()
-                self.time_one = time.time()
-            time_two = time.time()
-            if time_two - self.time_one >= 2:
-                return True
+            return True
 
         if (self.has_played
             and

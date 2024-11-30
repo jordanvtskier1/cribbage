@@ -20,6 +20,7 @@ class GameView(arcade.View):
         super().__init__()
         arcade.set_background_color(arcade.color.GUPPIE_GREEN)
 
+        # String for tips to guide the user
         self.tip_string = ""
 
         # Cards the user has clicked
@@ -87,7 +88,10 @@ class GameView(arcade.View):
         arcade.draw_rectangle_filled(self.DECK_LOCATION[0], self.DECK_LOCATION[1], RECTANGLE_WIDTH, RECTANGLE_HEIGHT, arcade.color.BROWN)
         
         for card in self.game_info.deck:
-            #card.setSprite("./Sprites/Cards/card-back.png")
+            if self.game_info.top_card != None:
+                card.setSprite(CardSpriteResolver.getSpriteFile(card.getSuit(), card.getRank()))
+            else:
+                card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition(self.DECK_LOCATION)
             card.draw()
     
@@ -275,7 +279,7 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.other_hand:
-            #card.setSprite("./Sprites/Cards/card-back.png")
+            card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([self.OPP_HAND_LOCATION[0] + card_spacer, self.OPP_HAND_LOCATION[1]])
             card_spacer += CARD_SPACER_INCREMENT
 
@@ -309,7 +313,7 @@ class GameView(arcade.View):
         arcade.draw_text("Crib", self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0], (self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]) + TEXT_ADJUSTER, arcade.color.BLACK, TEXT_SIZE)
         
         for card in self.game_info.crib:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            card.setSprite("./Sprites/Cards/card-back.png")
             card.setPosition([(self.CRIB_LOCATION2[0] if is_dealer else self.CRIB_LOCATION1[0]) + card_spacer, self.CRIB_LOCATION2[1] if is_dealer else self.CRIB_LOCATION1[1]])
             card_spacer += CARD_SPACER_INCREMENT
             card.draw()
@@ -327,7 +331,7 @@ class GameView(arcade.View):
         card_spacer = 0
 
         for card in self.game_info.deck:
-            # card.setSprite("./Sprites/Cards/card-back.png")
+            card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.setPosition([self.CENTER_CARD_LOCATION[0] - CENTER_CARD_ADJUSTER + card_spacer, self.CENTER_CARD_LOCATION[1]])
 
@@ -339,7 +343,6 @@ class GameView(arcade.View):
         The draw_spread_deck method draws out the cards in the deck in a spread out fashion.
         """
         for card in self.game_info.deck:
-            # card.setSprite("./Sprites/Cards/card-back.png")
             # If a card is clicked change it's position
             card.draw()
 
