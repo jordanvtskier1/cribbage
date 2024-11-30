@@ -220,14 +220,15 @@ class StateTransitionBackend:
         from GameStates.WaitViews.WaitPlay import WaitPlayView
         from GameStates.MenuViews.EndGameView import EndGameView
         from GameStates.ActiveViews.PlayView import PlayView
+
         if not card.is_empty_card():
             play_score = Backend.play_card(game_info, card)
             game_info.cards_in_play.append(card)
-            # for c in game_info.other_hand:
-            #     if c.suit == card.suit and c.rank == card.rank:
-            #         game_info.other_hand.remove(c)
-            #         break
-            game_info.other_hand.remove(card)
+            for c in game_info.other_hand:
+                if c.suit == card.suit and c.rank == card.rank:
+                    game_info.other_hand.remove(c)
+                    break
+            #game_info.other_hand.remove(card)
             game_info.other_score += play_score
             play_total = Backend.get_in_play_count(game_info)
 

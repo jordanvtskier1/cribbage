@@ -79,6 +79,8 @@ class PlayView(GameView):
 
     def on_show(self):
         self.set_cards_in_play()
+        self.set_other_hand()
+        self.set_our_hand()
 
         if not self.we_can_play:
             self.we_cant_play()
@@ -149,7 +151,7 @@ class PlayView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            Multiplayer.send_play(game_info= self.game_info, card = card)
+            self.other_player.send_play(game_info= self.game_info, card = card)
 
 
     def play_animation(self):

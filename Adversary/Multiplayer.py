@@ -55,6 +55,7 @@ class Multiplayer(OtherPlayerLogic):
             'cut_card': card.getDict()
         })
 
+
     def send_play(self, game_info: GameInfo, card: Card):
         self.database_ref.update({
             game_info.player: {'played_card': card.getDict()},
