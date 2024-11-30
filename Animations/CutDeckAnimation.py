@@ -65,7 +65,8 @@ class CutDeckAnimation (Animation):
         separator_index = Backend.find_card_in_deck(self.deck, self.card)
         left_end_pos = self.DECK_LOCATION
 
-        self.deck[separator_index].move_card(left_end_pos)
+        for deck_index in range(separator_index, len(self.deck)):
+            self.deck[deck_index].move_card(end_position=left_end_pos)
 
 
         for card in self.deck:
