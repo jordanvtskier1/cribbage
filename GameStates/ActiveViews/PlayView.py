@@ -91,10 +91,11 @@ class PlayView(GameView):
         self.draw_scoreboard()
         self.draw_pegs()
         self.draw_score()
-        self.draw_our_hand()
+        self.draw_our_hand_no_set()
         self.draw_other_hand()
         self.draw_cards_in_play()
         self.draw_current_count()
+
 
         self.play_animation()
         self.manager.draw()

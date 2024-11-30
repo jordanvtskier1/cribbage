@@ -87,7 +87,7 @@ def main():
     #set up test
     set_up_test_one(game_info)
 
-    view = we_start(game_info, state_transition)
+    view = other_start(game_info, state_transition)
     window.show_view(view)
 
     # Run the Window

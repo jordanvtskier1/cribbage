@@ -268,6 +268,9 @@ class GameView(arcade.View):
                 card_spacer += CARD_SPACER_INCREMENT
             card.draw()
 
+    def draw_our_hand_no_set(self):
+        for card in self.game_info.our_hand:
+            card.draw()
 
     def set_other_hand(self):
         # Set opponents hand on first loading of screen
