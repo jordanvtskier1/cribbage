@@ -113,7 +113,7 @@ class CutDeckView(GameView):
 
     def update_db(self, card):
         if self.game_info.is_multiplayer:
-            Multiplayer.send_cut(card = card)
+            self.other_player.send_cut(card = card)
 
     def set_cut_deck(self, card):
         self.picked_card = card

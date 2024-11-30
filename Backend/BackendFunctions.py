@@ -287,3 +287,11 @@ class Backend:
         game_info.cards_played.append(game_info.cards_in_play)
         game_info.cards_in_play = []
         game_info.current_count = 0
+
+    @staticmethod
+    def find_card_in_deck(deck, cut_card):
+        i = 0
+        for card in deck:
+            if card.getSuit() == cut_card.getSuit() and card.getRank() == cut_card.getRank():
+                return i
+            i+=1

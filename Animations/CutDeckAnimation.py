@@ -1,5 +1,6 @@
 from Animations.Animation import Animation
 from Animations.AnimationStep import AnimationStep
+from Backend.BackendFunctions import Backend
 class CutDeckAnimation (Animation):
 
     def __init__(self , deck, card):
@@ -41,7 +42,8 @@ class CutDeckAnimation (Animation):
 
 
     def cut_deck_animation_first(self):
-        separator_index = self.deck.index(self.card)
+        #TODO: loop over deck to find card
+        separator_index =  Backend.find_card_in_deck(self.deck, self.card)
 
         self.card.reveal_card()
 
@@ -61,7 +63,7 @@ class CutDeckAnimation (Animation):
 
     def cut_deck_animation_second(self):
 
-        separator_index = self.deck.index(self.card)
+        separator_index = Backend.find_card_in_deck(self.deck, self.card)
         left_end_pos = self.DECK_LOCATION
 
         for deck_index in range(separator_index, len(self.deck)):

@@ -254,12 +254,11 @@ class Multiplayer(OtherPlayerLogic):
             print(event.data)  # new data at /reference/event.path. None if deleted
 
             if event.data is not None:
-                view.listener_done = True
-
-                view.picked_card = Card(
+                picked_card = Card(
                     event.data["suit"],
                     event.data["rank"]
                 )
+                view.set_cut_deck(card = picked_card)
 
                 # Stop listening after the first change is captured
                 try:
