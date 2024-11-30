@@ -42,7 +42,6 @@ class CutDeckAnimation (Animation):
 
 
     def cut_deck_animation_first(self):
-        #TODO: loop over deck to find card
         separator_index =  Backend.find_card_in_deck(self.deck, self.card)
 
         self.card.reveal_card()
