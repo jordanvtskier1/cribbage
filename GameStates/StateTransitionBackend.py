@@ -202,7 +202,7 @@ class StateTransitionBackend:
 
             # If play hits 31
             if play_total == game_info.MAX_TOTAL:
-                game_info.other_score += 1
+                game_info.our_score += 1
 
         if not Backend.can_someone_play(game_info):
             Backend.start_new_in_play_count(game_info)
@@ -253,7 +253,7 @@ class StateTransitionBackend:
         from GameStates.WaitViews.WaitPlay import WaitPlayView
         from GameStates.ActiveViews.PlayView import PlayView
 
-        game_info.our_score += 1
+        #game_info.our_score += 1
 
         play_total = sum(card.getValue() for card in game_info.cards_in_play)
         playable_cards = [

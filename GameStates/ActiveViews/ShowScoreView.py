@@ -49,6 +49,12 @@ class ShowScoreView(GameView):
         self.draw_score()
 
     def on_hide_view(self):
+        if self.game_info.is_multiplayer:
+            self.other_player.database_ref.child("cut_card").delete()
+            self.other_player.database_ref.child("deck").delete()
+            self.other_player.database_ref.child("player1").delete()
+            self.other_player.database_ref.child("player2").delete()
+
         # Disable the UIManager when the view is hidden.
         self.manager.disable()
 
