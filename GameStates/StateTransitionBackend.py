@@ -277,6 +277,9 @@ class StateTransitionBackend:
     def play_to_show_score(self, game_info: GameInfo):
         from GameStates.ActiveViews.ShowScoreView import ShowScoreView
 
+        game_info.our_score += game_info.our_hand_score
+        game_info.other_score += game_info.other_hand_score
+
         crib_score = Backend.calculate_crib_score(game_info)
         if game_info.is_dealer:
             game_info.our_score += crib_score
